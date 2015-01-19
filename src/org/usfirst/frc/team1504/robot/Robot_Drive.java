@@ -16,6 +16,11 @@ public class Robot_Drive {
 	double forward;
 	double right;
 	double rotate;
+	double frontleft_val;
+	double backleft_val;
+	double backright_val;
+	double frontright_val;
+	double max;
 	
 	public Robot_Drive() {
 		leftstick = new Joystick(0);
@@ -28,16 +33,22 @@ public class Robot_Drive {
 		backright = new CanTalonSRX(0);
 		frontright = new CanTalonSRX(1);
 		
+		max = Math.max(1.0, Math.abs(forward) + Math.abs(right) + Math.abs(rotate));
+		frontleft_val = forward + right - rotate;
+		frontright_val = forward - right + rotate;
+		backleft_val = forward - right - rotate;
+		backright_val = forward + right + rotate;
+		
+		
+		
 	}
 
-	public void mecanum(double y, double x, double w) {
-		
-		double max = Math.max(1.0, Math.abs(y) + Math.abs(x) + Math.abs(w));
-		
-		frontleft.Set((y + x - w)/max);
-		frontright.Set((y - x + w)/max);
-		backleft.Set((y - x - w)/max);
-		backright.Set((y + x + w)/max);
+	public void mecanum() {
+				
+		frontleft.Set(frontleft_val);
+		frontright.Set(frontright_val);
+		backleft.Set(backleft_val);
+		backright.Set(backright_val);
 	}
 
 }

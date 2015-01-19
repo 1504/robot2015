@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.can.CANNotInitializedException;
 //import edu.wpi.first.wpilibj.command.PrintCommand;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 
 /**
  * This is NOT a demo program showing the use of the RobotDrive class, specifically it 
@@ -43,6 +44,7 @@ public class Robot extends SampleRobot {
     double pdpvoltage;
     float pcm_current;
     boolean pcm_isEnabled;
+    BuiltInAccelerometer accelerometer;
     //PrintCommand printy;
     public Robot() {
         	myRobot = new RobotDrive(0, 1, 2, 3); //frontleft, backleft, frontright, backright
@@ -58,6 +60,7 @@ public class Robot extends SampleRobot {
     	frontleft_channel = 14; //motor 0
     	frontright_channel = 15; //motor 2
     	//printy = new PrintCommand("TEST");
+    	accelerometer = new BuiltInAccelerometer();
     }
     /**
      * Runs the motors with tank steering, also asking for 54 CAN requests, and finally printing out all sorts of knowledge.
@@ -69,7 +72,8 @@ public class Robot extends SampleRobot {
         	myRobot.tankDrive(leftStick, rightStick);
             //Timer.delay(0.005);		// wait for a motor update time
             //printy.start();
-            try {
+            System.out.println("Orientation:" + accelerometer.getX() + accelerometer.getY() + accelerometer.getZ());
+        	try {
         		current_backright = pdp.getCurrent(backright_channel);
         		current_backleft = pdp.getCurrent(backleft_channel);
         		current_frontleft = pdp.getCurrent(frontleft_channel);
@@ -91,8 +95,8 @@ public class Robot extends SampleRobot {
         		}
         	}
         	catch (CANNotInitializedException e) {}
-            System.out.println(timey.get());
-            System.out.println(pcm_current + "    " + pcm_isEnabled + "    " + pdpvoltage + "   " + current_backright + "   " + current_backleft + "   " + current_frontleft + "   " + current_frontright);
+            //System.out.println(timey.get());
+            //System.out.println(pcm_current + "    " + pcm_isEnabled + "    " + pdpvoltage + "   " + current_backright + "   " + current_backleft + "   " + current_frontleft + "   " + current_frontright);
             timey.reset();
         }
     }
