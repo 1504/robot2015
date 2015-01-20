@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.can.CANNotInitializedException;
 //import edu.wpi.first.wpilibj.command.PrintCommand;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import edu.wpi.first.wpilibj.hal.CanTalonSRX;
 
 /**
  * This is NOT a demo program showing the use of the RobotDrive class, specifically it 
@@ -31,6 +32,7 @@ public class Robot extends SampleRobot {
     Joystick rightStick; // set to ID 2 in DriverStation
     PowerDistributionPanel pdp;
     Timer timey;
+    CanTalonSRX backright;
     Compressor pcm;
     double looptime;
     double current_backright;
@@ -54,6 +56,7 @@ public class Robot extends SampleRobot {
         	pdp = new PowerDistributionPanel();
         	timey = new Timer();
         	pcm = new Compressor();
+        	backright = new CanTalonSRX(0);
     	
     	backright_channel = 12; //motor 3
     	backleft_channel = 13; //motor 1
@@ -72,7 +75,6 @@ public class Robot extends SampleRobot {
         	myRobot.tankDrive(leftStick, rightStick);
             //Timer.delay(0.005);		// wait for a motor update time
             //printy.start();
-            System.out.println("Orientation:" + accelerometer.getX() + accelerometer.getY() + accelerometer.getZ());
         	try {
         		current_backright = pdp.getCurrent(backright_channel);
         		current_backleft = pdp.getCurrent(backleft_channel);
@@ -93,11 +95,14 @@ public class Robot extends SampleRobot {
         		{
         			pdp.getCurrent(k);
         		}
+        		backright.Set(leftStick.getY());
         	}
         	catch (CANNotInitializedException e) {}
             //System.out.println(timey.get());
             //System.out.println(pcm_current + "    " + pcm_isEnabled + "    " + pdpvoltage + "   " + current_backright + "   " + current_backleft + "   " + current_frontleft + "   " + current_frontright);
-            timey.reset();
+        	System.out.println("Orientation:" + accelerometer.getX() + accelerometer.getY() + accelerometer.getZ());
+        	//System.out.println("X: " + backright.get() + "Y: " + backright.getY() + "Z: " + backright.getZ())
+        	timey.reset();
         }
     }
 
