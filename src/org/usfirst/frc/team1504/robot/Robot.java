@@ -2,7 +2,8 @@ package org.usfirst.frc.team1504.robot;
 
 
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.SampleRobot;
+import edu.wpi.first.wpilibj.RobotBase;
+//import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj.can.CANNotInitializedException;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.hal.CanTalonSRX;
+
 
 /**
  * This is NOT a demo program showing the use of the RobotDrive class, specifically it 
@@ -26,14 +28,17 @@ import edu.wpi.first.wpilibj.hal.CanTalonSRX;
  * don't. Unless you know what you are doing, complex code will be much more difficult under
  * this system. Use IterativeRobot or Command-Based instead if you're new.
  */
-public class Robot extends SampleRobot {
+public class Robot extends RobotBase { //SampleRobot
     RobotDrive myRobot;  // class that handles basic drive operations
     Joystick leftStick;  // set to ID 1 in DriverStation
     Joystick rightStick; // set to ID 2 in DriverStation
     PowerDistributionPanel pdp;
-    Timer timey;
+    Timer loopTime;
     CanTalonSRX backright;
     Compressor pcm;
+    
+    Robot_Drive drive;
+    
     double looptime;
     double current_backright;
     double current_backleft;
@@ -44,40 +49,54 @@ public class Robot extends SampleRobot {
     int frontleft_channel;
     int frontright_channel;
     double pdpvoltage;
-    float pcm_current;
+    float pcm_current;	
     boolean pcm_isEnabled;
+//    SWIGTYPE_p_double xy;
+//    SWIGTYPE_p_CTR_Code swig;
     BuiltInAccelerometer accelerometer;
-    //PrintCommand printy;
+
+    long backrightCPtr;
+
     public Robot() {
         	myRobot = new RobotDrive(0, 1, 2, 3); //frontleft, backleft, frontright, backright
         	myRobot.setExpiration(0.1);
         	leftStick = new Joystick(0);
         	rightStick = new Joystick(1);
+        	drive = new Robot_Drive();
         	pdp = new PowerDistributionPanel();
-        	timey = new Timer();
+        	loopTime = new Timer();
         	pcm = new Compressor();
-        	backright = new CanTalonSRX(0);
-    	
+        	backright = new CanTalonSRX(10);
+        	//backrightCPtr = backright.getCPtr(backright);
+        	//backrightCPTr = backright.getCPtr
+        	
+        	//xy = new SWIGTYPE_p_double(backrightCPtr);
+        	//swig = new SWIGTYPE_P_CTR_Code()
     	backright_channel = 12; //motor 3
     	backleft_channel = 13; //motor 1
     	frontleft_channel = 14; //motor 0
     	frontright_channel = 15; //motor 2
-    	//printy = new PrintCommand("TEST");
     	accelerometer = new BuiltInAccelerometer();
     }
     /**
      * Runs the motors with tank steering, also asking for 54 CAN requests, and finally printing out all sorts of knowledge.
      */
+    public void startCompetition()
+    {
+    	
+    }
+    
     public void operatorControl() {
+    	drive.start();
         myRobot.setSafetyEnabled(true);
-        timey.start();
-        while (true) {
-        	myRobot.tankDrive(leftStick, rightStick);
+        loopTime.start();
+        while (isOperatorControl() && isEnabled()) {
+        	///myRobot.tankDrive(leftStick, rightStick);
             //Timer.delay(0.005);		// wait for a motor update time
             //printy.start();
         	try {
         		current_backright = pdp.getCurrent(backright_channel);
-        		current_backleft = pdp.getCurrent(backleft_channel);
+        		current_backleft = pdp.getCurrent(backleft_channel); 
         		current_frontleft = pdp.getCurrent(frontleft_channel);
         		current_frontright = pdp.getCurrent(frontright_channel);
         		pdpvoltage = pdp.getVoltage();
@@ -95,15 +114,17 @@ public class Robot extends SampleRobot {
         		{
         			pdp.getCurrent(k);
         		}
-        		backright.Set(leftStick.getY());
+        		
         	}
         	catch (CANNotInitializedException e) {}
             //System.out.println(timey.get());
             //System.out.println(pcm_current + "    " + pcm_isEnabled + "    " + pdpvoltage + "   " + current_backright + "   " + current_backleft + "   " + current_frontleft + "   " + current_frontright);
         	System.out.println("Orientation:" + accelerometer.getX() + accelerometer.getY() + accelerometer.getZ());
-        	//System.out.println("X: " + backright.get() + "Y: " + backright.getY() + "Z: " + backright.getZ())
-        	timey.reset();
+        	// new SWIGTYPE_p_double();
+        	//System.out.println("X: " + backright.GetCurrent(xy));
+        	loopTime.reset();
         }
+        drive.stop();
     }
 
 }
