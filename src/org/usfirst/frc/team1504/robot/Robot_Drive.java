@@ -23,7 +23,6 @@ public class Robot_Drive
 	double forward;
 	double right;
 	double rotate;
-	double max;
 
 	public Robot_Drive() 
 	{
@@ -37,43 +36,63 @@ public class Robot_Drive
 		frontright = new CANTalon(13);
 		
 	}
+	
+	
 	public void start()
 	{
 		DriveThread.start();
 		DriveThread.startMecanum();
 	}
+	
+	
 	public void stop()
 	{
 		DriveThread.stopMecanum();
 	}
+	
+	
+	public void joystickCompute()
+	{
+		double max = Math.max(1.0, Math.abs(forward) + Math.abs(right) + Math.abs(rotate));
+		frontleft_val = (forward + right - rotate)/max;
+		frontright_val = (forward - right + rotate)/max;
+		backleft_val = (forward - right - rotate)/max;
+		backright_val = (forward + right + rotate)/max;
+	}
+	
+	
+	public void motorOutput()
+	{
+		frontleft.set(frontleft_val);
+		frontright.set(frontright_val);
+		backleft.set(backleft_val);
+		backright.set(backright_val);
+	}
+	
+	
 	private class DriveThreadClass extends Thread
 	{
 		protected boolean run = true;
 		public void startMecanum() 
 		{
-		while(run)
-			{
-				max = Math.max(1.0, Math.abs(forward) + Math.abs(right) + Math.abs(rotate));
+			while(run)
+				{				
+					forward = leftstick.getY();
+					right = leftstick.getX();
+					rotate = rightstick.getX();	
 				
-				forward = leftstick.getY();
-				right = leftstick.getX();
-				rotate = rightstick.getX();	
-			
-				frontleft_val = (forward + right - rotate)/max;
-				frontright_val = (forward - right + rotate)/max;
-				backleft_val = (forward - right - rotate)/max;
-				backright_val = (forward + right + rotate)/max;
+					joystickCompute();
 				
-				frontleft.set(frontleft_val);
-				frontright.set(frontright_val);
-				backleft.set(backleft_val);
-				backright.set(backright_val);
-			}
+					motorOutput();
+				}
 		}
+		
+		
 		public void stopMecanum()
 		{
 			run = false;
 		}
+
 	}
 
 }

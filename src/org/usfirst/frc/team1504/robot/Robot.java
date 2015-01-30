@@ -136,8 +136,8 @@ public class Robot extends SampleRobot {
 //        	catch (CANNotInitializedException e) {}
 //            System.out.println(pcm_current + "    " + pcm_isEnabled + "    " + pdpvoltage + "   " + current_backright + "   " + current_backleft + "   " + current_frontleft + "   " + current_frontright);
         	
-            System.out.println(timey.get());        	
-        	System.out.println("Orientation:" + accelerometer.getX() + accelerometer.getY() + accelerometer.getZ());
+            System.out.println("Looptime: " + timey.get());        	
+//        	System.out.println("Accelerometer Orientation:" + accelerometer.getX() + accelerometer.getY() + accelerometer.getZ());
         	
         	fl_current = frontleft.getOutputCurrent();
         	bl_current = backleft.getOutputCurrent();
