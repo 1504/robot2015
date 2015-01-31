@@ -4,7 +4,7 @@ package org.usfirst.frc.team1504.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.CANTalon;
 
-public class Robot_Drive 
+public class Drive 
 {
 	private static DriveThreadClass DriveThread;
 	Joystick leftstick;
@@ -24,16 +24,16 @@ public class Robot_Drive
 	double right;
 	double rotate;
 
-	public Robot_Drive() 
+	public Drive() 
 	{
 		DriveThread = new DriveThreadClass();
 		leftstick = new Joystick(0);
 		rightstick = new Joystick(1);
 		
-		frontleft = new CANTalon(10);
-		backleft = new CANTalon(11);
-		backright = new CANTalon(12);
-		frontright = new CANTalon(13);
+		frontleft = new CANTalon(Map.FRONT_LEFT_TALON_PORT);
+		backleft = new CANTalon(Map.BACK_LEFT_TALON_PORT);
+		backright = new CANTalon(Map.BACK_RIGHT_TALON_PORT);
+		frontright = new CANTalon(Map.FRONT_RIGHT_TALON_PORT);
 		
 	}
 	

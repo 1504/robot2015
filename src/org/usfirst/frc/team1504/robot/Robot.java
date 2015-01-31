@@ -23,7 +23,7 @@ public class Robot extends SampleRobot {
     Joystick leftStick;  // set to ID 1 in DriverStation
     Joystick rightStick; // set to ID 2 in DriverStation
     
-    Robot_Drive drive;
+    Drive drive;
     
     PowerDistributionPanel pdp;
     double pdpvoltage;
@@ -68,7 +68,7 @@ public class Robot extends SampleRobot {
         	leftStick = new Joystick(0);
         	rightStick = new Joystick(1);
         	
-        	drive = new Robot_Drive();
+        	drive = new Drive();
         	
         	pdp = new PowerDistributionPanel();
         	
