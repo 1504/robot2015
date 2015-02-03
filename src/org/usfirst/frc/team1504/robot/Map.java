@@ -43,8 +43,8 @@ public class Map
 	public static final int ELEVATOR_DIGITAL_INPUT_PORT = 0;
 	
 	//Joystick axes
-	public static final int JOYSTICK_LEFT_Y_VALUE= 0;
-	public static final int JOYSTICK_LEFT_X_VALUE= 1;
+	public static final int JOYSTICK_LEFT_Y_VALUE= 1;
+	public static final int JOYSTICK_LEFT_X_VALUE= 0;
 	public static final int JOYSTICK_RIGHT_Y_VALUE= 2;
 	public static final int JOYSTICK_RIGHT_X_VALUE= 3;
 }
