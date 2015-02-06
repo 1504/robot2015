@@ -36,7 +36,7 @@ public class Drive
 	public void start()
 	{
 		DriveThread.start();
-		DriveThread.startMecanum();
+		//DriveThread.run();
 	}
 	
 	
@@ -64,16 +64,37 @@ public class Drive
 		backleft.set(backleft_val);
 		backright.set(backright_val);
 	}
-	
+	public double[] dumpDrive()
+	{
+		double[] motors = new double[12];
+		
+		motors[0] = frontleft_val;
+		motors[1] = frontleft.getOutputCurrent();
+		motors[2] = frontleft.getOutputVoltage();
+		
+		motors[3] = backleft_val;
+		motors[4] = backleft.getOutputCurrent();
+		motors[5] = backleft.getOutputVoltage();
+		
+		motors[6] = backright_val;
+		motors[7] = backright.getOutputCurrent();
+		motors[8] = backright.getOutputVoltage();
+		
+		motors[9] = frontright_val;
+		motors[10] = frontright.getOutputCurrent();
+		motors[11] = frontright.getOutputVoltage();
+		
+		return motors;
+	}
 	
 	private class DriveThreadClass extends Thread
 	{
-		protected boolean run = true;
-		public void startMecanum() 
+		protected boolean isRunning = true;
+		public void run() 
 		{
-			while(run)
+			while(isRunning)
 				{				
-					IO.mecanum_input(dircns);
+					dircns = IO.mecanum_input();
 				
 					outputCompute(dircns);
 				
@@ -84,7 +105,7 @@ public class Drive
 		
 		public void stopMecanum()
 		{
-			run = false;
+			isRunning = false;
 		}
 
 	}

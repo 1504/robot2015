@@ -22,7 +22,7 @@ public class Aligner
 		align = new CANTalon(Map.ALIGNER_TALON_PORT);
 	}
 	
-	protected void setPosition(int position)
+	protected void setPosition(int position) //why was this made protected?
 	{
 		switch (position)
 		{
@@ -33,7 +33,12 @@ public class Aligner
 			break;
 		case 1:	//almost closed
 			if (clawStage == 2)
+			{
 				setPosition(0);
+				//Robot_Main.timer.delay(0.005);
+				//or add break, which requires 2 button presses
+			}	
+			
 			stage_1.set(DoubleSolenoid.Value.kForward);
 			stage_2.set(DoubleSolenoid.Value.kReverse);
 			clawStage = 1;
@@ -59,18 +64,19 @@ public class Aligner
 	public void setSpeed(boolean speed)
 	{		
 		if (speed)
-			align.set(1);
+			align.set(1.0);
 		else
-			align.set(0);
+			align.set(0.0);
 	}
 	
-	public double[] dump()
+	public double[] alignerDump()
 	{
-		double[] motor = new double[3];
+		double[] motor = new double[4];
 		//motor speed, current, voltage
 		motor[0] = align.getSpeed();
 		motor[1] = align.getOutputCurrent();
 		motor[2] = align.getBusVoltage();
+		motor[3] = clawStage;
 		return motor;
 	}
 }

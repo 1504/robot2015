@@ -22,13 +22,13 @@ public class Robot extends SampleRobot {
     RobotDrive myRobot;  // class that handles basic drive operations
     Joystick leftStick;  // set to ID 1 in DriverStation
     Joystick rightStick; // set to ID 2 in DriverStation
-    
+
     Drive drive;
     
     PowerDistributionPanel pdp;
     double pdpvoltage;
     
-    Timer timey;
+    Timer timer;
     
     Compressor pcm;
     float pcm_current;	
@@ -72,7 +72,7 @@ public class Robot extends SampleRobot {
         	
         	pdp = new PowerDistributionPanel();
         	
-        	timey = new Timer();
+        	timer = new Timer();
         	
         	pcm = new Compressor();
         	
@@ -96,14 +96,10 @@ public class Robot extends SampleRobot {
     /**
      * Runs the motors with tank steering, also asking for 54 CAN requests, and finally printing out all sorts of knowledge.
      */
-    public void startCompetition()
-    {
-    	
-    } 
     
     public void operatorControl() {
-        myRobot.setSafetyEnabled(true);
-        timey.start();
+       // myRobot.setSafetyEnabled(true);
+        timer.start();
         while (isOperatorControl() && isEnabled()) { 
         	
 //        	myRobot.tankDrive(leftStick, rightStick);
@@ -136,7 +132,7 @@ public class Robot extends SampleRobot {
 //        	catch (CANNotInitializedException e) {}
 //            System.out.println(pcm_current + "    " + pcm_isEnabled + "    " + pdpvoltage + "   " + current_backright + "   " + current_backleft + "   " + current_frontleft + "   " + current_frontright);
         	
-            System.out.println("Looptime: " + timey.get());        	
+            System.out.println("Looptime: " + timer.get());        	
 //        	System.out.println("Accelerometer Orientation:" + accelerometer.getX() + accelerometer.getY() + accelerometer.getZ());
         	
         	fl_current = frontleft.getOutputCurrent();
@@ -146,7 +142,7 @@ public class Robot extends SampleRobot {
         	
         	System.out.println("Current: " + fl_current + bl_current + br_current + fr_current);
         	
-        	timey.reset();
+        	timer.reset();
         }
 //        drive.stop();
     }

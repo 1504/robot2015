@@ -25,8 +25,12 @@ public class Elevator { //thread
 		servo_1 = new Servo(Map.ELEVATOR_SERVO_ONE_PORT);
 		servo_2 = new Servo(Map.ELEVATOR_SERVO_TWO_PORT);
 		elevatorMotor = new CANTalon(Map.ELEVATOR_TALON_PORT);
-//		hallSensor.enableInterrupts();
+		hallSensor.enableInterrupts();
 //		hallSensor.requestInterrupts(this.handler);
+	}
+	public void manual(double y)
+	{
+		elevatorMotor.set(y);
 	}
 //	public class HallHandlerClass extends InterruptHandlerFunction<Double>
 //	{
