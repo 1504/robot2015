@@ -3,7 +3,7 @@ package org.usfirst.frc.team1504.robot;
 
 import edu.wpi.first.wpilibj.CANTalon;
 
-public class Drive 
+public class Drive extends Loggable
 {
 	private static DriveThreadClass DriveThread;
 	
@@ -64,7 +64,7 @@ public class Drive
 		backleft.set(backleft_val);
 		backright.set(backright_val);
 	}
-	public double[] dumpDrive()
+	public double[] dump()
 	{
 		double[] motors = new double[12];
 		

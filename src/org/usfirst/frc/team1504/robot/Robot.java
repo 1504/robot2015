@@ -22,8 +22,13 @@ public class Robot extends SampleRobot {
     RobotDrive myRobot;  // class that handles basic drive operations
     Joystick leftStick;  // set to ID 1 in DriverStation
     Joystick rightStick; // set to ID 2 in DriverStation
-
+    Loggable[] classes;
+    Logger log;
     Drive drive;
+    Aligner aligner;
+    BinCapture capture;
+    Elevator elevator;
+    IO io;
     
     PowerDistributionPanel pdp;
     double pdpvoltage;
@@ -68,8 +73,20 @@ public class Robot extends SampleRobot {
         	leftStick = new Joystick(0);
         	rightStick = new Joystick(1);
         	
-        	drive = new Drive();
+        	classes = new Loggable[5];
+        	classes[0] = new Aligner();
+        	classes[1] = new BinCapture();
+        	classes[2] = new Drive();
+        	classes[3] = new Elevator();
+        	classes[4] = new IO();
+        	log = new Logger(classes);
         	
+        	aligner = (Aligner) classes[0];
+        	capture = (BinCapture) classes[1];
+        	drive = (Drive) classes[2];
+        	elevator = (Elevator) classes[3];
+        	io = (IO) classes[4];
+        			
         	pdp = new PowerDistributionPanel();
         	
         	timer = new Timer();
@@ -82,8 +99,8 @@ public class Robot extends SampleRobot {
         	backleft = new CANTalon(11);
         	backright = new CANTalon(12);
         	frontright = new CANTalon(13);
-        	
         	drive.start();
+        	log.start("O");
 
 //For CAN Requests        	
 // 	   		backright_channel = 12; //motor 3
@@ -99,52 +116,26 @@ public class Robot extends SampleRobot {
     
     public void operatorControl() {
        // myRobot.setSafetyEnabled(true);
-        timer.start();
+//    	log.start("O");
+    	System.out.println(System.getProperty("user.name"));
+    	timer.start();
         while (isOperatorControl() && isEnabled()) { 
         	
 //        	myRobot.tankDrive(leftStick, rightStick);
 //            Timer.delay(0.005);		// wait for a motor update time        	
         	
-//CAN Request Test  
-//            printy.start();
-//        	try {
-//        		current_backright = pdp.getCurrent(backright_channel);
-//        		current_backleft = pdp.getCurrent(backleft_channel); 
-//        		current_frontleft = pdp.getCurrent(frontleft_channel);
-//        		current_frontright = pdp.getCurrent(frontright_channel);
-//        		pdpvoltage = pdp.getVoltage();
-//        		pcm_current = pcm.getCompressorCurrent();
-//            	pcm_isEnabled = pcm.enabled();
-//        		for (int i=0; i<=15; i++)
-//        		{
-//        			pdp.getCurrent(i);
-//        		}
-//        		for (int j=0; j<=15; j++)
-//        		{
-//        			pdp.getCurrent(j);
-//        		}
-//        		for (int k=0; k<=15; k++)
-//        		{
-//        			pdp.getCurrent(k);
-//        		}
-//        		
-//        	}
-//        	catch (CANNotInitializedException e) {}
-//            System.out.println(pcm_current + "    " + pcm_isEnabled + "    " + pdpvoltage + "   " + current_backright + "   " + current_backleft + "   " + current_frontleft + "   " + current_frontright);
-        	
-            System.out.println("Looptime: " + timer.get());        	
-//        	System.out.println("Accelerometer Orientation:" + accelerometer.getX() + accelerometer.getY() + accelerometer.getZ());
         	
         	fl_current = frontleft.getOutputCurrent();
         	bl_current = backleft.getOutputCurrent();
         	br_current = backright.getOutputCurrent();
         	fr_current = frontright.getOutputCurrent();
         	
-        	System.out.println("Current: " + fl_current + bl_current + br_current + fr_current);
+        	//System.out.println("Current: " + fl_current + bl_current + br_current + fr_current);
         	
         	timer.reset();
         }
 //        drive.stop();
+        log.stop();
     }
 
 }

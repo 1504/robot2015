@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
-public class BinCapture //thread
+public class BinCapture extends Loggable //thread
 {
 	private static BinCaptureClass BinCap;
 
@@ -27,8 +27,8 @@ public class BinCapture //thread
 
 		motor = new CANTalon(Map.TOTE_CAPTURE_TALON_PORT);
 
-		arm = new DoubleSolenoid(Map.EXTEND_SOLENOID_FORWARD_PORT, Map.EXTEND_SOLENOID_REVERSE_PORT);
-		claw = new DoubleSolenoid(Map.CLAW_SOLENOID_FORWARD_PORT, Map.CLAW_SOLENOID_REVERSE_PORT);
+//		arm = new DoubleSolenoid(Map.EXTEND_SOLENOID_FORWARD_PORT, Map.EXTEND_SOLENOID_REVERSE_PORT);
+//		claw = new DoubleSolenoid(Map.CLAW_SOLENOID_FORWARD_PORT, Map.CLAW_SOLENOID_REVERSE_PORT);
 
 		armtoggle = false;
 		clawtoggle = false;
@@ -82,7 +82,7 @@ public class BinCapture //thread
 		}
 	}
 
-	public double[] binDump() {
+	public double[] dump() {
 		double[] bin_values = new double[4];
 		bin_values[0] = armstate;
 		bin_values[1] = clawstate;
