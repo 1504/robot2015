@@ -1,4 +1,4 @@
-package org.usfirst.frc.team1504.robot;
+package org.usfirst.frc.team1504.robot;	
 
 public class Map 
 {
@@ -12,9 +12,9 @@ public class Map
 	
 	public static final int ELEVATOR_TALON_PORT = 30;
 	
-	public static final int TOTE_CAPTURE_TALON_PORT = 40;
+	public static final int BIN_CAPTURE_TALON_PORT = 40;
 
-	// Joystick axes
+	// Joystick raw axes
 	public static final int JOYSTICK_LEFT_Y_VALUE= 1;
 	public static final int JOYSTICK_LEFT_X_VALUE= 0;
 	public static final int JOYSTICK_RIGHT_Y_VALUE= 1;
@@ -48,9 +48,11 @@ public class Map
 	
 	// DigitalInput
 	public static final int ELEVATOR_DIGITAL_INPUT_PORT = 0;
-	public static final double JOYSTICK_DEAD_ZONE = .1;
+	public static final double JOYSTICK_DEAD_ZONE = .15;
 	
 	// Secondary Buttons
 	public static final int BIN_CAPTURE_CLAW_TOGGLE_BUTTON = 2;
 	public static final int BIN_CAPTURE_ARM_TOGGLE_BUTTON = 3;
+	public static final int ELEVATOR_MANUAL_TOGGLE_BUTTON = 1;
+	public static final int[] ELEVATOR_CONTROL_BUTTONS = {6,7}; //up,down
 }

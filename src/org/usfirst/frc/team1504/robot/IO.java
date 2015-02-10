@@ -16,6 +16,7 @@ public class IO extends Loggable {
 	Port kOnboard;
 	byte[] buffer;
 	byte[] arduinoOutput;
+	boolean[] buttons;
 
 	// Dual Stick
 	static Joystick leftstick = new Joystick(0);
@@ -29,7 +30,7 @@ public class IO extends Loggable {
 
 	public IO() {
 
-		//arduino = new SerialPort(9600, kOnboard);
+		// arduino = new SerialPort(9600, kOnboard);
 
 		is_mouse_enabled = false;
 
@@ -63,10 +64,28 @@ public class IO extends Loggable {
 		return buttons;
 	}
 
+	public static double elevator_manual() {
+		return secondary.getY();
+	}
+
+	public static boolean elevator_manual_toggle() {
+		//return secondary.getRawButton(Map.ELEVATOR_MANUAL_TOGGLE_BUTTON);
+		return true;
+	}
+
 	public void startmouse() {
 		IOThread thread = new IOThread();
 		thread.start();
 		is_mouse_enabled = true;
+	}
+
+	public static boolean[] buttonValues() {
+		boolean[] button = new boolean[Map.ELEVATOR_CONTROL_BUTTONS.length];
+
+		for (int i = 0; i < Map.ELEVATOR_CONTROL_BUTTONS.length; i++) {
+			button[i] = secondary.getRawButton(Map.ELEVATOR_CONTROL_BUTTONS[i]);
+		}
+		return button;
 	}
 
 	private class IOThread extends Thread {
@@ -98,7 +117,7 @@ public class IO extends Loggable {
 
 		relevant_inputs[0] = leftstick.getRawAxis(Map.JOYSTICK_LEFT_Y_VALUE);
 		relevant_inputs[1] = leftstick.getRawAxis(Map.JOYSTICK_LEFT_X_VALUE);
-		relevant_inputs[2] = rightstick.getRawAxis(Map.JOYSTICK_RIGHT_X_VALUE);
+		relevant_inputs[2] = rightstick.getRawAxis(Map.JOYSTICK_LEFT_X_VALUE);
 
 		return relevant_inputs;
 	}

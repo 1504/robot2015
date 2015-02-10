@@ -101,6 +101,7 @@ public class Robot extends SampleRobot {
         	frontright = new CANTalon(13);
         	drive.start();
         	log.start("O");
+        	elevator.start();
 
 //For CAN Requests        	
 // 	   		backright_channel = 12; //motor 3

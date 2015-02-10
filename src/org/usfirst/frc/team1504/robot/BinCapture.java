@@ -25,7 +25,7 @@ public class BinCapture extends Loggable //thread
 
 		BinCap = new BinCaptureClass();
 
-		motor = new CANTalon(Map.TOTE_CAPTURE_TALON_PORT);
+		motor = new CANTalon(Map.BIN_CAPTURE_TALON_PORT);
 
 //		arm = new DoubleSolenoid(Map.EXTEND_SOLENOID_FORWARD_PORT, Map.EXTEND_SOLENOID_REVERSE_PORT);
 //		claw = new DoubleSolenoid(Map.CLAW_SOLENOID_FORWARD_PORT, Map.CLAW_SOLENOID_REVERSE_PORT);
