@@ -21,7 +21,7 @@ public class Aligner extends Loggable {
 		align = new CANTalon(Map.ALIGNER_TALON_PORT);
 	}
 
-	protected void setPosition(int position) // why was this made protected?
+	protected void setPosition(int position) 
 	{
 		switch (position) {
 		case 0: // open

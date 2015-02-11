@@ -20,9 +20,10 @@ public class Elevator extends Loggable { // thread
 	PIDController elevatorPID;
 	Counter hallCounter;
 	//HallHandlerClass handler;
-	boolean moveToggle;
 	int setPoint;
 	boolean[] button;
+	boolean servo_1State;
+	boolean servo_2State;
 	public Elevator() {
 		// handler = new HallHandlerClass();
 		hallSensor = new DigitalInput(Map.ELEVATOR_DIGITAL_INPUT_PORT);
@@ -59,10 +60,39 @@ public class Elevator extends Loggable { // thread
 		elevator.start();
 	}
 
-	public void setSetPoint() {
-
+	public void useSetPoint() 
+	{	
+		if(setPoint < hallCounter.get())
+		{
+			elevatorMotor.set(-1);
+		}
 		
-
+		else if(setPoint > hallCounter.get())
+		{
+			elevatorMotor.set(1);
+		}
+		
+		else if(setPoint == hallCounter.get())
+			elevatorMotor.set(0);
+	}
+	
+	public void setServos()
+	{
+		boolean[] servos = new boolean[2];
+		servos = IO.bincapture_input();
+		if(servo_1State && servo_2State)
+		{
+			servo_1.setAngle(90); //change later
+			servo_2.setAngle(90); 
+		}
+		
+		if(servos[0] || servos[1])
+		{
+			servo_1.setAngle(0); //change later
+			servo_2.setAngle(0); //change later
+		}
+		
+		
 	}
 
 	private class ElevatorThreadClass extends Thread {
@@ -71,17 +101,46 @@ public class Elevator extends Loggable { // thread
 
 		public void run() {
 			while (isRunning) {
+				
 				isManual = IO.elevator_manual_toggle();
 				if (isManual) {
 					manual(IO.elevator_manual());
 				} else {
 					button = IO.buttonValues();
-					if (button[0] && !moveToggle) {
-						moveToggle = true;
-						setPoint++;
-					} else if (button[1] && !moveToggle) {
-						moveToggle = true;
-						setPoint--;
+					if (button[0]){setPoint = 1;} 
+					else if (button[1]){setPoint = 2;}
+					else if (button[2]){setPoint = 3;}
+					else if (button[3]){setPoint = 4;}
+					else if (button[4]){setPoint = 5;}
+					else if (button[5]){setPoint = 6;}
+					else if (button[6]){setPoint = 7;}
+					else if (button[7]){setPoint = 8;}
+					else if (button[8]){setPoint = 9;}
+					else if (button[9]){setPoint = 10;}
+					useSetPoint();
+					if(IO.elevator_mode() == 0)
+					{
+						//solenoid retracted, servos up
+						elevatorSolenoid.set(DoubleSolenoid.Value.kReverse);
+						servo_1.setAngle(0);
+						servo_2.setAngle(0);
+					}
+					
+					else if(IO.elevator_mode() == 1)
+					{
+						//soleoid exteded, servos down
+						elevatorSolenoid.set(DoubleSolenoid.Value.kForward);
+						servo_1.setAngle(0);
+						servo_2.setAngle(0);
+						
+					}
+					
+					else if(IO.elevator_mode() == 2)
+					{
+						//soleoid extended, servos up
+						elevatorSolenoid.set(DoubleSolenoid.Value.kForward);
+						servo_1.setAngle(0);
+						servo_2.setAngle(0);
 					}
 					// PID();
 					manual(0);

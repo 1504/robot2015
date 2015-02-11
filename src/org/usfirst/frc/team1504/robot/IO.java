@@ -17,6 +17,9 @@ public class IO extends Loggable {
 	byte[] buffer;
 	byte[] arduinoOutput;
 	boolean[] buttons;
+	boolean isElevator;
+
+	static int elevatorMode;
 
 	// Dual Stick
 	static Joystick leftstick = new Joystick(0);
@@ -69,7 +72,7 @@ public class IO extends Loggable {
 	}
 
 	public static boolean elevator_manual_toggle() {
-		//return secondary.getRawButton(Map.ELEVATOR_MANUAL_TOGGLE_BUTTON);
+		// return secondary.getRawButton(Map.ELEVATOR_MANUAL_TOGGLE_BUTTON);
 		return true;
 	}
 
@@ -77,6 +80,17 @@ public class IO extends Loggable {
 		IOThread thread = new IOThread();
 		thread.start();
 		is_mouse_enabled = true;
+	}
+
+	public static int elevator_mode() {
+		if (secondary.getRawButton(Map.ELEVATOR_RETRACTED_MODE_BUTTON)) {
+			elevatorMode = 0;
+		} else if (secondary.getRawButton(Map.ELEVATOR_TOTE_MODE_BUTTON)) {
+			elevatorMode = 1;
+		} else if (secondary.getRawButton(Map.ELEVATOR_BIN_MODE_BUTTON)) {
+			elevatorMode = 2;
+		}
+		return elevatorMode;
 	}
 
 	public static boolean[] buttonValues() {
