@@ -138,5 +138,11 @@ public class Robot extends SampleRobot {
 //        drive.stop();
         log.stop();
     }
+    
+    //public void autonomous() {
+    //drive forward (use timer for delay)
+    //pickup bin from center platform
+    //pickup tote
+    //}
 
 }

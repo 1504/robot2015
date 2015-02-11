@@ -72,8 +72,8 @@ public class IO extends Loggable {
 	}
 
 	public static boolean elevator_manual_toggle() {
-		// return secondary.getRawButton(Map.ELEVATOR_MANUAL_TOGGLE_BUTTON);
-		return true;
+		return secondary.getRawButton(Map.ELEVATOR_MANUAL_TOGGLE_BUTTON);
+		//return true;
 	}
 
 	public void startmouse() {
