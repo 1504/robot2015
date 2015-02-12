@@ -3,6 +3,8 @@ package org.usfirst.frc.team1504.robot;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
 import java.nio.ByteBuffer;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -10,7 +12,8 @@ import java.util.TimerTask;
 import java.util.Timer;
 
 public class Logger {
-
+	
+	OperatingSystemMXBean sysMX;
 	private static LoggerThreadClass loggerThread;
 
 	Timer timer;
@@ -24,6 +27,7 @@ public class Logger {
 		calendar = new GregorianCalendar();
 		timer = new Timer();
 		this.classes = classes;
+		sysMX = /*(OperatingSystemMXBean)*/ ManagementFactory.getOperatingSystemMXBean();
 	}
 
 	public void start(String prefix) {
@@ -52,7 +56,13 @@ public class Logger {
 	public void disable() {
 		loggerThread.cancel();
 	}
-
+	
+	public double getCPUPercent()
+	{
+		return ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage()/2;
+		//return sysMX.getProcessCPULoad();
+	}
+	
 	public void write() {
 		// AlignerDump(4)
 		// bincapture(4)
