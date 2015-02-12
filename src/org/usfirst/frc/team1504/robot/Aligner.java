@@ -13,16 +13,13 @@ public class Aligner extends Loggable {
 	CANTalon align;
 
 	public Aligner() {
-		stage_1 = new DoubleSolenoid(Map.STAGE_ONE_SOLENOID_FORWARD_PORT,
-				Map.STAGE_ONE_SOLENOID_REVERSE_PORT);
-		stage_2 = new DoubleSolenoid(Map.STAGE_TWO_SOLENOID_FORWARD_PORT,
-				Map.STAGE_TWO_SOLENOID_REVERSE_PORT);
+		stage_1 = new DoubleSolenoid(Map.STAGE_ONE_SOLENOID_FORWARD_PORT, Map.STAGE_ONE_SOLENOID_REVERSE_PORT);
+		stage_2 = new DoubleSolenoid(Map.STAGE_TWO_SOLENOID_FORWARD_PORT, Map.STAGE_TWO_SOLENOID_REVERSE_PORT);
 
 		align = new CANTalon(Map.ALIGNER_TALON_PORT);
 	}
 
-	protected void setPosition(int position) 
-	{
+	protected void setPosition(int position) {
 		switch (position) {
 		case 0: // open
 			stage_1.set(DoubleSolenoid.Value.kReverse);
@@ -78,5 +75,28 @@ public class Aligner extends Loggable {
 		motor[2] = align.getBusVoltage();
 		motor[3] = clawStage;
 		return motor;
+	}
+
+	private class AlignerThreadClass extends Thread {
+		protected boolean isRunning = true;
+		protected boolean[] buttons;
+
+		public void run() {
+			while (isRunning) {
+				buttons = IO.alignerButtons();
+				if (buttons[0]) {
+					setPosition(0);
+				} else if (buttons[1]) {
+					setPosition(1);
+				} else if (buttons[2]) {
+					setPosition(2);
+				}
+			}
+		}
+
+		public void stopMecanum() {
+			isRunning = false;
+		}
+
 	}
 }

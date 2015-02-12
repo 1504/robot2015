@@ -44,9 +44,9 @@ public class IO extends Loggable {
 	public static double[] mecanum_input() {
 		double[] dircns = new double[3];
 
-		dircns[0] = leftstick.getRawAxis(Map.JOYSTICK_LEFT_Y_VALUE);
-		dircns[1] = leftstick.getRawAxis(Map.JOYSTICK_LEFT_X_VALUE);
-		dircns[2] = rightstick.getRawAxis(Map.JOYSTICK_RIGHT_X_VALUE);
+		dircns[0] = Math.pow(leftstick.getRawAxis(Map.JOYSTICK_Y_VALUE), 2);
+		dircns[1] = Math.pow(leftstick.getRawAxis(Map.JOYSTICK_X_VALUE), 2);
+		dircns[2] = Math.pow(rightstick.getRawAxis(Map.JOYSTICK_X_VALUE), 2);
 
 		// dircns[0] = copterstick.getRawAxis(Map.JOYSTICK_LEFT_Y_VALUE);
 		// dircns[1] = copterstick.getRawAxis(Map.JOYSTICK_LEFT_X_VALUE);
@@ -68,12 +68,12 @@ public class IO extends Loggable {
 	}
 
 	public static double elevator_manual() {
-		return secondary.getY();
+		return Math.pow(secondary.getRawAxis(Map.JOYSTICK_Y_VALUE), 2);
 	}
 
 	public static boolean elevator_manual_toggle() {
 		return secondary.getRawButton(Map.ELEVATOR_MANUAL_TOGGLE_BUTTON);
-		//return true;
+		// return true;
 	}
 
 	public void startmouse() {
@@ -93,7 +93,7 @@ public class IO extends Loggable {
 		return elevatorMode;
 	}
 
-	public static boolean[] buttonValues() {
+	public static boolean[] elevatorButtonValues() {
 		boolean[] button = new boolean[Map.ELEVATOR_CONTROL_BUTTONS.length];
 
 		for (int i = 0; i < Map.ELEVATOR_CONTROL_BUTTONS.length; i++) {
@@ -126,12 +126,20 @@ public class IO extends Loggable {
 		}
 	}
 
+	public static boolean[] alignerButtons() {
+		boolean[] stuff = new boolean[3];
+		for (int lcv = 0; lcv < stuff.length; lcv++) {
+			stuff[lcv] = secondary.getRawButton(Map.ALIGNER_STAGE[lcv]);
+		}
+		return stuff; // shenanigans
+	}
+
 	public double[] dump() {
 		double[] relevant_inputs = new double[3];
 
-		relevant_inputs[0] = leftstick.getRawAxis(Map.JOYSTICK_LEFT_Y_VALUE);
-		relevant_inputs[1] = leftstick.getRawAxis(Map.JOYSTICK_LEFT_X_VALUE);
-		relevant_inputs[2] = rightstick.getRawAxis(Map.JOYSTICK_LEFT_X_VALUE);
+		relevant_inputs[0] = leftstick.getRawAxis(Map.JOYSTICK_Y_VALUE);
+		relevant_inputs[1] = leftstick.getRawAxis(Map.JOYSTICK_X_VALUE);
+		relevant_inputs[2] = rightstick.getRawAxis(Map.JOYSTICK_X_VALUE);
 
 		return relevant_inputs;
 	}

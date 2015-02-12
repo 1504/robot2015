@@ -2,6 +2,7 @@ package org.usfirst.frc.team1504.robot;
 
 import edu.wpi.first.wpilibj.CANTalon;
 
+
 public class Drive extends Loggable {
 	private static DriveThreadClass DriveThread;
 
@@ -80,11 +81,13 @@ public class Drive extends Loggable {
 
 		public void run() {
 			while (isRunning) {
-				dircns = IO.mecanum_input();
-
-				outputCompute(dircns);
-
-				motorOutput();
+				dircns = IO.mecanum_input(); //get y, x w
+				
+				dircns = detents(dircns); //manipulate
+				
+				outputCompute(dircns);//calculate for motors
+				
+				motorOutput();//set
 			}
 		}
 
@@ -93,5 +96,24 @@ public class Drive extends Loggable {
 		}
 
 	}
+	 protected double[] detents(double[] dircn)
+	    {
+
+	        double theta = Math.atan2(dircn[0], dircn[1]);
+
+	        double dx = correct_x(theta) * distance(dircn[1], dircn[0]) * 0.25;
+	        double dy = correct_y(theta) * distance(dircn[1], dircn[0]) * 0.25;
+
+	        double[] detented = new double[3];
+	        
+	        detented[0] = dircn[0] + dy; //y
+	        detented[1] = dircn[1] + dx; //x
+	        detented[2] = dircn[2];//angular
+	        
+	        return detented;
+	    }
+		private double correct_x(double theta){return -Math.sin(theta) * (-Math.sin(8*theta) - 0.25 * Math.sin(4*theta));}
+		private double correct_y(double theta){return Math.cos(theta) * (-Math.sin(8*theta) - 0.25 * Math.sin(4*theta));}
+		public static double distance(double x, double y){return Math.sqrt(x*x + y*y);}
 
 }

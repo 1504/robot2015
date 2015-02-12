@@ -15,10 +15,14 @@ public class Map
 	public static final int BIN_CAPTURE_TALON_PORT = 40;
 
 	// Joystick raw axes
-	public static final int JOYSTICK_LEFT_Y_VALUE= 1;
-	public static final int JOYSTICK_LEFT_X_VALUE= 0;
-	public static final int JOYSTICK_RIGHT_Y_VALUE= 1;
-	public static final int JOYSTICK_RIGHT_X_VALUE= 0;
+	public static final int JOYSTICK_Y_VALUE= 1;
+	public static final int JOYSTICK_X_VALUE= 0;
+	
+	public static final int COPTERSTICK_LEFT_Y_VALUE= 1;
+	public static final int COPTERSTICK_LEFT_X_VALUE= 0;
+	public static final int COPTERSTICK_RIGHT_Y_VALUE= 2;
+	public static final int COPTERSTICK_RIGHT_X_VALUE= 3;
+	
 	
 	// TODO: Copterstick axis vals
 
@@ -42,6 +46,9 @@ public class Map
 	public static final int ELEVATOR_SERVO_ONE_PORT = 0; 
 	public static final int ELEVATOR_SERVO_TWO_PORT = 1;
 	
+	public static final int ELEVATOR_SERVO_OPEN_ANGLE = 0;
+	public static final int ELEVATOR_SERVO_DOWN_ANGLE = 0;
+	
 	// setpoint down and up (random)
 	public static final double SET_POINT_UP = 1.4;
 	public static final double SET_POINT_DOWN = 0.6;
@@ -58,4 +65,15 @@ public class Map
 	public static final int ELEVATOR_RETRACTED_MODE_BUTTON = 12;
 	public static final int ELEVATOR_TOTE_MODE_BUTTON = 13;
 	public static final int ELEVATOR_BIN_MODE_BUTTON = 14;
+	
+	//Aligner
+	public static final int[] ALIGNER_STAGE = {0,0,0};//open, close, closed
+	
+	//Elevator Mode values
+	public static final int ELEVATOR_UP_SPEED = 1;
+	public static final int ELEVATOR_DOWN_SPEED = -1;
+	public static final int ELEVATOR_NONE_SPEED = 0;
+	
+
+	
 }
