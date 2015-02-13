@@ -24,6 +24,7 @@ public class Elevator extends Loggable { // thread
 	boolean[] button;
 	boolean servo_1State;
 	boolean servo_2State;
+	protected boolean isManual;
 
 	public Elevator() {
 		// handler = new HallHandlerClass();
@@ -39,11 +40,7 @@ public class Elevator extends Loggable { // thread
 		// hallSensor.enableInterrupts();
 		// hallSensor.requestInterrupts(handler);
 		setPoint = 0;
-	}
-
-	public double[] dump() {
-		double[] dump = new double[0]; // change this l8er.
-		return dump;
+		isManual = true;
 	}
 
 	/*
@@ -69,12 +66,10 @@ public class Elevator extends Loggable { // thread
 		else if (setPoint == hallCounter.get())
 			elevatorMotor.set(Map.ELEVATOR_NONE_SPEED); // 0
 	}
-	
 
 	private class ElevatorThreadClass extends Thread {
 		protected boolean isRunning = true;
-		protected boolean isManual = true;
-		boolean[] buttons;
+		boolean[] button;
 
 		protected boolean checkButtons() {
 			for (boolean ooo : IO.elevatorButtonValues()) {
@@ -88,18 +83,22 @@ public class Elevator extends Loggable { // thread
 		public void run() {
 			while (isRunning) {
 
-				isManual = IO.elevator_manual_toggle() && (isManual && !checkButtons());// Do not want disable mannnnnulla cotrol iff a button is pressed. 
-				
+				isManual = IO.elevator_manual_toggle() || (isManual && !checkButtons());
 				if (isManual) {
-					manual(IO.elevator_manual());
+					if (IO.elevator_manual_toggle()) {
+						manual(IO.elevator_manual());
+					} else {
+						manual(0.0);
+					}
+
 				} else {
-					//
+					button = IO.elevatorButtonValues();
 					if (button[0]) {
 						setPoint = 1;
 					} else if (button[1]) {
 						setPoint = 2;
 					} else if (button[2]) {
-						setPoint = 3; 
+						setPoint = 3;
 					} else if (button[3]) {
 						setPoint = 4;
 					} else if (button[4]) {
@@ -116,22 +115,22 @@ public class Elevator extends Loggable { // thread
 						setPoint = 10;
 					}
 					useSetPoint();
-					if (IO.elevator_mode() == 0) {
+					if (IO.elevator_mode() == 0) { // Forks retracted
 						// solenoid retracted, servos up
 						elevatorSolenoid.set(DoubleSolenoid.Value.kReverse);
 						servo_1.setAngle(Map.ELEVATOR_SERVO_OPEN_ANGLE);
 						servo_2.setAngle(Map.ELEVATOR_SERVO_OPEN_ANGLE);
 					}
 
-					else if (IO.elevator_mode() == 1) {
-						// soleoid exteded, servos down
+					else if (IO.elevator_mode() == 1) { // Tote pickup
+						// solenoid exteded, servos down
 						elevatorSolenoid.set(DoubleSolenoid.Value.kForward);
 						servo_1.setAngle(Map.ELEVATOR_SERVO_DOWN_ANGLE);
 						servo_2.setAngle(Map.ELEVATOR_SERVO_DOWN_ANGLE);
 
 					}
 
-					else if (IO.elevator_mode() == 2) {
+					else if (IO.elevator_mode() == 2) { // Bin pickup
 						// soleoid extended, servos up
 						elevatorSolenoid.set(DoubleSolenoid.Value.kForward);
 						servo_1.setAngle(Map.ELEVATOR_SERVO_OPEN_ANGLE);
@@ -150,7 +149,18 @@ public class Elevator extends Loggable { // thread
 		public void stopElevator() {
 			isRunning = false;
 		}
-
+	}
+	public double[] dump()
+	{
+		double[] vals = new double[7];
+		vals[0] = Utils.boolconverter(isManual); //0 is false, 1 is true
+		vals[1] = IO.elevatorMode; //0 is retracted mode, 1 is tote mode, 2 is bin mode
+		vals[2] = setPoint; //desired lvl
+		vals[3] = hallCounter.get(); //current lvl
+		vals[4] = elevatorMotor.getSpeed();
+		vals[5] = elevatorMotor.getOutputCurrent();
+		vals[6] = elevatorMotor.getOutputVoltage();
+		return vals;
 	}
 
 }

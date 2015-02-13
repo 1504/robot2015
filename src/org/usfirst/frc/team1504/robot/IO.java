@@ -44,9 +44,9 @@ public class IO extends Loggable {
 	public static double[] mecanum_input() {
 		double[] dircns = new double[3];
 
-		dircns[0] = Math.pow(leftstick.getRawAxis(Map.JOYSTICK_Y_VALUE), 2);
-		dircns[1] = Math.pow(leftstick.getRawAxis(Map.JOYSTICK_X_VALUE), 2);
-		dircns[2] = Math.pow(rightstick.getRawAxis(Map.JOYSTICK_X_VALUE), 2);
+		dircns[0] = Math.pow(leftstick.getRawAxis(Map.JOYSTICK_Y_AXIS), 2);
+		dircns[1] = Math.pow(leftstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2);
+		dircns[2] = Math.pow(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2);
 
 		// dircns[0] = copterstick.getRawAxis(Map.JOYSTICK_LEFT_Y_VALUE);
 		// dircns[1] = copterstick.getRawAxis(Map.JOYSTICK_LEFT_X_VALUE);
@@ -60,6 +60,21 @@ public class IO extends Loggable {
 		return dircns;
 	}
 
+	public static int front_side_check() {
+		int side = 0;
+
+		if (rightstick.getRawButton(Map.FRONT_SIDE_BINCAP[0]) || leftstick.getRawButton(Map.FRONT_SIDE_BINCAP[1])) {
+			side = 180;
+		} else if (rightstick.getRawButton(Map.FRONT_SIDE_RIGHT)) {
+			side = 270;
+		} else if (rightstick.getRawButton(Map.FRONT_SIDE_ELEV[0]) || rightstick.getRawButton(Map.FRONT_SIDE_ELEV[1])) {
+			side = 0;
+		} else if (rightstick.getRawButton(Map.FRONT_SIDE_LEFT)) {
+			side = 90;
+		}
+		return side;
+	}
+
 	public static boolean[] bincapture_input() {
 		boolean buttons[] = new boolean[2];
 		buttons[0] = secondary.getRawButton(Map.BIN_CAPTURE_ARM_TOGGLE_BUTTON);
@@ -68,18 +83,12 @@ public class IO extends Loggable {
 	}
 
 	public static double elevator_manual() {
-		return Math.pow(secondary.getRawAxis(Map.JOYSTICK_Y_VALUE), 2);
+		return Math.pow(secondary.getRawAxis(Map.JOYSTICK_Y_AXIS), 2);
 	}
 
 	public static boolean elevator_manual_toggle() {
 		return secondary.getRawButton(Map.ELEVATOR_MANUAL_TOGGLE_BUTTON);
 		// return true;
-	}
-
-	public void startmouse() {
-		IOThread thread = new IOThread();
-		thread.start();
-		is_mouse_enabled = true;
 	}
 
 	public static int elevator_mode() {
@@ -102,6 +111,12 @@ public class IO extends Loggable {
 		return button;
 	}
 
+	public void startmouse() {
+		IOThread thread = new IOThread();
+		thread.start();
+		is_mouse_enabled = true;
+	}
+	
 	private class IOThread extends Thread {
 		protected boolean isRunning = true;
 
@@ -109,14 +124,8 @@ public class IO extends Loggable {
 			while (isRunning) {
 				buffer[0] = 0;
 				buffer[1] = 1;
-				arduino.write(buffer, 2);
-				arduinoOutput = arduino.read(9);
-
-				/*
-				 * arduinoOutput bytes: 0-2: x, y, SQUAL of left sensor 3-5: x,
-				 * y, SQUAL of right sensor 6-8: x, y, z, from magnetometer
-				 */
-
+				arduino.write(buffer, 2); //For detailed information on the bits that we're writing, go to bitstosendtoarduino.jpg in Pictures
+				arduinoOutput = arduino.read(9); //0-2: x,y,SQUAL of left sensor; 3-5: x,y,SQUAL of right sensor; 6-8: x,y,z from magnetometer
 			}
 		}
 
@@ -128,20 +137,39 @@ public class IO extends Loggable {
 
 	public static boolean[] alignerButtons() {
 		boolean[] stuff = new boolean[3];
-		for (int lcv = 0; lcv < stuff.length; lcv++) {
-			stuff[lcv] = secondary.getRawButton(Map.ALIGNER_STAGE[lcv]);
+		for (int i = 0; i < stuff.length; i++) {
+			stuff[i] = secondary.getRawButton(Map.ALIGNER_STAGE[i]);
 		}
 		return stuff; // shenanigans
 	}
 
 	public double[] dump() {
-		double[] relevant_inputs = new double[3];
+		double[] io_inputs = new double[29];
 
-		relevant_inputs[0] = leftstick.getRawAxis(Map.JOYSTICK_Y_VALUE);
-		relevant_inputs[1] = leftstick.getRawAxis(Map.JOYSTICK_X_VALUE);
-		relevant_inputs[2] = rightstick.getRawAxis(Map.JOYSTICK_X_VALUE);
+		io_inputs[0] = leftstick.getRawAxis(Map.JOYSTICK_Y_AXIS);
+		io_inputs[1] = leftstick.getRawAxis(Map.JOYSTICK_X_AXIS);
+		io_inputs[2] = rightstick.getRawAxis(Map.JOYSTICK_X_AXIS);
+		io_inputs[3] = Utils.boolconverter(rightstick.getRawButton(Map.FRONT_SIDE_BINCAP[0]));
+		io_inputs[4] = Utils.boolconverter(leftstick.getRawButton(Map.FRONT_SIDE_BINCAP[1]));
+		io_inputs[5] = Utils.boolconverter(rightstick.getRawButton(Map.FRONT_SIDE_RIGHT));
+		io_inputs[6] = Utils.boolconverter(rightstick.getRawButton(Map.FRONT_SIDE_ELEV[0]));
+		io_inputs[7] = Utils.boolconverter(rightstick.getRawButton(Map.FRONT_SIDE_ELEV[1]));
+		io_inputs[8] = Utils.boolconverter(rightstick.getRawButton(Map.FRONT_SIDE_LEFT));
+		io_inputs[9] = secondary.getRawAxis(Map.JOYSTICK_Y_AXIS);
+		io_inputs[10] = Utils.boolconverter(secondary.getRawButton(Map.BIN_CAPTURE_ARM_TOGGLE_BUTTON));
+		io_inputs[11] = Utils.boolconverter(secondary.getRawButton(Map.BIN_CAPTURE_CLAW_TOGGLE_BUTTON));
+		io_inputs[12] = Utils.boolconverter(secondary.getRawButton(Map.ELEVATOR_MANUAL_TOGGLE_BUTTON));
+		io_inputs[13] = Utils.boolconverter(secondary.getRawButton(Map.ELEVATOR_RETRACTED_MODE_BUTTON));
+		io_inputs[14] = Utils.boolconverter(secondary.getRawButton(Map.ELEVATOR_TOTE_MODE_BUTTON));
+		io_inputs[15] = Utils.boolconverter(secondary.getRawButton(Map.ELEVATOR_BIN_MODE_BUTTON));
+		for (int i = 16; i < (Map.ELEVATOR_CONTROL_BUTTONS.length + 16); i++) {
+			io_inputs[i] = Utils.boolconverter(secondary.getRawButton(Map.ELEVATOR_CONTROL_BUTTONS[i - 16]));
+		}
+		for (int i = 26; i < 3 + 26; i++) {
+			io_inputs[i] = Utils.boolconverter(secondary.getRawButton(Map.ALIGNER_STAGE[i - 26]));
+		}
 
-		return relevant_inputs;
+		return io_inputs;
 	}
 
 }

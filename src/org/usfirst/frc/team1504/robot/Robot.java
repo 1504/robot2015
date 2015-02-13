@@ -111,9 +111,9 @@ public class Robot extends SampleRobot {
 
     }
     
-    /**
-     * Runs the motors with tank steering, also asking for 54 CAN requests, and finally printing out all sorts of knowledge.
-     */
+//    public void autonomous() {
+//    	
+//    }
     
     public void operatorControl() {
        // myRobot.setSafetyEnabled(true);
@@ -139,10 +139,6 @@ public class Robot extends SampleRobot {
         log.stop();
     }
     
-    //public void autonomous() {
-    //drive forward (use timer for delay)
-    //pickup bin from center platform
-    //pickup tote
-    //}
+
 
 }

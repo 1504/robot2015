@@ -2,7 +2,6 @@ package org.usfirst.frc.team1504.robot;
 
 import edu.wpi.first.wpilibj.CANTalon;
 
-
 public class Drive extends Loggable {
 	private static DriveThreadClass DriveThread;
 
@@ -15,6 +14,8 @@ public class Drive extends Loggable {
 	double backleft_val;
 	double backright_val;
 	double frontright_val;
+
+	double rotation_offset;
 
 	double[] dircns;
 
@@ -81,13 +82,17 @@ public class Drive extends Loggable {
 
 		public void run() {
 			while (isRunning) {
-				dircns = IO.mecanum_input(); //get y, x w
-				
-				dircns = detents(dircns); //manipulate
-				
-				outputCompute(dircns);//calculate for motors
-				
-				motorOutput();//set
+				dircns = IO.mecanum_input(); // get y, x w
+
+				dircns = detents(dircns); // manipulate
+
+				set_front(IO.front_side_check());
+
+				dircns = front_side(dircns); // checks for pressed buttons;
+
+				outputCompute(dircns);// calculate for motors
+
+				motorOutput();// set
 			}
 		}
 
@@ -96,24 +101,60 @@ public class Drive extends Loggable {
 		}
 
 	}
-	 protected double[] detents(double[] dircn)
-	    {
 
-	        double theta = Math.atan2(dircn[0], dircn[1]);
+	protected double[] detents(double[] dircn) {
 
-	        double dx = correct_x(theta) * distance(dircn[1], dircn[0]) * 0.25;
-	        double dy = correct_y(theta) * distance(dircn[1], dircn[0]) * 0.25;
+		double theta = Math.atan2(dircn[0], dircn[1]);
 
-	        double[] detented = new double[3];
-	        
-	        detented[0] = dircn[0] + dy; //y
-	        detented[1] = dircn[1] + dx; //x
-	        detented[2] = dircn[2];//angular
-	        
-	        return detented;
-	    }
-		private double correct_x(double theta){return -Math.sin(theta) * (-Math.sin(8*theta) - 0.25 * Math.sin(4*theta));}
-		private double correct_y(double theta){return Math.cos(theta) * (-Math.sin(8*theta) - 0.25 * Math.sin(4*theta));}
-		public static double distance(double x, double y){return Math.sqrt(x*x + y*y);}
+		double dx = correct_x(theta) * Utils.distance(dircn[1], dircn[0]) * 0.25;
+		double dy = correct_y(theta) * Utils.distance(dircn[1], dircn[0]) * 0.25;
+
+		double[] detented = new double[3];
+
+		detented[0] = dircn[0] + dy; // y
+		detented[1] = dircn[1] + dx; // x
+		detented[2] = dircn[2];// angular
+
+		return detented;
+	}
+
+	public double[] front_side(double[] dircn) {
+		double[] dir_offset = new double[3];
+		dir_offset[0] = dircn[0] * Math.cos(rotation_offset) + dircn[1] * Math.sin(rotation_offset);
+		dir_offset[1] = dircn[1] * Math.cos(rotation_offset) - dircn[0] * Math.sin(rotation_offset);
+		dir_offset[2] = dircn[2];
+		return dir_offset;
+	}
+
+	public double[] orbit_point(double[] dircn) {
+		double x = 0.0;
+		double y = 1.15;
+		// TODO: IO method for, based on buttons, what the orbit point is (as it
+		// may change for bincapture for easier grip)
+
+		double[] k = { y - 1, y + 1, 1 - x, -1 - x };
+
+		double p = Math.sqrt((k[0] * k[0] + k[2] * k[2]) / 2) * Math.cos((Math.PI / 4) + Math.atan2(k[0], k[2]));
+		double r = Math.sqrt((k[1] * k[1] + k[2] * k[2]) / 2) * Math.cos(-(Math.PI / 4) + Math.atan2(k[1], k[2]));
+		double q = -Math.sqrt((k[1] * k[1] + k[3] * k[3]) / 2) * Math.cos((Math.PI / 4) + Math.atan2(k[1], k[3]));
+
+		double[] corrected = new double[3];
+		corrected[0] = (dircn[2] * r + (dircn[0] - dircn[2]) * q + dircn[0] * p) / (q + p);
+		corrected[1] = (-dircn[2] * r + dircn[1] * q - (-dircn[1] - dircn[2]) * p) / (q + p);
+		corrected[2] = (2 * dircn[2]) / (q + p);
+		return corrected;
+	}
+
+	public void set_front(double rot_offset) {
+		rotation_offset = rot_offset * Math.PI / 180;
+	}
+
+	private double correct_x(double theta) {
+		return -Math.sin(theta) * (-Math.sin(8 * theta) - 0.25 * Math.sin(4 * theta));
+	}
+
+	private double correct_y(double theta) {
+		return Math.cos(theta) * (-Math.sin(8 * theta) - 0.25 * Math.sin(4 * theta));
+	}
 
 }

@@ -83,11 +83,13 @@ public class BinCapture extends Loggable //thread
 	}
 
 	public double[] dump() {
-		double[] bin_values = new double[4];
+		double[] bin_values = new double[5];
 		bin_values[0] = armstate;
 		bin_values[1] = clawstate;
-		bin_values[2] = motor.getOutputCurrent();
-		bin_values[3] = motor.getOutputVoltage();
+		bin_values[2] = motor.getSpeed();
+		bin_values[3] = motor.getOutputCurrent();
+		bin_values[4] = motor.getOutputVoltage();
+		
 		return bin_values;
 	}
 }

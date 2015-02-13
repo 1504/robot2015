@@ -65,10 +65,10 @@ public class Logger {
 	
 	public void write() {
 		// AlignerDump(4)
-		// bincapture(4)
+		// bincapture(5)
 		// Drive(12)
-		// Elevator*
-		// IO Dump(3)
+		// Elevator(7)
+		// IO Dump(29)
 
 		for (Loggable o : classes) {
 			for (double d : o.dump()) {
