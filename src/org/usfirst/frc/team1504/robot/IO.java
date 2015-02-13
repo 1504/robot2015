@@ -47,19 +47,18 @@ public class IO extends Loggable {
 	public static double[] mecanum_input() {
 		double[] dircns = new double[3];
 
-		dircns[0] = Math.pow(leftstick.getRawAxis(Map.JOYSTICK_Y_AXIS), 2);//y
-		dircns[1] = Math.pow(leftstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2);//x
-		dircns[2] = Math.pow(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2);//w
+		dircns[0] = Math.pow(leftstick.getRawAxis(Map.JOYSTICK_Y_AXIS), 2) * Math.signum(leftstick.getRawAxis(Map.JOYSTICK_Y_AXIS));//y
+		dircns[1] = -1.0 * Math.pow(leftstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2) * Math.signum(leftstick.getRawAxis(Map.JOYSTICK_X_AXIS));//x
+		dircns[2] = Math.pow(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2) * Math.signum(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS));//w
 
-		// dircns[0] = copterstick.getRawAxis(Map.JOYSTICK_LEFT_Y_VALUE);
-		// dircns[1] = copterstick.getRawAxis(Map.JOYSTICK_LEFT_X_VALUE);
-		// dircns[2] = copterstick.getRawAxis(Map.JOYSTICK_RIGHT_X_VALUE);
-
+//		 dircns[0] = copterstick.getRawAxis(Map.JOYSTICK_Y_VALUE);
+//		 dircns[1] = copterstick.getRawAxis(Map.JOYSTICK_X_VALUE);
+//		 dircns[2] = copterstick.getRawAxis(Map.JOYSTICK_X_VALUE);
+		
 		for (int i = 0; i < dircns.length - 1; i++) {
 			if (Math.abs(dircns[i]) < Map.JOYSTICK_DEAD_ZONE)
 				dircns[i] = 0.0;
 		}
-
 		return dircns;
 	}
 
@@ -86,7 +85,7 @@ public class IO extends Loggable {
 	}
 
 	public static double elevator_manual() {
-		return Math.pow(secondary.getRawAxis(Map.JOYSTICK_Y_AXIS), 2);
+		return Math.pow(secondary.getRawAxis(Map.JOYSTICK_Y_AXIS), 2) * Math.signum(secondary.getRawAxis(Map.JOYSTICK_Y_AXIS));
 	}
 
 	public static boolean elevator_manual_toggle() {
@@ -113,10 +112,13 @@ public class IO extends Loggable {
 		return button;
 	}
 
-	public static boolean aligner_manual_toggle() {
-		return secondary.getRawButton(Map.ALIGNER_MANUAL_TOGGLE_BUTTON);
+	public static boolean bincap_manual_toggle() {
+		return secondary.getRawButton(Map.BIN_CAPTURE_MANUAL_TOGGLE_BUTTON);
 	}
 	
+	public static double bincap_manual() {
+		return Math.pow(secondary.getRawAxis(Map.JOYSTICK_Y_AXIS), 2) * Math.signum(secondary.getRawAxis(Map.JOYSTICK_Y_AXIS));
+	}
 	public static boolean[] alignerButtons() {
 		boolean[] stuff = new boolean[3];
 		for (int i = 0; i < stuff.length; i++) {

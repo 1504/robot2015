@@ -84,11 +84,11 @@ public class Drive extends Loggable {
 			while (isRunning) {
 				dircns = IO.mecanum_input(); // get y, x w
 
-				dircns = detents(dircns); // manipulate
+//				dircns = detents(dircns); // manipulate
 
-				set_front(IO.front_side_check());
+//				set_front(IO.front_side_check());
 
-				dircns = front_side(dircns); // checks for pressed buttons;
+//				dircns = front_side(dircns); // checks for pressed buttons;
 
 				outputCompute(dircns);// calculate for motors
 

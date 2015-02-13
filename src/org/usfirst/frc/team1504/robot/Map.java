@@ -59,15 +59,15 @@ public class Map {
 
 	// DigitalInput
 	public static final int ELEVATOR_DIGITAL_INPUT_PORT = 0;
-	public static final double JOYSTICK_DEAD_ZONE = .15;
+	public static final double JOYSTICK_DEAD_ZONE = .1;
 
 	// Secondary Buttons
-	public static final int BIN_CAPTURE_CLAW_TOGGLE_BUTTON = 2;
-	public static final int BIN_CAPTURE_ARM_TOGGLE_BUTTON = 3;
+	public static final int BIN_CAPTURE_CLAW_TOGGLE_BUTTON = 3;
+	public static final int BIN_CAPTURE_ARM_TOGGLE_BUTTON = 2;
 	
-	public static final int ALIGNER_MANUAL_TOGGLE_BUTTON = 8;
+	public static final int BIN_CAPTURE_MANUAL_TOGGLE_BUTTON = 8;
 	public static final int ELEVATOR_MANUAL_TOGGLE_BUTTON = 1;
-	public static final int[] ELEVATOR_CONTROL_BUTTONS = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }; // up,down, length = 10
+	public static final int[] ELEVATOR_CONTROL_BUTTONS = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }; // up,down, length = 10
 	public static final int ELEVATOR_RETRACTED_MODE_BUTTON = 12;
 	public static final int ELEVATOR_TOTE_MODE_BUTTON = 13;
 	public static final int ELEVATOR_BIN_MODE_BUTTON = 14;

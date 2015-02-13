@@ -57,7 +57,7 @@ public class Robot extends SampleRobot {
         	drive = (Drive) classes[2];
         	elevator = (Elevator) classes[3];
         	io = (IO) classes[4];
-        			
+
         	pdp = new PowerDistributionPanel();
         	
         	timer = new Timer();
@@ -65,19 +65,23 @@ public class Robot extends SampleRobot {
         	pcm = new Compressor();
         	
         	accelerometer = new BuiltInAccelerometer();
+        	
+        	drive.start();
+           	elevator.start();
+
     }
     
-    public void autonomous() {
-    	
-    }
+//    public void autonomous() {
+//    	
+//    }
     
     public void operatorControl() {
-    	log.start("O");
-    	aligner.start();
-    	capture.start();
-    	drive.start();
-    	elevator.start();
-    	io.startmouse();
+       	log.start("O");
+       	aligner.start();
+       	capture.start();
+       	//drive.start();
+//       	elevator.start();
+       	io.startmouse();
     	System.out.println(System.getProperty("user.name"));
         while (isOperatorControl() && isEnabled()) { 
 

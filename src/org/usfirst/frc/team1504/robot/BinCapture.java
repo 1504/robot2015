@@ -71,10 +71,10 @@ public class BinCapture extends Loggable //thread
 		protected boolean run = true;
 		public void start() {
 			while (run) {
-				isManual = IO.aligner_manual_toggle();
+				isManual = IO.bincap_manual_toggle();
 				if (isManual) {
-					if (IO.aligner_manual_toggle()) {
-						manual(IO.elevator_manual());
+					if (IO.bincap_manual_toggle()) {
+						manual(IO.bincap_manual());
 					} else {
 						manual(0.0);
 					}

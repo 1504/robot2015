@@ -13,7 +13,7 @@ import java.util.Timer;
 
 public class Logger {
 	
-	OperatingSystemMXBean sysMX;
+//	OperatingSystemMXBean sysMX;
 	private static LoggerThreadClass loggerThread;
 
 	Timer timer;
@@ -27,7 +27,7 @@ public class Logger {
 		calendar = new GregorianCalendar();
 		timer = new Timer();
 		this.classes = classes;
-		sysMX = /*(OperatingSystemMXBean)*/ ManagementFactory.getOperatingSystemMXBean();
+//		sysMX = /*(OperatingSystemMXBean)*/ ManagementFactory.getOperatingSystemMXBean();
 	}
 
 	public void start(String prefix) {
@@ -57,11 +57,11 @@ public class Logger {
 		loggerThread.cancel();
 	}
 	
-	public double getCPUPercent()
-	{
-		return ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage()/2;
-		//return sysMX.getProcessCPULoad();
-	}
+//	public double getCPUPercent()
+//	{
+////		return ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage()/2;
+//		//return sysMX.getProcessCPULoad();
+//	}
 	
 	public void write() {
 		// AlignerDump(4)
