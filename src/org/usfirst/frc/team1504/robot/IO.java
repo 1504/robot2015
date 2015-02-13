@@ -91,7 +91,6 @@ public class IO extends Loggable {
 
 	public static boolean elevator_manual_toggle() {
 		return secondary.getRawButton(Map.ELEVATOR_MANUAL_TOGGLE_BUTTON);
-		// return true;
 	}
 
 	public static int elevator_mode() {
@@ -112,6 +111,10 @@ public class IO extends Loggable {
 			button[i] = secondary.getRawButton(Map.ELEVATOR_CONTROL_BUTTONS[i]);
 		}
 		return button;
+	}
+
+	public static boolean aligner_manual_toggle() {
+		return secondary.getRawButton(Map.ALIGNER_MANUAL_TOGGLE_BUTTON);
 	}
 	
 	public static boolean[] alignerButtons() {
@@ -360,8 +363,6 @@ public class IO extends Loggable {
 
 		}
 	}
-
-
 
 	public double[] dump() {
 		double[] io_inputs = new double[29];

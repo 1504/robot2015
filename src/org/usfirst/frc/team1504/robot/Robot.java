@@ -8,10 +8,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
-import edu.wpi.first.wpilibj.CANTalon;
-//import edu.wpi.first.wpilibj.RobotBase;
-//import edu.wpi.first.wpilibj.can.CANNotInitializedException;
-//import edu.wpi.first.wpilibj.command.PrintCommand;
 
 
 /**
@@ -41,31 +37,6 @@ public class Robot extends SampleRobot {
     
     BuiltInAccelerometer accelerometer;
     
-    
-    //Talons
-    CANTalon frontleft;
-    double fl_current;
-    
-    CANTalon backleft;
-    double bl_current;
-    
-    CANTalon backright;
-    double br_current;
-    
-    CANTalon frontright;
-    double fr_current;
-    
-    
-//CAN Request things
-//    double current_backright;
-//    double current_backleft;
-//    double current_frontleft;
-//    double current_frontright;
-//    int backright_channel;
-//    int backleft_channel;
-//    int frontleft_channel;
-//    int frontright_channel;
-
 
     public Robot() {
 //        	myRobot = new RobotDrive(0, 1, 2, 3); //frontleft, backleft, frontright, backright
@@ -94,25 +65,19 @@ public class Robot extends SampleRobot {
         	pcm = new Compressor();
         	
         	accelerometer = new BuiltInAccelerometer();
-        	
-        	frontleft = new CANTalon(10);
-        	backleft = new CANTalon(11);
-        	backright = new CANTalon(12);
-        	frontright = new CANTalon(13);
-        	log.start("O");
-        	aligner.start();
-        	capture.start();
-        	drive.start();
-        	elevator.start();
-        	io.startmouse();
-
     }
     
-//    public void autonomous() {
-//    	
-//    }
+    public void autonomous() {
+    	
+    }
     
     public void operatorControl() {
+    	log.start("O");
+    	aligner.start();
+    	capture.start();
+    	drive.start();
+    	elevator.start();
+    	io.startmouse();
     	System.out.println(System.getProperty("user.name"));
         while (isOperatorControl() && isEnabled()) { 
 

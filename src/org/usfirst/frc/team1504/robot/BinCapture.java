@@ -21,7 +21,7 @@ public class BinCapture extends Loggable //thread
 	boolean armtoggle;
 	boolean clawtoggle;
 
-
+	boolean isManual;
 	public BinCapture() {
 
 		BinCap = new BinCaptureThread();
@@ -33,6 +33,8 @@ public class BinCapture extends Loggable //thread
 
 		armtoggle = false;
 		clawtoggle = false;
+		
+		isManual = false;
 	}
 
 	public void start() {
@@ -69,6 +71,14 @@ public class BinCapture extends Loggable //thread
 		protected boolean run = true;
 		public void start() {
 			while (run) {
+				isManual = IO.aligner_manual_toggle();
+				if (isManual) {
+					if (IO.aligner_manual_toggle()) {
+						manual(IO.elevator_manual());
+					} else {
+						manual(0.0);
+					}
+
 				if (IO.bincapture_input()[0]) {
 					extend();
 				} else {
@@ -82,6 +92,10 @@ public class BinCapture extends Loggable //thread
 			}
 		}
 	}
+}
+		private void manual(double y) {
+			motor.set(y);
+		}
 
 	public double[] dump() {
 		double[] bin_values = new double[5];
