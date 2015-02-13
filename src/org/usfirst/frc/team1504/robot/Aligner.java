@@ -49,7 +49,7 @@ public class Aligner extends Loggable {
 			break;
 		case 2: // closed
 			stage_1.set(DoubleSolenoid.Value.kForward);
-			stage_2.set(false);
+			stage_2.set(true);
 			clawStage = 2;
 			break;
 		default:
