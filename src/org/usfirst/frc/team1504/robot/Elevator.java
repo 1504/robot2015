@@ -16,7 +16,7 @@ public class Elevator extends Loggable { // thread
 	Servo servo_1;
 	Servo servo_2;
 	CANTalon elevatorMotor;
-	ElevatorThreadClass elevator = new ElevatorThreadClass();
+	ElevatorThreadClass elevator;
 	PIDController elevatorPID;
 	Counter hallCounter;
 	// HallHandlerClass handler;
@@ -27,6 +27,8 @@ public class Elevator extends Loggable { // thread
 	protected boolean isManual;
 
 	public Elevator() {
+		elevator = new ElevatorThreadClass();
+		
 		// handler = new HallHandlerClass();
 		hallSensor = new DigitalInput(Map.ELEVATOR_DIGITAL_INPUT_PORT);
 		hallCounter = new Counter(hallSensor);
@@ -118,23 +120,23 @@ public class Elevator extends Loggable { // thread
 					if (IO.elevator_mode() == 0) { // Forks retracted
 						// solenoid retracted, servos up
 						elevatorSolenoid.set(DoubleSolenoid.Value.kReverse);
-						servo_1.setAngle(Map.ELEVATOR_SERVO_OPEN_ANGLE);
-						servo_2.setAngle(Map.ELEVATOR_SERVO_OPEN_ANGLE);
+						servo_1.setAngle(Map.ELEVATOR_SERVO_1_OPEN_ANGLE);
+						servo_2.setAngle(Map.ELEVATOR_SERVO_2_OPEN_ANGLE);
 					}
 
 					else if (IO.elevator_mode() == 1) { // Tote pickup
 						// solenoid exteded, servos down
 						elevatorSolenoid.set(DoubleSolenoid.Value.kForward);
-						servo_1.setAngle(Map.ELEVATOR_SERVO_DOWN_ANGLE);
-						servo_2.setAngle(Map.ELEVATOR_SERVO_DOWN_ANGLE);
+						servo_1.setAngle(Map.ELEVATOR_SERVO_1_DOWN_ANGLE);
+						servo_2.setAngle(Map.ELEVATOR_SERVO_2_DOWN_ANGLE);
 
 					}
 
 					else if (IO.elevator_mode() == 2) { // Bin pickup
 						// soleoid extended, servos up
 						elevatorSolenoid.set(DoubleSolenoid.Value.kForward);
-						servo_1.setAngle(Map.ELEVATOR_SERVO_OPEN_ANGLE);
-						servo_2.setAngle(Map.ELEVATOR_SERVO_OPEN_ANGLE);
+						servo_1.setAngle(Map.ELEVATOR_SERVO_1_OPEN_ANGLE);
+						servo_2.setAngle(Map.ELEVATOR_SERVO_2_OPEN_ANGLE);
 					}
 					// PID();
 					manual(0);
@@ -149,6 +151,10 @@ public class Elevator extends Loggable { // thread
 		public void stopElevator() {
 			isRunning = false;
 		}
+	}
+	public int get_elevator_level()
+	{
+		return hallCounter.get();
 	}
 	public double[] dump()
 	{

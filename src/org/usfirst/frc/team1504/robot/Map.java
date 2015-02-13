@@ -30,27 +30,28 @@ public class Map {
 	public static final int FRONT_SIDE_LEFT = 4;
 
 	// Tote Aligner Solenoids
-	public static final int STAGE_ONE_SOLENOID_FORWARD_PORT = 0;
-	public static final int STAGE_ONE_SOLENOID_REVERSE_PORT = 1;
-	public static final int STAGE_TWO_SOLENOID_FORWARD_PORT = 2;
-	public static final int STAGE_TWO_SOLENOID_REVERSE_PORT = 3;
+	public static final int STAGE_ONE_SOLENOID_FORWARD_PORT = 6;
+	public static final int STAGE_ONE_SOLENOID_REVERSE_PORT = 7;
+	public static final int STAGE_TWO_SOLENOID_PORT = 5;
 
 	// Elevator Solenoids
-	public static final int ELEVATOR_SOLENOID_FORWARD_PORT = 4;
-	public static final int ELEVATOR_SOLENOID_REVERSE_PORT = 5;
+	public static final int ELEVATOR_SOLENOID_FORWARD_PORT = 3;
+	public static final int ELEVATOR_SOLENOID_REVERSE_PORT = 4;
 
-	// Tote Grabber Solenoids
-	public static final int EXTEND_SOLENOID_FORWARD_PORT = 6;
-	public static final int EXTEND_SOLENOID_REVERSE_PORT = 7;
-	public static final int CLAW_SOLENOID_FORWARD_PORT = 8;
-	public static final int CLAW_SOLENOID_REVERSE_PORT = 9;
+	// Bin Capture Solenoids
+	public static final int EXTEND_SOLENOID_FORWARD_PORT = 0;
+	public static final int EXTEND_SOLENOID_REVERSE_PORT = 1;
+	public static final int CLAW_SOLENOID_PORT = 2;
 
 	// Servos
 	public static final int ELEVATOR_SERVO_ONE_PORT = 0;
 	public static final int ELEVATOR_SERVO_TWO_PORT = 1;
 
-	public static final int ELEVATOR_SERVO_OPEN_ANGLE = 0;
-	public static final int ELEVATOR_SERVO_DOWN_ANGLE = 0;
+	public static final int ELEVATOR_SERVO_1_OPEN_ANGLE = 0;
+	public static final int ELEVATOR_SERVO_1_DOWN_ANGLE = 0;
+
+	public static final int ELEVATOR_SERVO_2_OPEN_ANGLE = 0;
+	public static final int ELEVATOR_SERVO_2_DOWN_ANGLE = 0;
 
 	// setpoint down and up (random)
 	public static final double SET_POINT_UP = 1.4;

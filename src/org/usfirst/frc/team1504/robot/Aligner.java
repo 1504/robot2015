@@ -2,28 +2,38 @@ package org.usfirst.frc.team1504.robot;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
 
 public class Aligner extends Loggable {
 	// Solenoids
 	DoubleSolenoid stage_1;
-	DoubleSolenoid stage_2;
+	Solenoid stage_2;
 	protected int clawStage;
 
 	// Talon
 	CANTalon align;
+	
+	AlignerThreadClass aligner;
 
 	public Aligner() {
+		aligner = new AlignerThreadClass();
+		
 		stage_1 = new DoubleSolenoid(Map.STAGE_ONE_SOLENOID_FORWARD_PORT, Map.STAGE_ONE_SOLENOID_REVERSE_PORT);
-		stage_2 = new DoubleSolenoid(Map.STAGE_TWO_SOLENOID_FORWARD_PORT, Map.STAGE_TWO_SOLENOID_REVERSE_PORT);
+		stage_2 = new Solenoid(Map.STAGE_TWO_SOLENOID_PORT);
 
 		align = new CANTalon(Map.ALIGNER_TALON_PORT);
 	}
 
+	public void start()
+	{
+		aligner.start();
+	}
+	
 	protected void setPosition(int position) {
 		switch (position) {
 		case 0: // open
 			stage_1.set(DoubleSolenoid.Value.kReverse);
-			stage_2.set(DoubleSolenoid.Value.kReverse);
+			stage_2.set(false);
 			clawStage = 0;
 			break;
 		case 1: // almost closed
@@ -34,12 +44,12 @@ public class Aligner extends Loggable {
 			}
 
 			stage_1.set(DoubleSolenoid.Value.kForward);
-			stage_2.set(DoubleSolenoid.Value.kReverse);
+			stage_2.set(false);
 			clawStage = 1;
 			break;
 		case 2: // closed
 			stage_1.set(DoubleSolenoid.Value.kForward);
-			stage_2.set(DoubleSolenoid.Value.kForward);
+			stage_2.set(false);
 			clawStage = 2;
 			break;
 		default:
@@ -77,6 +87,7 @@ public class Aligner extends Loggable {
 		return motor;
 	}
 
+	
 	private class AlignerThreadClass extends Thread {
 		protected boolean isRunning = true;
 		protected boolean[] buttons;
@@ -94,7 +105,7 @@ public class Aligner extends Loggable {
 			}
 		}
 
-		public void stopMecanum() {
+		public void stopAligner() {
 			isRunning = false;
 		}
 

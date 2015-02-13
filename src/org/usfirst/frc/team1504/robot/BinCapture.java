@@ -3,15 +3,16 @@ package org.usfirst.frc.team1504.robot;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.Solenoid;
 
 public class BinCapture extends Loggable //thread
 {
-	private static BinCaptureClass BinCap;
+	private static BinCaptureThread BinCap;
 
 	CANTalon motor;
 
 	DoubleSolenoid arm;
-	DoubleSolenoid claw;
+	Solenoid claw;
 
 	//retracted = 0; extended = 1
 	double armstate;
@@ -23,12 +24,12 @@ public class BinCapture extends Loggable //thread
 
 	public BinCapture() {
 
-		BinCap = new BinCaptureClass();
+		BinCap = new BinCaptureThread();
 
 		motor = new CANTalon(Map.BIN_CAPTURE_TALON_PORT);
 
-//		arm = new DoubleSolenoid(Map.EXTEND_SOLENOID_FORWARD_PORT, Map.EXTEND_SOLENOID_REVERSE_PORT);
-//		claw = new DoubleSolenoid(Map.CLAW_SOLENOID_FORWARD_PORT, Map.CLAW_SOLENOID_REVERSE_PORT);
+		arm = new DoubleSolenoid(Map.EXTEND_SOLENOID_FORWARD_PORT, Map.EXTEND_SOLENOID_REVERSE_PORT);
+		claw = new Solenoid(Map.CLAW_SOLENOID_PORT);
 
 		armtoggle = false;
 		clawtoggle = false;
@@ -53,18 +54,18 @@ public class BinCapture extends Loggable //thread
 	}
 
 	public void grab() {
-		if (claw.get() == DoubleSolenoid.Value.kForward && !clawtoggle) {
-			claw.set(DoubleSolenoid.Value.kReverse);
+		if (claw.get() == true && !clawtoggle) {
+			claw.set(false);
 			clawtoggle = true;
 			clawstate=0;
 		}
-		if (claw.get() == DoubleSolenoid.Value.kReverse && !clawtoggle) {
-			claw.set(DoubleSolenoid.Value.kForward);
+		if (claw.get() == false && !clawtoggle) {
+			claw.set(true);
 			clawtoggle = true;
 			clawstate=1;
 		}
 	}
-	private class BinCaptureClass extends Thread {
+	private class BinCaptureThread extends Thread {
 		protected boolean run = true;
 		public void start() {
 			while (run) {

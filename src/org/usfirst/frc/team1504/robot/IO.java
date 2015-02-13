@@ -3,6 +3,8 @@ package org.usfirst.frc.team1504.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SerialPort.Port;
+import edu.wpi.first.wpilibj.DriverStation;
+
 
 public class IO extends Loggable {
 
@@ -13,6 +15,7 @@ public class IO extends Loggable {
 	boolean is_mouse_enabled;
 
 	SerialPort arduino;
+	DriverStation driverstation;
 	Port kOnboard;
 	byte[] buffer;
 	byte[] arduinoOutput;
@@ -44,9 +47,9 @@ public class IO extends Loggable {
 	public static double[] mecanum_input() {
 		double[] dircns = new double[3];
 
-		dircns[0] = Math.pow(leftstick.getRawAxis(Map.JOYSTICK_Y_AXIS), 2);
-		dircns[1] = Math.pow(leftstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2);
-		dircns[2] = Math.pow(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2);
+		dircns[0] = Math.pow(leftstick.getRawAxis(Map.JOYSTICK_Y_AXIS), 2);//y
+		dircns[1] = Math.pow(leftstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2);//x
+		dircns[2] = Math.pow(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2);//w
 
 		// dircns[0] = copterstick.getRawAxis(Map.JOYSTICK_LEFT_Y_VALUE);
 		// dircns[1] = copterstick.getRawAxis(Map.JOYSTICK_LEFT_X_VALUE);
@@ -110,6 +113,14 @@ public class IO extends Loggable {
 		}
 		return button;
 	}
+	
+	public static boolean[] alignerButtons() {
+		boolean[] stuff = new boolean[3];
+		for (int i = 0; i < stuff.length; i++) {
+			stuff[i] = secondary.getRawButton(Map.ALIGNER_STAGE[i]);
+		}
+		return stuff;
+	}
 
 	public void startmouse() {
 		IOThread thread = new IOThread();
@@ -117,14 +128,229 @@ public class IO extends Loggable {
 		is_mouse_enabled = true;
 	}
 	
+	public byte setBit(byte a, int pos)
+	{
+		a = (byte) (a | (1 << pos));
+		return a;
+	}
+	
 	private class IOThread extends Thread {
-		protected boolean isRunning = true;
+	protected boolean isRunning = true;
+	
+	public byte[] bitWrite()
+	{
+		Elevator elev = new Elevator();
+		byte[] infos = new byte[2];
+		infos[0] = 0;
+		infos[1] = 0;
+		double[] dircns = mecanum_input();
+		int elevmode = elevator_mode();
+		int elevlvl = elev.get_elevator_level();
+		double timeelapsed = 135 - driverstation.getMatchTime(); 
 
+//		Byte 1 Bit 7 - Alliance
+//			0 = Red Team
+//			1 = Blue Team
+			if (driverstation.getAlliance() == DriverStation.Alliance.Blue){infos[0] =setBit(infos[0], 7);}
+		
+//		Byte 1 Bit 6-5 - Station
+//		  11 = Station 1
+//		  10 = Station 2
+//		  01 = Station 3
+			switch (driverstation.getLocation())
+			{
+			case 1: //Station 1
+				infos[0] = setBit(infos[0], 6);
+				infos[0] = setBit(infos[0], 5);
+				break;
+			case 2: //Station 2
+				infos[0] = setBit(infos[0], 6);
+				break;
+			case 3: //Station 3
+				infos[0] = setBit(infos[0], 5);
+				break;
+			default:
+				break;
+			}
+			
+//		Byte 1 Bit 4 - Game Mode
+//			1 = Auton
+//			0 = Teleop
+			if (driverstation.isAutonomous())
+				infos[0] = setBit(infos[0], 4);
+			
+//		Byte 1 Bit 3-2 - X-Direction
+//		  11 = Right
+//		  10 = Neutral
+//		  01 = Left
+			if (dircns[1] == 0)
+			{
+				infos[0] = setBit(infos[0], 3);
+			}else if (dircns[1] > 0)
+			{
+				infos[0] = setBit(infos[0], 3);
+				infos[0] = setBit(infos[0], 2);
+			}else if (dircns[1] < 0)
+			{
+				infos[0] = setBit(infos[0], 2);
+			}
+			
+//		Byte 1 Bit 1-0 - Y-Direction
+//		  11 = Forward
+//		  10 = Neutral
+//		  01 = Backward
+			if (dircns[0] == 0)
+			{
+				infos[0] = setBit(infos[0], 1);
+			}else if (dircns[0] > 0)
+			{
+				infos[0] = setBit(infos[0], 1);
+				infos[0] = setBit(infos[0], 0);
+			}else if (dircns[0] < 0)
+			{
+				infos[0] = setBit(infos[0], 0);
+			}
+			
+//		Byte 2 Bit 7-6 - Rotation
+//		  10 = Neutral
+//		  11 = CW
+//		  01 = CCW
+			if (dircns[2] == 0)
+			{
+				infos[1] = setBit(infos[0], 7);
+			}else if (dircns[2] > 0)
+			{
+				infos[1] = setBit(infos[0], 7);
+				infos[1] = setBit(infos[0], 6);
+			}else if (dircns[2] < 0)
+			{
+				infos[1] = setBit(infos[0], 6);
+			}
+			
+//		Byte 2 Bit 5-3 - Elevator Level
+//		  100 = 0
+//		  010 = 1
+//		  011 = 2
+//		  110 = 3
+//		  111 = 4
+//		  001 = 5
+//		  000 = 6
+			switch(elevmode)
+			{
+			case 0: //fork retracted
+				infos[1] = setBit(infos[1], 5);
+				break;
+			case 1: //tote mode
+				switch(elevlvl)
+				{
+				case 0: 
+					infos[1] = setBit(infos[1], 5); 
+					break;
+				case 1:
+					infos[1] = setBit(infos[1], 4); 
+					break;
+				case 2: 
+					infos[1] = setBit(infos[1], 4);
+					infos[1] = setBit(infos[1], 3);
+					break;
+				case 3:
+					infos[1] = setBit(infos[1], 5);
+					infos[1] = setBit(infos[1], 4);
+					break;
+				case 4:
+					infos[1] = setBit(infos[1], 5);
+					infos[1] = setBit(infos[1], 4);
+					infos[1] = setBit(infos[1], 3);
+					break;
+				case 5:
+					infos[1] = setBit(infos[1], 3);
+					break;
+				case 6:
+					break;
+				default:
+					break;
+				}
+			case 2://bin mode
+				switch(elevlvl)
+				{
+				case 0: 
+					infos[1] = setBit(infos[1], 5); 
+					break;
+				case 1:
+					infos[1] = setBit(infos[1], 4); 
+					break;
+				case 2: 
+					infos[1] = setBit(infos[1], 4);
+					infos[1] = setBit(infos[1], 3);
+					break;
+				case 3:
+					infos[1] = setBit(infos[1], 5);
+					infos[1] = setBit(infos[1], 4);
+					break;
+				case 4:
+					infos[1] = setBit(infos[1], 5);
+					infos[1] = setBit(infos[1], 4);
+					infos[1] = setBit(infos[1], 3);
+					break;
+				case 5:
+					infos[1] = setBit(infos[1], 3);
+					break;
+				case 6:
+					break;
+				default:
+					break;
+				}
+			default:
+				break;
+			}
+//		Byte 2 Bit 2-0 - Current Time
+//		  000 = 0
+//		  010 = 15
+//		  011 = 35
+//		  110 = 55
+//		  111 = 75
+//		  001 = 90
+//		  100 = 105
+//		  101 = 120
+			if(!driverstation.isAutonomous())
+			{
+				if (timeelapsed == 15)
+				{
+					infos[1] = setBit(infos[1], 1);
+				} else if (timeelapsed == 35)
+				{
+					infos[1] = setBit(infos[1], 1);
+					infos[1] = setBit(infos[1], 0);
+				} else if (timeelapsed == 55)
+				{
+					infos[1] = setBit(infos[1], 2);
+					infos[1] = setBit(infos[1], 1);
+				} else if (timeelapsed == 75)
+				{
+					infos[1] = setBit(infos[1], 2);
+					infos[1] = setBit(infos[1], 1);
+				} else if (timeelapsed == 90)
+				{
+					infos[1] = setBit(infos[1], 2);
+					infos[1] = setBit(infos[1], 1);
+					infos[1] = setBit(infos[1], 0);
+				} else if (timeelapsed == 105)
+				{
+					infos[1] = setBit(infos[1], 2);
+				} else if (timeelapsed == 120)
+				{
+					infos[1] = setBit(infos[1], 2);
+					infos[1] = setBit(infos[1], 0);
+				}
+			}	
+		return infos;
+	}
+	
 		public void run() {
 			while (isRunning) {
-				buffer[0] = 0;
-				buffer[1] = 1;
-				arduino.write(buffer, 2); //For detailed information on the bits that we're writing, go to bitstosendtoarduino.jpg in Pictures
+				
+				buffer = bitWrite();
+				arduino.write(buffer, 2);
 				arduinoOutput = arduino.read(9); //0-2: x,y,SQUAL of left sensor; 3-5: x,y,SQUAL of right sensor; 6-8: x,y,z from magnetometer
 			}
 		}
@@ -135,13 +361,7 @@ public class IO extends Loggable {
 		}
 	}
 
-	public static boolean[] alignerButtons() {
-		boolean[] stuff = new boolean[3];
-		for (int i = 0; i < stuff.length; i++) {
-			stuff[i] = secondary.getRawButton(Map.ALIGNER_STAGE[i]);
-		}
-		return stuff; // shenanigans
-	}
+
 
 	public double[] dump() {
 		double[] io_inputs = new double[29];

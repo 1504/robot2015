@@ -99,15 +99,12 @@ public class Robot extends SampleRobot {
         	backleft = new CANTalon(11);
         	backright = new CANTalon(12);
         	frontright = new CANTalon(13);
-        	drive.start();
         	log.start("O");
+        	aligner.start();
+        	capture.start();
+        	drive.start();
         	elevator.start();
-
-//For CAN Requests        	
-// 	   		backright_channel = 12; //motor 3
-//  	  	backleft_channel = 13; //motor 1
-//    		frontleft_channel = 14; //motor 0
-//    		frontright_channel = 15; //motor 2
+        	io.startmouse();
 
     }
     
@@ -116,29 +113,9 @@ public class Robot extends SampleRobot {
 //    }
     
     public void operatorControl() {
-       // myRobot.setSafetyEnabled(true);
-//    	log.start("O");
     	System.out.println(System.getProperty("user.name"));
-    	timer.start();
         while (isOperatorControl() && isEnabled()) { 
-        	
-//        	myRobot.tankDrive(leftStick, rightStick);
-//            Timer.delay(0.005);		// wait for a motor update time        	
-        	
-        	
-        	fl_current = frontleft.getOutputCurrent();
-        	bl_current = backleft.getOutputCurrent();
-        	br_current = backright.getOutputCurrent();
-        	fr_current = frontright.getOutputCurrent();
-        	
-        	//System.out.println("Current: " + fl_current + bl_current + br_current + fr_current);
-        	
-        	timer.reset();
+
         }
-//        drive.stop();
-        log.stop();
     }
-    
-
-
 }
