@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="ASCII"?>
+<Map>
+	<Inputs>
+			<Copterstick>
+				<Deadzone>.1</Deadzone>
+				<LYAXIS>1</LYAXIS>
+				<LXAXIS>0</LXAXIS>
+				<RYAXIS>2</RYAXIS>
+				<RXAXIS>3</RXAXIS>
+			</Copterstick>
+			<Left>
+				<Deadzone>.1</Deadzone>
+				<YAXIS>1</YAXIS>
+				<XAXIS>0</XAXIS>
+			</Left>
+			<Right>
+			<Deadzone>.1</Deadzone>
+				<YAXIS>1</YAXIS>
+				<XAXIS>0</XAXIS>
+			</Right>
+			<Secondary>
+			<Deadzone>.1</Deadzone>
+				<YAXIS>1</YAXIS>
+				<XAXIS>0</XAXIS>
+				<ZAXIS>2</ZAXIS>
+			</Secondary>
+		</Inputs>
+	<Drive>
+		<Ports>
+			<FL>10</FL>
+			<FR>13</FR>
+			<BL>11</BL>
+			<BR>12</BR>
+		</Ports>
+		<Controls>
+			<FrontSide>
+				<BinCap>[2,6]</BinCap>
+				<Right>5</Right>
+				<Elevator>[3,11]</Elevator>
+				<Left>4</Left>
+			</FrontSide>
+		</Controls>
+	</Drive>
+	<Aligner>
+		<Port>20</Port>
+		<Pneumatics>
+			<StageOne>
+				<ForwardPort>6</ForwardPort>
+				<ReversePort>7</ReversePort>
+			</StageOne>
+			<StageTwo>
+				<Port>5</Port>
+			</StageTwo>
+		</Pneumatics>
+		<Controls>
+			<Open>12</Open>
+			<Partial>10</Partial>
+			<Closed>8</Closed>
+		</Controls>
+	</Aligner>
+	<Elevator>
+		<ForwardPort type="solenoid">3</ForwardPort>
+		<ReversePort type="solenoid">4</ReversePort>
+		<Tabs>
+			<Right>
+				<Port type="servo">0</Port>
+				<Setpoints>
+					<Open>170</Open>
+					<Close>0</Close>
+				</Setpoints>
+			</Right>
+			<Left>
+				<Port type="servo">1</Port>
+				<Setpoints>
+					<Open>10</Open>
+					<Close>180</Close>
+				</Setpoints>
+			</Left>
+		</Tabs>
+		<BeltMotor>
+			<Port type="talon">30</Port>
+			<UpSpeed>-1</UpSpeed>
+			<DownSpeed>1</DownSpeed>
+			<IdleSpeed>0</IdleSpeed>
+		</BeltMotor>
+		<HallSensor>
+			<Port type="digitalinput">0</Port>
+		</HallSensor>
+		<Controls>
+			<ManualToggle joystick="secondary">1</ManualToggle>
+				<Height joystick="secondary">
+					<LevelOne>2</LevelOne>
+					<LevelOnePlus>3</LevelOnePlus>
+					<LevelTwo>4</LevelTwo>
+					<LevelTwoPlus>5</LevelTwoPlus>
+					<LevelThree>6</LevelThree>
+					<LevelThreePlus>7</LevelThreePlus>
+					<LevelFour>8</LevelFour>
+					<LevelFourPlus>9</LevelFourPlus>
+					<LevelFive>10</LevelFive>
+					<LevelFivePlus>11</LevelFivePlus>
+					<LevelSix>12</LevelSix>
+					<LevelSixPlus>13</LevelSixPlus>
+				</Height>
+			<ForkModes>
+				<Retracted>11</Retracted>
+				<Tote>9</Tote>
+				<Bin>7</Bin>
+			</ForkModes>
+		</Controls>
+	</Elevator>
+	<Capture>
+		<Port type="talon">40</Port>
+		<Arm>
+			<ForwardPort type="solenoid">0</ForwardPort>
+			<ReversePort type="solenoid">1</ReversePort>
+		</Arm>
+		<Claw>
+			<Port type="solenoid">2</Port>
+		</Claw>
+		<Controls>
+			<ClawButton>5</ClawButton>
+			<ArmButton>3</ArmButton>
+			<ManualOverride>2</ManualOverride>
+		</Controls>
+	</Capture>
+</Map>

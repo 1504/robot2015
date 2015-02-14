@@ -36,8 +36,8 @@ public class Elevator extends Loggable { // thread
 		hallCounter.setUpDownCounterMode();
 		hallCounter.setUpSource(hallSensor);// /// may neeed to goooo
 		// befoooore.
-		servo_1 = new Servo(Map.ELEVATOR_SERVO_ONE_PORT);
-		servo_2 = new Servo(Map.ELEVATOR_SERVO_TWO_PORT);
+		servo_1 = new Servo(Map.ELEVATOR_SERVO_LEFT_PORT);
+		servo_2 = new Servo(Map.ELEVATOR_SERVO_RIGHT_PORT);
 		elevatorMotor = new CANTalon(Map.ELEVATOR_TALON_PORT);
 		// hallSensor.enableInterrupts();
 		// hallSensor.requestInterrupts(handler);
@@ -119,24 +119,28 @@ public class Elevator extends Loggable { // thread
 //					useSetPoint();
 					if (IO.elevator_mode() == 0) { // Forks retracted
 						// solenoid retracted, servos up
+						servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE);
+						servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE);
+						try {
+							Thread.sleep(700);
+						} catch (InterruptedException e) {}
 						elevatorSolenoid.set(DoubleSolenoid.Value.kReverse);
-						servo_1.setAngle(Map.ELEVATOR_SERVO_1_OPEN_ANGLE);
-						servo_2.setAngle(Map.ELEVATOR_SERVO_2_OPEN_ANGLE);
 					}
 
 					else if (IO.elevator_mode() == 1) { // Tote pickup
 						// solenoid exteded, servos down
+						servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_DOWN_ANGLE);
+						servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_DOWN_ANGLE);
+						
 						elevatorSolenoid.set(DoubleSolenoid.Value.kForward);
-						servo_1.setAngle(Map.ELEVATOR_SERVO_1_DOWN_ANGLE);
-						servo_2.setAngle(Map.ELEVATOR_SERVO_2_DOWN_ANGLE);
 
 					}
 
 					else if (IO.elevator_mode() == 2) { // Bin pickup
 						// soleoid extended, servos up
+						servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE);
+						servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE);
 						elevatorSolenoid.set(DoubleSolenoid.Value.kForward);
-						servo_1.setAngle(Map.ELEVATOR_SERVO_1_OPEN_ANGLE);
-						servo_2.setAngle(Map.ELEVATOR_SERVO_2_OPEN_ANGLE);
 					}
 					// PID();
 					manual(0);

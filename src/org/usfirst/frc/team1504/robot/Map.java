@@ -37,14 +37,14 @@ public class Map {
 	public static final int CLAW_SOLENOID_PORT = 2;
 
 	// Servos
-	public static final int ELEVATOR_SERVO_ONE_PORT = 0;
-	public static final int ELEVATOR_SERVO_TWO_PORT = 1;
+	public static final int ELEVATOR_SERVO_LEFT_PORT = 0;//left
+	public static final int ELEVATOR_SERVO_RIGHT_PORT = 1;//right
 
-	public static final int ELEVATOR_SERVO_1_OPEN_ANGLE = 0;
-	public static final int ELEVATOR_SERVO_1_DOWN_ANGLE = 0;
+	public static final int ELEVATOR_SERVO_LEFT_OPEN_ANGLE = 10;
+	public static final int ELEVATOR_SERVO_LEFT_DOWN_ANGLE = 180;
 
-	public static final int ELEVATOR_SERVO_2_OPEN_ANGLE = 0;
-	public static final int ELEVATOR_SERVO_2_DOWN_ANGLE = 0;
+	public static final int ELEVATOR_SERVO_RIGHT_OPEN_ANGLE = 170;
+	public static final int ELEVATOR_SERVO_RIGHT_DOWN_ANGLE = 0;
 
 	//Setpoint down and up (random)
 	public static final double SET_POINT_UP = 1.4;
@@ -55,8 +55,8 @@ public class Map {
 	public static final double JOYSTICK_DEAD_ZONE = .1;
 	
 	// Elevator Mode values
-	public static final int ELEVATOR_UP_SPEED = 1;
-	public static final int ELEVATOR_DOWN_SPEED = -1;
+	public static final int ELEVATOR_UP_SPEED = -1;
+	public static final int ELEVATOR_DOWN_SPEED = 1;
 	public static final int ELEVATOR_NONE_SPEED = 0;
 
 	// Primary Driver Buttons, Where ELEVATOR is the front of the robot by default.
@@ -72,6 +72,7 @@ public class Map {
 	
 	public static final int ELEVATOR_MANUAL_TOGGLE_BUTTON = 1;
 	public static final int[] ELEVATOR_CONTROL_BUTTONS = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }; //array.length = 10
+	
 	public static final int ELEVATOR_RETRACTED_MODE_BUTTON = 11;
 	public static final int ELEVATOR_TOTE_MODE_BUTTON = 9;
 	public static final int ELEVATOR_BIN_MODE_BUTTON = 7;

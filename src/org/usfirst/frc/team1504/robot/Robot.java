@@ -44,7 +44,7 @@ public class Robot extends SampleRobot {
 //        	myRobot.setExpiration(0.1);
 //        	leftStick = new Joystick(0);
 //        	rightStick = new Joystick(1);
-        	
+    		MapXML map = new MapXML();
         	classes = new Loggable[5];
         	classes[0] = new Aligner();
         	classes[1] = new BinCapture();
@@ -87,8 +87,12 @@ public class Robot extends SampleRobot {
     		drive.frontleft.set(-.5);
     		drive.frontright.set(.5);
     	}
+    	drive.backleft.set(0);
+		drive.backright.set(0);
+		drive.frontleft.set(0);
+		drive.frontright.set(0);
     	
-//    	//Pickup a YELLOW TOTE, and track to the right for 5 seconds, into the AUTO ZONE with the TOTE.
+//    	//Pickup a YELLOW TOTE, and track to the right for .5 seconds, into the AUTO ZONE with the TOTE.
 //    	while(Math.abs(System.currentTimeMillis() - time) <= 15000)
 //    	{
 //    		elevator.setPoint = 2;
