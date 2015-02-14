@@ -46,7 +46,7 @@ public class Map {
 	public static final int ELEVATOR_SERVO_2_OPEN_ANGLE = 0;
 	public static final int ELEVATOR_SERVO_2_DOWN_ANGLE = 0;
 
-	// setpoint down and up (random)
+	//Setpoint down and up (random)
 	public static final double SET_POINT_UP = 1.4;
 	public static final double SET_POINT_DOWN = 0.6;
 
@@ -59,8 +59,7 @@ public class Map {
 	public static final int ELEVATOR_DOWN_SPEED = -1;
 	public static final int ELEVATOR_NONE_SPEED = 0;
 
-	// Primary Driver Buttons, Where ELEVATOR is the front of the robot by
-	// default.
+	// Primary Driver Buttons, Where ELEVATOR is the front of the robot by default.
 	public static final int[] FRONT_SIDE_BINCAP = {2,6};
 	public static final int FRONT_SIDE_RIGHT = 5;
 	public static final int[] FRONT_SIDE_ELEV = {3,11};
@@ -72,7 +71,7 @@ public class Map {
 	public static final int BIN_CAPTURE_MANUAL_TOGGLE_BUTTON = 2;
 	
 	public static final int ELEVATOR_MANUAL_TOGGLE_BUTTON = 1;
-	public static final int[] ELEVATOR_CONTROL_BUTTONS = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }; // up,down, length = 10
+	public static final int[] ELEVATOR_CONTROL_BUTTONS = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }; //array.length = 10
 	public static final int ELEVATOR_RETRACTED_MODE_BUTTON = 11;
 	public static final int ELEVATOR_TOTE_MODE_BUTTON = 9;
 	public static final int ELEVATOR_BIN_MODE_BUTTON = 7;

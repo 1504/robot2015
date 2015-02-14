@@ -76,6 +76,7 @@ public class Robot extends SampleRobot {
     }
     
     public void autonomous() {
+    	log.start("A");
     	long time = System.currentTimeMillis();
     	
     	//Drive forward for 6 seconds, into the AUTO ZONE
@@ -140,13 +141,15 @@ public class Robot extends SampleRobot {
 //    		}
 //    		
 //    	}
-    	
+    	log.stop();
     }
     
     public void operatorControl() {
        	log.start("O");       	
     	System.out.println(System.getProperty("user.name"));
-        while (isOperatorControl() && isEnabled()) { 
+        while (isOperatorControl() && isEnabled()) 
+        { 
+        
         }
         log.stop();
     }
