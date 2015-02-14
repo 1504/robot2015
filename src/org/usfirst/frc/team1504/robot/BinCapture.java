@@ -67,7 +67,8 @@ public class BinCapture extends Loggable //thread
 			clawstate=1;
 		}
 	}
-	private class BinCaptureThread extends Thread {
+	
+private class BinCaptureThread extends Thread {
 		protected boolean run = true;
 		public void start() {
 			while (run) {
@@ -75,9 +76,11 @@ public class BinCapture extends Loggable //thread
 				if (isManual) {
 					if (IO.bincap_manual_toggle()) {
 						manual(IO.bincap_manual());
-					} else {
+					} 
+				}else {
 						manual(0.0);
-					}
+				}
+				
 
 				if (IO.bincapture_input()[0]) {
 					extend();
@@ -89,7 +92,7 @@ public class BinCapture extends Loggable //thread
 				} else {
 					clawtoggle = false;
 				}
-			}
+			
 		}
 	}
 }

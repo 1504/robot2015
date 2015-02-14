@@ -56,18 +56,18 @@ public class Elevator extends Loggable { // thread
 		elevator.start();
 	}
 
-//	public void useSetPoint() {
-//		if (setPoint < hallCounter.get()) {
-//			elevatorMotor.set(Map.ELEVATOR_DOWN_SPEED); // -1
-//		}
-//
-//		else if (setPoint > hallCounter.get()) {
-//			elevatorMotor.set(Map.ELEVATOR_UP_SPEED); // 1
-//		}
-//
-//		else if (setPoint == hallCounter.get())
-//			elevatorMotor.set(Map.ELEVATOR_NONE_SPEED); // 0
-//	}
+	public void useSetPoint() {
+		if (setPoint < hallCounter.get()) {
+			elevatorMotor.set(Map.ELEVATOR_DOWN_SPEED); // -1
+		}
+
+		else if (setPoint > hallCounter.get()) {
+			elevatorMotor.set(Map.ELEVATOR_UP_SPEED); // 1
+		}
+
+		else if (setPoint == hallCounter.get())
+			elevatorMotor.set(Map.ELEVATOR_NONE_SPEED); // 0
+	}
 
 	private class ElevatorThreadClass extends Thread {
 		protected boolean isRunning = true;
@@ -94,29 +94,29 @@ public class Elevator extends Loggable { // thread
 					}
 
 				} else {
-//					button = IO.elevatorButtonValues();
-//					if (button[0]) {
-//						setPoint = 1;
-//					} else if (button[1]) {
-//						setPoint = 2;
-//					} else if (button[2]) {
-//						setPoint = 3;
-//					} else if (button[3]) {
-//						setPoint = 4;
-//					} else if (button[4]) {
-//						setPoint = 5;
-//					} else if (button[5]) {
-//						setPoint = 6;
-//					} else if (button[6]) {
-//						setPoint = 7;
-//					} else if (button[7]) {
-//						setPoint = 8;
-//					} else if (button[8]) {
-//						setPoint = 9;
-//					} else if (button[9]) {
-//						setPoint = 10;
-//					}
-//					useSetPoint();
+					button = IO.elevatorButtonValues();
+					if (button[0]) {
+						setPoint = 1;
+					} else if (button[1]) {
+						setPoint = 2;
+					} else if (button[2]) {
+						setPoint = 3;
+					} else if (button[3]) {
+						setPoint = 4;
+					} else if (button[4]) {
+						setPoint = 5;
+					} else if (button[5]) {
+						setPoint = 6;
+					} else if (button[6]) {
+						setPoint = 7;
+					} else if (button[7]) {
+						setPoint = 8;
+					} else if (button[8]) {
+						setPoint = 9;
+					} else if (button[9]) {
+						setPoint = 10;
+					}
+					useSetPoint();
 					if (IO.elevator_mode() == 0) { // Forks retracted
 						// solenoid retracted, servos up
 						elevatorSolenoid.set(DoubleSolenoid.Value.kReverse);
@@ -152,10 +152,12 @@ public class Elevator extends Loggable { // thread
 			isRunning = false;
 		}
 	}
+
 	public int get_elevator_level()
 	{
 		return hallCounter.get();
 	}
+
 	public double[] dump()
 	{
 		double[] vals = new double[7];

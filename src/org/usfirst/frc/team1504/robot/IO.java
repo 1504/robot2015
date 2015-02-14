@@ -77,13 +77,6 @@ public class IO extends Loggable {
 		return side;
 	}
 
-	public static boolean[] bincapture_input() {
-		boolean buttons[] = new boolean[2];
-		buttons[0] = secondary.getRawButton(Map.BIN_CAPTURE_ARM_TOGGLE_BUTTON);
-		buttons[1] = secondary.getRawButton(Map.BIN_CAPTURE_CLAW_TOGGLE_BUTTON);
-		return buttons;
-	}
-
 	public static double elevator_manual() {
 		return Math.pow(secondary.getRawAxis(Map.JOYSTICK_Y_AXIS), 2) * Math.signum(secondary.getRawAxis(Map.JOYSTICK_Y_AXIS));
 	}
@@ -119,6 +112,14 @@ public class IO extends Loggable {
 	public static double bincap_manual() {
 		return Math.pow(secondary.getRawAxis(Map.JOYSTICK_Y_AXIS), 2) * Math.signum(secondary.getRawAxis(Map.JOYSTICK_Y_AXIS));
 	}
+	
+	public static boolean[] bincapture_input() {
+		boolean buttons[] = new boolean[2];
+		buttons[0] = secondary.getRawButton(Map.BIN_CAPTURE_ARM_TOGGLE_BUTTON);
+		buttons[1] = secondary.getRawButton(Map.BIN_CAPTURE_CLAW_TOGGLE_BUTTON);
+		return buttons;
+	}
+	
 	public static boolean[] alignerButtons() {
 		boolean[] stuff = new boolean[3];
 		for (int i = 0; i < stuff.length; i++) {

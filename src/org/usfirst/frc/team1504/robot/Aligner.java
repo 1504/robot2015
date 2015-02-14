@@ -86,7 +86,6 @@ public class Aligner extends Loggable {
 		motor[3] = clawStage;
 		return motor;
 	}
-
 	
 	private class AlignerThreadClass extends Thread {
 		protected boolean isRunning = true;
