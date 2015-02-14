@@ -36,13 +36,13 @@ public class Logger {
 		} catch (FileNotFoundException e) {
 			System.out.println("Cannot write to file " + date());
 		}
-		enable();
+//		enable();
 	}
 
 	public void stop() throws java.lang.NullPointerException {
 //		disable();
 		try {
-			disable();
+//			disable();
 			logStream.close();
 		} catch (IOException e) {
 			System.out.println("I can't stop! Help!");
@@ -54,7 +54,8 @@ public class Logger {
 	}
 
 	public void disable() {
-		loggerThread.cancel();
+		loggerThread.canceltimer();
+		loggerThread.stop();
 	}
 	
 //	public double getCPUPercent()
@@ -102,12 +103,12 @@ public class Logger {
 		protected boolean isRunning = true;
 		Timer time = new Timer();
 		Task task = new Task();
-
+		
 		public void run() {
 			time.scheduleAtFixedRate(task, 0, 1000);
 		}
 
-		public void cancel() {
+		public void canceltimer() {
 			time.cancel();
 		}
 
@@ -116,6 +117,7 @@ public class Logger {
 				// write();
 				System.out.println("tick");
 			}
+			
 		}
 
 	}

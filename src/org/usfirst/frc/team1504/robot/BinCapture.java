@@ -29,6 +29,8 @@ public class BinCapture extends Loggable //thread
 		motor = new CANTalon(Map.BIN_CAPTURE_TALON_PORT);
 
 		arm = new DoubleSolenoid(Map.EXTEND_SOLENOID_FORWARD_PORT, Map.EXTEND_SOLENOID_REVERSE_PORT);
+		arm.set(DoubleSolenoid.Value.kForward);
+		
 		claw = new Solenoid(Map.CLAW_SOLENOID_PORT);
 
 		armtoggle = false;
@@ -69,9 +71,9 @@ public class BinCapture extends Loggable //thread
 	}
 	
 private class BinCaptureThread extends Thread {
-		protected boolean run = true;
-		public void start() {
-			while (run) {
+		protected boolean running = true;
+		public void run() {
+			while (running) {
 				isManual = IO.bincap_manual_toggle();
 				if (isManual) {
 					if (IO.bincap_manual_toggle()) {

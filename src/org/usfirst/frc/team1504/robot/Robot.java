@@ -70,8 +70,8 @@ public class Robot extends SampleRobot {
         	drive.start(); //Starts outside because needs to WORK during autonomous.
            	elevator.start(); //Starts outside because needs to WORK during autonomous.
            	aligner.start(); //Starts outside because needs to WORK during autonomous.
-           	capture.start(); //Starts outside because needs to WORK during autonomous.
-           	io.startmouse(); //Starts outside because needs to communicate with Arduino even during autonomous.
+          	capture.start(); //Starts outside because needs to WORK during autonomous.
+//           	io.startmouse(); //Starts outside because needs to communicate with Arduino even during autonomous.
 
     }
     
@@ -148,5 +148,6 @@ public class Robot extends SampleRobot {
     	System.out.println(System.getProperty("user.name"));
         while (isOperatorControl() && isEnabled()) { 
         }
+        log.stop();
     }
 }
