@@ -49,7 +49,7 @@ public class IO extends Loggable {
 
 		dircns[0] = Math.pow(leftstick.getRawAxis(Map.JOYSTICK_Y_AXIS), 2) * Math.signum(leftstick.getRawAxis(Map.JOYSTICK_Y_AXIS));//y
 		dircns[1] = -1.0 * Math.pow(leftstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2) * Math.signum(leftstick.getRawAxis(Map.JOYSTICK_X_AXIS));//x
-		dircns[2] = Math.pow(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2) * Math.signum(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS));//w
+		dircns[2] = .8 * Math.pow(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2) * Math.signum(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS));//w
 
 //		 dircns[0] = copterstick.getRawAxis(Map.JOYSTICK_Y_VALUE);
 //		 dircns[1] = copterstick.getRawAxis(Map.JOYSTICK_X_VALUE);
