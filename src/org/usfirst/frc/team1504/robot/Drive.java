@@ -146,7 +146,8 @@ public class Drive extends Loggable {
 	}
 
 	public void set_front(double rot_offset) {
-		rotation_offset = rot_offset * Math.PI / 180;
+		if(rot_offset != -1.0)
+			rotation_offset = rot_offset * Math.PI / 180;
 	}
 
 	private double correct_x(double theta) {

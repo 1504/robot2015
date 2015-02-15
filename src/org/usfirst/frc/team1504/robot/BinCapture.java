@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DigitalInput;
+
 
 public class BinCapture extends Loggable //thread
 {
@@ -22,6 +24,7 @@ public class BinCapture extends Loggable //thread
 	boolean clawtoggle;
 
 	boolean isManual;
+	DigitalInput input;
 	public BinCapture() {
 
 		BinCap = new BinCaptureThread();
@@ -82,7 +85,6 @@ private class BinCaptureThread extends Thread {
 				}else {
 						manual(0.0);
 				}
-				
 
 				if (IO.bincapture_input()[0]) {
 					extend();

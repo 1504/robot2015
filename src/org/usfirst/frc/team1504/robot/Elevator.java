@@ -95,29 +95,29 @@ public class Elevator extends Loggable { // thread
 
 				} else {
 					button = IO.elevatorButtonValues();
-//					if (button[0]) {
-//						setPoint = 1;
-//					} else if (button[1]) {
-//						setPoint = 2;
-//					} else if (button[2]) {
-//						setPoint = 3;
-//					} else if (button[3]) {
-//						setPoint = 4;
-//					} else if (button[4]) {
-//						setPoint = 5;
-//					} else if (button[5]) {
-//						setPoint = 6;
-//					} else if (button[6]) {
-//						setPoint = 7;
-//					} else if (button[7]) {
-//						setPoint = 8;
-//					} else if (button[8]) {
-//						setPoint = 9;
-//					} else if (button[9]) {
-//						setPoint = 10;
-//					}
-//					useSetPoint();
-					if (IO.elevator_mode() == 0) { // Forks retracted
+					if (button[0]) {
+						setPoint = 1;
+					} else if (button[1]) {
+						setPoint = 2;
+					} else if (button[2]) {
+						setPoint = 3;
+					} else if (button[3]) {
+						setPoint = 4;
+					} else if (button[4]) {
+						setPoint = 5;
+					} else if (button[5]) {
+						setPoint = 6;
+					} else if (button[6]) {
+						setPoint = 7;
+					} else if (button[7]) {
+						setPoint = 8;
+					} else if (button[8]) {
+						setPoint = 9;
+					} else if (button[9]) {
+						setPoint = 10;
+					}
+					//useSetPoint();
+					if (IO.elevator_mode() == 0 && elevatorSolenoid.get() != DoubleSolenoid.Value.kReverse) { // Forks retracted
 						// solenoid retracted, servos up
 						servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE);
 						servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE);

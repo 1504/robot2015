@@ -13,5 +13,11 @@ public class Utils {
 	}
 	public static double distance(double x, double y) {
 		return Math.sqrt(x * x + y * y);
-}
+	}
+	
+	public static double deadzone(double input) {
+		if(Math.abs(input) < Map.JOYSTICK_DEAD_ZONE)
+			input *= 0;
+		return input;
+	}
 }

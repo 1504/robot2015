@@ -36,13 +36,13 @@ public class Logger {
 		} catch (FileNotFoundException e) {
 			System.out.println("Cannot write to file " + date());
 		}
-//		enable();
+		//enable();
 	}
 
 	public void stop() throws java.lang.NullPointerException {
 //		disable();
 		try {
-//			disable();
+			//disable();
 			logStream.close();
 		} catch (IOException e) {
 			System.out.println("I can't stop! Help!");
@@ -114,7 +114,7 @@ public class Logger {
 
 		class Task extends TimerTask {
 			public void run() {
-				// write();
+				//write();
 				System.out.println("tick");
 			}
 			

@@ -49,30 +49,29 @@ public class IO extends Loggable {
 
 		dircns[0] = Math.pow(leftstick.getRawAxis(Map.JOYSTICK_Y_AXIS), 2) * Math.signum(leftstick.getRawAxis(Map.JOYSTICK_Y_AXIS));//y
 		dircns[1] = -1.0 * Math.pow(leftstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2) * Math.signum(leftstick.getRawAxis(Map.JOYSTICK_X_AXIS));//x
-		dircns[2] = .8 * Math.pow(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2) * Math.signum(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS));//w
+		dircns[2] = .6 * Math.pow(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2) * Math.signum(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS));//w
 
 //		 dircns[0] = copterstick.getRawAxis(Map.JOYSTICK_Y_VALUE);
 //		 dircns[1] = copterstick.getRawAxis(Map.JOYSTICK_X_VALUE);
 //		 dircns[2] = copterstick.getRawAxis(Map.JOYSTICK_X_VALUE);
 		
 		for (int i = 0; i < dircns.length - 1; i++) {
-			if (Math.abs(dircns[i]) < Map.JOYSTICK_DEAD_ZONE)
-				dircns[i] = 0.0;
+			dircns[i] = Utils.deadzone(dircns[i]);
 		}
 		return dircns;
 	}
 
-	public static int front_side_check() {
-		int side = 0;
+	public static double front_side_check() {
+		double side = -1.0;
 
 		if (rightstick.getRawButton(Map.FRONT_SIDE_BINCAP[0]) || leftstick.getRawButton(Map.FRONT_SIDE_BINCAP[1])) {
-			side = 180;
+			side = 180.0;
 		} else if (rightstick.getRawButton(Map.FRONT_SIDE_RIGHT)) {
-			side = 270;
+			side = 270.0;
 		} else if (rightstick.getRawButton(Map.FRONT_SIDE_ELEV[0]) || rightstick.getRawButton(Map.FRONT_SIDE_ELEV[1])) {
-			side = 0;
+			side = 0.0;
 		} else if (rightstick.getRawButton(Map.FRONT_SIDE_LEFT)) {
-			side = 90;
+			side = 90.0;
 		}
 		return side;
 	}
