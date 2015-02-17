@@ -51,7 +51,7 @@ public class Map {
 	public static final double SET_POINT_DOWN = 0.6;
 
 	// DigitalInput
-	public static final int ELEVATOR_DIGITAL_INPUT_PORT = 0;
+	public static final int ELEVATOR_DIGITAL_INPUT_PORT = 9;
 	public static final double JOYSTICK_DEAD_ZONE = .1;
 	
 	// Elevator Mode values

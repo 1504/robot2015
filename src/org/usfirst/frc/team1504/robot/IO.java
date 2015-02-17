@@ -38,7 +38,7 @@ public class IO extends Loggable {
 
 	public IO() {
 
-		arduino = new SerialPort(9600, SerialPort.Port.kMXP);
+		arduino = new SerialPort(9600, SerialPort.Port.kOnboard);
 		loopcount = 0;
 
 		is_mouse_enabled = false;

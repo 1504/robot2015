@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.PIDController;
 
 public class Elevator extends Loggable { // thread
 	DigitalInput hallSensor;
+	DigitalInput limit;
+
 	DoubleSolenoid elevatorSolenoid;
 	Servo servo_1;
 	Servo servo_2;
@@ -28,12 +30,13 @@ public class Elevator extends Loggable { // thread
 
 	int loopcount;
 	long starttime;
-	
+
 	public Elevator() {
 		elevator = new ElevatorThreadClass();
-		
+
+		limit = new DigitalInput(Map.ELEVATOR_DIGITAL_INPUT_PORT);
 		// handler = new HallHandlerClass();
-		hallSensor = new DigitalInput(Map.ELEVATOR_DIGITAL_INPUT_PORT);
+		// hallSensor = new DigitalInput(Map.ELEVATOR_DIGITAL_INPUT_PORT);
 		hallCounter = new Counter(hallSensor);
 		elevatorSolenoid = new DoubleSolenoid(Map.ELEVATOR_SOLENOID_FORWARD_PORT, Map.ELEVATOR_SOLENOID_REVERSE_PORT);
 		hallCounter.setUpDownCounterMode();
@@ -60,18 +63,18 @@ public class Elevator extends Loggable { // thread
 		elevator.start();
 	}
 
-//	public void useSetPoint() {
-//		if (setPoint < hallCounter.get()) {
-//			elevatorMotor.set(Map.ELEVATOR_DOWN_SPEED); // -1
-//		}
-//
-//		else if (setPoint > hallCounter.get()) {
-//			elevatorMotor.set(Map.ELEVATOR_UP_SPEED); // 1
-//		}
-//
-//		else if (setPoint == hallCounter.get())
-//			elevatorMotor.set(Map.ELEVATOR_NONE_SPEED); // 0
-//	}
+	// public void useSetPoint() {
+	// if (setPoint < hallCounter.get()) {
+	// elevatorMotor.set(Map.ELEVATOR_DOWN_SPEED); // -1
+	// }
+	//
+	// else if (setPoint > hallCounter.get()) {
+	// elevatorMotor.set(Map.ELEVATOR_UP_SPEED); // 1
+	// }
+	//
+	// else if (setPoint == hallCounter.get())
+	// elevatorMotor.set(Map.ELEVATOR_NONE_SPEED); // 0
+	// }
 
 	private class ElevatorThreadClass extends Thread {
 		protected boolean isRunning = true;
@@ -89,17 +92,20 @@ public class Elevator extends Loggable { // thread
 		public void run() {
 			starttime = System.currentTimeMillis();
 			while (isRunning) {
-				if (loopcount == 0)
-				{
+				if (loopcount == 0) {
 					starttime = System.currentTimeMillis();
 				}
 				loopcount++;
 				isManual = IO.elevator_manual_toggle() || (isManual && !checkButtons());
 				if (isManual) {
-					if (IO.elevator_manual_toggle()) {
-						manual(IO.elevator_manual());
+					if (limit.get()) {
+						if (IO.elevator_manual_toggle()) {
+							manual(IO.elevator_manual());
+						} else {
+							manual(0.0); //we may remove this if we're not doing setpoints. 
+						}
 					} else {
-						manual(0.0);
+						manual(0.0); 
 					}
 
 				} else {
@@ -125,16 +131,17 @@ public class Elevator extends Loggable { // thread
 					} else if (button[9]) {
 						setPoint = 10;
 					}
-					//useSetPoint();
-					if (IO.elevator_mode() == 0 && elevatorSolenoid.get() != DoubleSolenoid.Value.kReverse) { // Forks retracted
+					// useSetPoint();
+					if (IO.elevator_mode() == 0 && elevatorSolenoid.get() != DoubleSolenoid.Value.kReverse) { // Forks
+																												// retracted
 						// solenoid retracted, servos up
-						if(servo_1.getAngle() != Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE || servo_2.getAngle() != Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE)
-						{
+						if (servo_1.getAngle() != Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE || servo_2.getAngle() != Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE) {
 							servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE);
 							servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE);
 							try {
 								Thread.sleep(700);
-							} catch (InterruptedException e) {}
+							} catch (InterruptedException e) {
+							}
 						}
 						elevatorSolenoid.set(DoubleSolenoid.Value.kReverse);
 					}
@@ -143,7 +150,7 @@ public class Elevator extends Loggable { // thread
 						// solenoid exteded, servos down
 						servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_DOWN_ANGLE);
 						servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_DOWN_ANGLE);
-						
+
 						elevatorSolenoid.set(DoubleSolenoid.Value.kForward);
 
 					}
@@ -169,18 +176,17 @@ public class Elevator extends Loggable { // thread
 		}
 	}
 
-	public int get_elevator_level()
-	{
+	public int get_elevator_level() {
 		return hallCounter.get();
 	}
 
-	public double[] dump()
-	{
+	public double[] dump() {
 		double[] vals = new double[11];
-		vals[0] = Utils.boolconverter(isManual); //0 is false, 1 is true
-		vals[1] = IO.elevatorMode; //0 is retracted mode, 1 is tote mode, 2 is bin mode
-		vals[2] = setPoint; //desired lvl
-		vals[3] = hallCounter.get(); //current lvl
+		vals[0] = Utils.boolconverter(isManual); // 0 is false, 1 is true
+		vals[1] = IO.elevatorMode; // 0 is retracted mode, 1 is tote mode, 2 is
+									// bin mode
+		vals[2] = setPoint; // desired lvl
+		vals[3] = hallCounter.get(); // current lvl
 		vals[4] = elevatorMotor.getSpeed();
 		vals[5] = elevatorMotor.getOutputCurrent();
 		vals[6] = elevatorMotor.getOutputVoltage();
