@@ -23,6 +23,9 @@ public class BinCapture extends Loggable //thread
 	boolean armtoggle;
 	boolean clawtoggle;
 
+	int loopcount;
+	long starttime;
+	
 	boolean isManual;
 	DigitalInput input;
 	public BinCapture() {
@@ -38,6 +41,8 @@ public class BinCapture extends Loggable //thread
 
 		armtoggle = false;
 		clawtoggle = false;
+		
+		loopcount = 0;
 		
 		isManual = false;
 	}
@@ -76,7 +81,15 @@ public class BinCapture extends Loggable //thread
 private class BinCaptureThread extends Thread {
 		protected boolean running = true;
 		public void run() {
+			
+			starttime = System.currentTimeMillis();
+			
 			while (running) {
+				if (loopcount == 0)
+				{
+					starttime = System.currentTimeMillis();
+				}
+				loopcount++;
 				isManual = IO.bincap_manual_toggle();
 				if (isManual) {
 					if (IO.bincap_manual_toggle()) {
@@ -105,12 +118,16 @@ private class BinCaptureThread extends Thread {
 		}
 
 	public double[] dump() {
-		double[] bin_values = new double[5];
+		double[] bin_values = new double[7];
 		bin_values[0] = armstate;
 		bin_values[1] = clawstate;
 		bin_values[2] = motor.getSpeed();
 		bin_values[3] = motor.getOutputCurrent();
 		bin_values[4] = motor.getOutputVoltage();
+		bin_values[5] = loopcount;
+		bin_values[6] = System.currentTimeMillis() - starttime;
+		
+		loopcount = 0;
 		
 		return bin_values;
 	}

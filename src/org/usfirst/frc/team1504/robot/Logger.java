@@ -10,12 +10,21 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimerTask;
 import java.util.Timer;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class Logger {
 	
 //	OperatingSystemMXBean sysMX;
 	private static LoggerThreadClass loggerThread;
 
+	Compressor compressor;
+	BuiltInAccelerometer accelerometer;
+	PowerDistributionPanel pdp;
+	DriverStation driverstation;
+	
 	Timer timer;
 	Calendar calendar;
 	FileOutputStream logStream;
@@ -23,6 +32,10 @@ public class Logger {
 	Loggable[] classes;
 
 	public Logger(Loggable[] classes) {
+		compressor = new Compressor();
+		accelerometer = new BuiltInAccelerometer();
+		pdp = new PowerDistributionPanel();
+		
 		loggerThread = new LoggerThreadClass();
 		calendar = new GregorianCalendar();
 		timer = new Timer();
@@ -65,18 +78,32 @@ public class Logger {
 //	}
 	
 	public void write() {
-		// AlignerDump(4)
-		// bincapture(5)
-		// Drive(12)
-		// Elevator(7)
-		// IO Dump(29)
-
+		// AlignerDump(6)
+		// bincapture(7)
+		// Drive(14)
+		// Elevator(9)
+		// IO Dump(31)
+		
+		try {
+			logStream.write(doubleToByte(driverstation.getMatchTime()));
+			logStream.write(doubleToByte(pdp.getTotalCurrent()));
+			logStream.write(doubleToByte(driverstation.getBatteryVoltage()));
+			logStream.write(boolToByte(compressor.getPressureSwitchValue()));
+			logStream.write(floatToByte(compressor.getCompressorCurrent()));
+			logStream.write(doubleToByte(accelerometer.getX()));
+			logStream.write(doubleToByte(accelerometer.getY()));
+			logStream.write(doubleToByte(accelerometer.getZ()));
+			
+		} catch (IOException e1) {
+			System.out.println("Unable to write the right thing.");
+		}
+		
 		for (Loggable o : classes) {
 			for (double d : o.dump()) {
 				try {
 					logStream.write(doubleToByte(d));
 				} catch (IOException e) {
-					System.out.println("Something faild. Srry.");
+					System.out.println("Unable to write the right thing.");
 				}
 			}
 		}
@@ -89,10 +116,23 @@ public class Logger {
 		return bytes;
 	}
 
+	private byte[] floatToByte(float f) {
+		byte[] bytes = new byte[8];
+		ByteBuffer.wrap(bytes).putFloat(f);
+		return bytes;
+	}
+	
 	private byte[] intToByte(int i) {
 		byte[] bytes = new byte[8];
 		ByteBuffer.wrap(bytes).putInt(i);
 		return bytes;
+	}
+	
+	private byte boolToByte(boolean b) {
+		byte bool = 0;
+		if (b)
+			bool = 1;
+		return bool;
 	}
 
 	public String date() {

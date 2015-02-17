@@ -1,5 +1,8 @@
 package org.usfirst.frc.team1504.robot;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import edu.wpi.first.wpilibj.CANTalon;
 
 public class Drive extends Loggable {
@@ -15,7 +18,12 @@ public class Drive extends Loggable {
 	double backright_val;
 	double frontright_val;
 
+	boolean osc_cw;
+
 	double rotation_offset;
+
+	int loopcount;
+	long starttime;
 
 	double[] dircns;
 
@@ -27,6 +35,10 @@ public class Drive extends Loggable {
 		backright = new CANTalon(Map.BACK_RIGHT_TALON_PORT);
 		frontright = new CANTalon(Map.FRONT_RIGHT_TALON_PORT);
 
+		loopcount = 0;
+
+		osc_cw = true;
+
 		dircns = new double[3];
 	}
 
@@ -37,6 +49,12 @@ public class Drive extends Loggable {
 
 	public void stop() {
 		DriveThread.stopMecanum();
+	}
+
+	public void autonDrive(double y, double x, double w) {
+		double[] vals = { y, x, w };
+		outputCompute(vals);
+		motorOutput();
 	}
 
 	public void outputCompute(double[] input) {
@@ -56,32 +74,67 @@ public class Drive extends Loggable {
 	}
 
 	public double[] dump() {
-		double[] motors = new double[12];
+		double[] stuff = new double[14];
 
-		motors[0] = frontleft_val;
-		motors[1] = frontleft.getOutputCurrent();
-		motors[2] = frontleft.getOutputVoltage();
+		stuff[0] = frontleft_val;
+		stuff[1] = frontleft.getOutputCurrent();
+		stuff[2] = frontleft.getOutputVoltage();
 
-		motors[3] = backleft_val;
-		motors[4] = backleft.getOutputCurrent();
-		motors[5] = backleft.getOutputVoltage();
+		stuff[3] = backleft_val;
+		stuff[4] = backleft.getOutputCurrent();
+		stuff[5] = backleft.getOutputVoltage();
 
-		motors[6] = backright_val;
-		motors[7] = backright.getOutputCurrent();
-		motors[8] = backright.getOutputVoltage();
+		stuff[6] = backright_val;
+		stuff[7] = backright.getOutputCurrent();
+		stuff[8] = backright.getOutputVoltage();
 
-		motors[9] = frontright_val;
-		motors[10] = frontright.getOutputCurrent();
-		motors[11] = frontright.getOutputVoltage();
+		stuff[9] = frontright_val;
+		stuff[10] = frontright.getOutputCurrent();
+		stuff[11] = frontright.getOutputVoltage();
 
-		return motors;
+		stuff[12] = loopcount;
+		stuff[13] = System.currentTimeMillis() - starttime;
+
+		loopcount = 0;
+
+		return stuff;
+	}
+
+	protected void osc() {
+		if (osc_cw) {
+			frontleft.set(Map.DRIVE_OSC_INTENSITY);
+			frontright.set(Map.DRIVE_OSC_INTENSITY);
+			backleft.set(Map.DRIVE_OSC_INTENSITY);
+			backright.set(Map.DRIVE_OSC_INTENSITY);
+			osc_cw = false;
+		} else {
+			frontleft.set(-Map.DRIVE_OSC_INTENSITY);
+			frontright.set(-Map.DRIVE_OSC_INTENSITY);
+			backleft.set(-Map.DRIVE_OSC_INTENSITY);
+			backright.set(-Map.DRIVE_OSC_INTENSITY);
+			osc_cw = true;
+		}
 	}
 
 	private class DriveThreadClass extends Thread {
-		protected boolean isRunning = true;
+		protected boolean isRunning;
+		protected boolean oscCreated;
+		protected Timer time;
+		protected Task task;
+
+		public DriveThreadClass() {
+			task = new Task();
+			isRunning = true;
+		}
 
 		public void run() {
+
+			starttime = System.currentTimeMillis();
 			while (isRunning) {
+				if (loopcount == 0) {
+					starttime = System.currentTimeMillis();
+				}
+				loopcount++;
 				dircns = IO.mecanum_input(); // get y, x w
 
 				dircns = detents(dircns); // manipulate
@@ -92,7 +145,20 @@ public class Drive extends Loggable {
 
 				outputCompute(dircns);// calculate for motors
 
-				motorOutput();// set
+				if (IO.osc_toggle() || oscCreated) {
+					if (!oscCreated) {
+						Timer time = new Timer();
+
+						oscCreated = true;
+						time.scheduleAtFixedRate(task, 0, Map.DRIVE_OSC_TIME);
+					}
+					if (!IO.osc_toggle()) {
+						time.cancel();
+						oscCreated = false;
+					}
+				} else
+					motorOutput();// set
+
 			}
 		}
 
@@ -100,6 +166,11 @@ public class Drive extends Loggable {
 			isRunning = false;
 		}
 
+		class Task extends TimerTask {
+			public void run() {
+				osc();
+			}
+		}
 	}
 
 	protected double[] detents(double[] dircn) {
@@ -146,7 +217,7 @@ public class Drive extends Loggable {
 	}
 
 	public void set_front(double rot_offset) {
-		if(rot_offset != -1.0)
+		if (rot_offset != -1.0)
 			rotation_offset = rot_offset * Math.PI / 180;
 	}
 

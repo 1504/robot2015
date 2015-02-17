@@ -26,6 +26,9 @@ public class Elevator extends Loggable { // thread
 	boolean servo_2State;
 	protected boolean isManual;
 
+	int loopcount;
+	long starttime;
+	
 	public Elevator() {
 		elevator = new ElevatorThreadClass();
 		
@@ -43,6 +46,7 @@ public class Elevator extends Loggable { // thread
 		// hallSensor.requestInterrupts(handler);
 		setPoint = 0;
 		isManual = true;
+		loopcount = 0;
 	}
 
 	/*
@@ -83,8 +87,13 @@ public class Elevator extends Loggable { // thread
 		}
 
 		public void run() {
+			starttime = System.currentTimeMillis();
 			while (isRunning) {
-
+				if (loopcount == 0)
+				{
+					starttime = System.currentTimeMillis();
+				}
+				loopcount++;
 				isManual = IO.elevator_manual_toggle() || (isManual && !checkButtons());
 				if (isManual) {
 					if (IO.elevator_manual_toggle()) {
@@ -119,11 +128,14 @@ public class Elevator extends Loggable { // thread
 					//useSetPoint();
 					if (IO.elevator_mode() == 0 && elevatorSolenoid.get() != DoubleSolenoid.Value.kReverse) { // Forks retracted
 						// solenoid retracted, servos up
-						servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE);
-						servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE);
-						try {
-							Thread.sleep(700);
-						} catch (InterruptedException e) {}
+						if(servo_1.getAngle() != Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE || servo_2.getAngle() != Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE)
+						{
+							servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE);
+							servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE);
+							try {
+								Thread.sleep(700);
+							} catch (InterruptedException e) {}
+						}
 						elevatorSolenoid.set(DoubleSolenoid.Value.kReverse);
 					}
 
@@ -164,7 +176,7 @@ public class Elevator extends Loggable { // thread
 
 	public double[] dump()
 	{
-		double[] vals = new double[7];
+		double[] vals = new double[11];
 		vals[0] = Utils.boolconverter(isManual); //0 is false, 1 is true
 		vals[1] = IO.elevatorMode; //0 is retracted mode, 1 is tote mode, 2 is bin mode
 		vals[2] = setPoint; //desired lvl
@@ -172,6 +184,11 @@ public class Elevator extends Loggable { // thread
 		vals[4] = elevatorMotor.getSpeed();
 		vals[5] = elevatorMotor.getOutputCurrent();
 		vals[6] = elevatorMotor.getOutputVoltage();
+		vals[7] = servo_1.getAngle();
+		vals[8] = servo_2.getAngle();
+		vals[9] = loopcount;
+		vals[10] = System.currentTimeMillis() - starttime;
+		loopcount = 0;
 		return vals;
 	}
 

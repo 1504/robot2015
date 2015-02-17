@@ -13,9 +13,14 @@ public class Aligner extends Loggable {
 	// Talon
 	CANTalon align;
 	
+	int loopcount;
+	long starttime;
+	
 	AlignerThreadClass aligner;
 
 	public Aligner() {
+		loopcount = 0;
+		
 		aligner = new AlignerThreadClass();
 		
 		stage_1 = new DoubleSolenoid(Map.STAGE_ONE_SOLENOID_FORWARD_PORT, Map.STAGE_ONE_SOLENOID_REVERSE_PORT);
@@ -78,21 +83,29 @@ public class Aligner extends Loggable {
 	}
 
 	public double[] dump() {
-		double[] motor = new double[4];
+		double[] motor = new double[6];
 		// motor speed, current, voltage
 		motor[0] = align.getSpeed();
 		motor[1] = align.getOutputCurrent();
 		motor[2] = align.getBusVoltage();
 		motor[3] = clawStage;
+		motor[4] = loopcount;
+		motor[5] = System.currentTimeMillis() - starttime;
+		loopcount = 0;
 		return motor;
 	}
 	
 	private class AlignerThreadClass extends Thread {
 		protected boolean isRunning = true;
 		protected boolean[] buttons;
-
 		public void run() {
+			starttime = System.currentTimeMillis();
 			while (isRunning) {
+				if (loopcount == 0)
+				{
+					starttime = System.currentTimeMillis();
+				}
+				loopcount++;
 				buttons = IO.alignerButtons();
 				if (buttons[0]) {
 					setPosition(0);
