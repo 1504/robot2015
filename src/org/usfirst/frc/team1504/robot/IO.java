@@ -13,7 +13,7 @@ public class IO extends Loggable {
 
 	boolean is_mouse_enabled;
 
-	SerialPort arduino;
+	//SerialPort arduino;
 	DriverStation driverstation = DriverStation.getInstance();
 	Port kOnboard;
 	byte[] buffer;
@@ -38,7 +38,7 @@ public class IO extends Loggable {
 
 	public IO() {
 
-		arduino = new SerialPort(9600, SerialPort.Port.kOnboard);
+		//arduino = new SerialPort(9600, SerialPort.Port.kOnboard);
 		loopcount = 0;
 
 		is_mouse_enabled = false;
@@ -345,14 +345,15 @@ public class IO extends Loggable {
 					loopcount++;
 
 					buffer = bitWrite();
-					arduino.write(buffer, 2);
-					arduinoOutput = arduino.read(9); // 0-2: x,y,SQUAL of left
+					//arduino.write(buffer, 2);
+					//arduinoOutput = arduino.read(9); // 0-2: x,y,SQUAL of left
 														// sensor; 3-5:
 														// x,y,SQUAL of right
 														// sensor; 6-8: x,y,z
 														// from magnetometer
 
-					System.out.println(arduino.getBytesReceived());
+					//System.out.println(arduino.getBytesReceived());
+					
 				}
 			}
 		}

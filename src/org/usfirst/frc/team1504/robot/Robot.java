@@ -19,7 +19,8 @@ public class Robot extends SampleRobot {
 	BinCapture capture;
 	Elevator elevator;
 	IO io;
-	DriverStation driverstation;
+	Serial serial;
+	DriverStation driverstation = DriverStation.getInstance();
 
 	// PowerDistributionPanel pdp;
 	// double pdpvoltage;
@@ -39,12 +40,14 @@ public class Robot extends SampleRobot {
 		// leftStick = new Joystick(0);
 		// rightStick = new Joystick(1);
 		MapXML map = new MapXML();
-		classes = new Loggable[5];
+		classes = new Loggable[6];
 		classes[0] = new Aligner();
 		classes[1] = new BinCapture();
 		classes[2] = new Drive();
 		classes[3] = new Elevator();
 		classes[4] = new IO();
+		classes[5] = new Serial();
+		
 		log = new Logger(classes);
 
 		aligner = (Aligner) classes[0];
@@ -75,16 +78,17 @@ public class Robot extends SampleRobot {
 	}
 
 	public void autonomous() {
-		log.start("A");
+//		log.start("A");
 
 		while (driverstation.isAutonomous()) {
 			// Drive forward for 6 seconds, into the AUTO ZONE
 			long time = System.currentTimeMillis();
-			while (Math.abs(System.currentTimeMillis() - time) <= 6000)
-
-			{
-				drive.autonDrive(.5, 0, 0);
-			}
+			drive.autonDrive(-.5, 0, 0);
+			
+				try {
+					Thread.sleep(6000);
+				} catch (InterruptedException e) {}
+			
 			drive.autonDrive(0, 0, 0);
 		}
 
@@ -139,7 +143,7 @@ public class Robot extends SampleRobot {
 		// }
 		//
 		// }
-		log.stop();
+//		log.stop();
 	}
 
 	public void operatorControl() {

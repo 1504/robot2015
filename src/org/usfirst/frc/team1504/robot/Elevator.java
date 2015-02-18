@@ -37,10 +37,10 @@ public class Elevator extends Loggable { // thread
 		limit = new DigitalInput(Map.ELEVATOR_DIGITAL_INPUT_PORT);
 		// handler = new HallHandlerClass();
 		// hallSensor = new DigitalInput(Map.ELEVATOR_DIGITAL_INPUT_PORT);
-		hallCounter = new Counter(hallSensor);
+		//hallCounter = new Counter(hallSensor);
 		elevatorSolenoid = new DoubleSolenoid(Map.ELEVATOR_SOLENOID_FORWARD_PORT, Map.ELEVATOR_SOLENOID_REVERSE_PORT);
-		hallCounter.setUpDownCounterMode();
-		hallCounter.setUpSource(hallSensor);// /// may neeed to goooo
+		//hallCounter.setUpDownCounterMode();
+		//hallCounter.setUpSource(hallSensor);// /// may neeed to goooo
 		// befoooore.
 		servo_1 = new Servo(Map.ELEVATOR_SERVO_LEFT_PORT);
 		servo_2 = new Servo(Map.ELEVATOR_SERVO_RIGHT_PORT);
@@ -98,7 +98,7 @@ public class Elevator extends Loggable { // thread
 				loopcount++;
 				isManual = IO.elevator_manual_toggle() || (isManual && !checkButtons());
 				if (isManual) {
-					if (limit.get()) {
+					if (!limit.get() || IO.elevator_manual() <= 0.0) {
 						if (IO.elevator_manual_toggle()) {
 							manual(IO.elevator_manual());
 						} else {
