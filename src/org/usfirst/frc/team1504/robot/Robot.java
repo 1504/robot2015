@@ -82,9 +82,7 @@ public class Robot extends SampleRobot {
 
 		while (driverstation.isAutonomous()) {
 			// Drive forward for 6 seconds, into the AUTO ZONE
-			long time = System.currentTimeMillis();
 			drive.autonDrive(-.5, 0, 0);
-			
 				try {
 					Thread.sleep(6000);
 				} catch (InterruptedException e) {}
@@ -145,12 +143,16 @@ public class Robot extends SampleRobot {
 		// }
 //		log.stop();
 	}
-
 	public void operatorControl() {
 		log.start("O");
 		System.out.println(System.getProperty("user.name"));
 		while (isOperatorControl() && isEnabled()) {
-
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		log.stop();
 	}

@@ -49,7 +49,7 @@ public class Serial extends Loggable implements SerialPortEventListener {
 		 if( portIdentifier.isCurrentlyOwned() ) {
 		      System.out.println( "Error: Port is currently in use" );
 		    } else {
-		    	commPort = portIdentifier.open( this.getClass().getName(), timeout );
+//		    	commPort = portIdentifier.open( this.getClass().getName(), timeout );
 		    }
 	}
 

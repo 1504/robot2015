@@ -49,14 +49,14 @@ public class Logger {
 		} catch (FileNotFoundException e) {
 			System.out.println("Cannot write to file " + date());
 		}
-		//enable();
+//		enable();
 	}
 
 	public void stop() throws java.lang.NullPointerException {
 //		disable();
 		try {
-			//disable();
-			logStream.close();
+//			disable();
+			logStream.close();//TODO: check to see if we should close before disable
 		} catch (IOException e) {
 			System.out.println("I can't stop! Help!");
 		}

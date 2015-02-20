@@ -4,6 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class Drive extends Loggable {
 	private static DriveThreadClass DriveThread;
@@ -12,6 +13,8 @@ public class Drive extends Loggable {
 	CANTalon backleft;
 	CANTalon backright;
 	CANTalon frontright;
+	
+	DriverStation driverstation = DriverStation.getInstance();
 
 	double frontleft_val;
 	double backleft_val;
@@ -52,9 +55,9 @@ public class Drive extends Loggable {
 	}
 
 	public void autonDrive(double y, double x, double w) {
-		double[] vals = { y, x, w };
-		outputCompute(vals);
-		motorOutput();
+		dircns[0] = y;
+		dircns[1] = x;
+		dircns[2] = w;
 	}
 
 	public void outputCompute(double[] input) {
@@ -128,6 +131,7 @@ public class Drive extends Loggable {
 		public DriveThreadClass() {
 			task = new Task();
 			isRunning = true;
+			oscCreated = false;
 		}
 
 		public void run() {
@@ -138,21 +142,7 @@ public class Drive extends Loggable {
 					starttime = System.currentTimeMillis();
 				}
 				loopcount++;
-				dircns = IO.mecanum_input(); // get y, x w
-
-				dircns = detents(dircns); // manipulate
-
-				set_front(IO.front_side_check());
-
-				dircns = front_side(dircns); // checks for pressed buttons;
 				
-				if (oscCreated)
-				{
-					dircns = getOsc(dircns);
-				}
-				
-				outputCompute(dircns);// calculate for motors
-
 				if (IO.osc_toggle() || oscCreated) {
 					if (!oscCreated) {
 						Timer time = new Timer();
@@ -166,7 +156,24 @@ public class Drive extends Loggable {
 					}
 					
 				}
-					motorOutput();// set
+				if (driverstation.isOperatorControl())
+				{
+					dircns = IO.mecanum_input(); // get y, x w
+	
+					dircns = detents(dircns); // manipulate
+	
+					set_front(IO.front_side_check());
+	
+					dircns = front_side(dircns); // checks for pressed buttons;
+					
+					if (oscCreated)
+					{
+						dircns = getOsc(dircns);
+					}
+				}
+				outputCompute(dircns);// calculate for motors
+
+				motorOutput();// set
 
 			}
 		}
