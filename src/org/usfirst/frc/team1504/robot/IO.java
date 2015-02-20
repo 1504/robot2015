@@ -1,5 +1,6 @@
 package org.usfirst.frc.team1504.robot;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.SerialPort.Port;
@@ -11,6 +12,10 @@ public class IO extends Loggable {
 	static double right;
 	static double rotate;
 
+	static DigitalInput autoninput_1;
+	static DigitalInput autoninput_2;
+	static DigitalInput autoninput_3;
+	
 	boolean is_mouse_enabled;
 
 	//SerialPort arduino;
@@ -41,12 +46,34 @@ public class IO extends Loggable {
 		//arduino = new SerialPort(9600, SerialPort.Port.kOnboard);
 		loopcount = 0;
 
+		autoninput_1 = new DigitalInput(2);
+		autoninput_2 = new DigitalInput(3);
+		autoninput_3 = new DigitalInput(4);
+		
 		is_mouse_enabled = false;
 
 		buffer = new byte[2];
 		arduinoOutput = new byte[9];
 	}
-
+	
+	public static int get_auton_mode()
+	{
+		int i = 0;
+		if (autoninput_1.get())
+		{
+			i = 0;
+		}
+		if (autoninput_2.get())
+		{
+			i = 1;
+		}
+		if (autoninput_3.get())
+		{
+			i = 2;
+		}
+		return i;
+	}
+	
 	public static double[] mecanum_input() {
 		double[] dircns = new double[3];
 

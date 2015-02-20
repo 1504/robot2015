@@ -79,68 +79,84 @@ public class Robot extends SampleRobot {
 
 	public void autonomous() {
 //		log.start("A");
+		switch(IO.get_auton_mode())
+		{
+		case 0:
+			while (driverstation.isAutonomous()) {
+				// Drive forward for 6 seconds, into the AUTO ZONE
+				drive.autonDrive(-.5, 0, 0);
+					try {
+						Thread.sleep(6000);
+					} catch (InterruptedException e) {}
+				
+				drive.autonDrive(0, 0, 0);
+			}
 
-		while (driverstation.isAutonomous()) {
-			// Drive forward for 6 seconds, into the AUTO ZONE
-			drive.autonDrive(-.5, 0, 0);
-				try {
-					Thread.sleep(6000);
-				} catch (InterruptedException e) {}
+		case 1:	
+		 //Pickup a YELLOW TOTE, and track to the right for .5 seconds, into
+//		 the AUTO ZONE with the TOTE.
+			while(driverstation.isAutonomous())
+			{
+				 elevator.setPoint = 2;
+//				 elevator.useSetPoint();
+				 try{
+				 Thread.sleep(500);
+				 }
+				 catch(InterruptedException ex){}
+				
+				 long toteautontime = System.currentTimeMillis();
+				 while (Math.abs(System.currentTimeMillis() - toteautontime) <= 5000)
+				 {
+				 drive.autonDrive(0, .5, 0);
+				 }
+				 drive.autonDrive(0, 0, 0);
+			}
 			
-			drive.autonDrive(0, 0, 0);
+		case 2: 
+			//Grabs a bin from the STEP, driving forward for 5 seconds into the
+	//		 AUTO ZONE, and then turning 180 degrees in 1 second.
+			 while (driverstation.isAutonomous())
+			 {
+				 capture.claw.set(true);
+				 try
+				 {
+				 Thread.sleep(500);
+				 }
+				 catch (InterruptedException ex) {}
+				 capture.arm.set(DoubleSolenoid.Value.kReverse);
+				
+				 long binautontime = System.currentTimeMillis();
+				 while(Math.abs(System.currentTimeMillis() - binautontime) <= 6000)
+				 {
+				 drive.autonDrive(.5, .5, .5);
+				 try
+				 {
+				 Thread.sleep(5000);
+				 }
+				 catch (InterruptedException ex) {}
+				
+		
+				 drive.autonDrive(0, 0, .25);
+				 try
+				 {
+				 Thread.sleep(1000);
+				 }
+				 catch (InterruptedException ex) {}
+				 drive.autonDrive(0, 0, 0);
+				 }
+			 }
+		default:
+			while (driverstation.isAutonomous()) {
+				// Drive forward for 6 seconds, into the AUTO ZONE
+				drive.autonDrive(-.5, 0, 0);
+					try {
+						Thread.sleep(6000);
+					} catch (InterruptedException e) {}
+				
+				drive.autonDrive(0, 0, 0);
+			}
+
 		}
-
-		// //Pickup a YELLOW TOTE, and track to the right for .5 seconds, into
-		// the AUTO ZONE with the TOTE.
-		// while(driverstation.isAutonomous())
-		// {
-		// elevator.setPoint = 2;
-		// elevator.useSetPoint();
-		// try{
-		// Thread.sleep(500);
-		// }
-		// catch(InterruptedException ex){}
-		//
-		// long toteautontime = System.currentTimeMillis();
-		// while (Math.abs(System.currentTimeMillis() - toteautontime) <= 5000)
-		// {
-		// drive.autonDrive(0, .5, 0);
-		// }
-		// drive.autonDrive(0, 0, 0);
-		// }
-		//
-		// //Grabs a bin from the STEP, driving forward for 5 seconds into the
-		// AUTO ZONE, and then turning 180 degrees in 1 second.
-		// while (driverstation.isAutonomous())
-		// {
-		// capture.claw.set(true);
-		// try
-		// {
-		// Thread.sleep(500);
-		// }
-		// catch (InterruptedException ex) {}
-		// capture.arm.set(DoubleSolenoid.Value.kReverse);
-		//
-		// long binautontime = System.currentTimeMillis();
-		// while(Math.abs(System.currentTimeMillis() - binautontime) <= 6000)
-		// {
-		// drive.autonDrive(.5, .5, .5);
-		// try
-		// {
-		// Thread.sleep(5000);
-		// }
-		// catch (InterruptedException ex) {}
-		//
-
-		// drive.autonDrive(0, 0, .25);
-		// {
-		// Thread.sleep(1000);
-		// }
-		// catch (InterruptedException ex) {}
-		// drive.autonDrive(0, 0, 0);
-		// }
-		//
-		// }
 //		log.stop();
 	}
 	public void operatorControl() {
@@ -149,10 +165,7 @@ public class Robot extends SampleRobot {
 		while (isOperatorControl() && isEnabled()) {
 			try {
 				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			} catch (InterruptedException e) {}
 		}
 		log.stop();
 	}
