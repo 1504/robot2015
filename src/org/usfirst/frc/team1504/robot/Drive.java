@@ -102,18 +102,21 @@ public class Drive extends Loggable {
 
 	protected void osc() {
 		if (osc_cw) {
-			frontleft.set(Map.DRIVE_OSC_INTENSITY);
-			frontright.set(Map.DRIVE_OSC_INTENSITY);
-			backleft.set(Map.DRIVE_OSC_INTENSITY);
-			backright.set(Map.DRIVE_OSC_INTENSITY);
 			osc_cw = false;
 		} else {
-			frontleft.set(-Map.DRIVE_OSC_INTENSITY);
-			frontright.set(-Map.DRIVE_OSC_INTENSITY);
-			backleft.set(-Map.DRIVE_OSC_INTENSITY);
-			backright.set(-Map.DRIVE_OSC_INTENSITY);
 			osc_cw = true;
 		}
+	}
+	public double[] getOsc(double[] dircns)
+	{
+		if (osc_cw)
+		{
+			dircns[2] += Map.DRIVE_OSC_INTENSITY;
+		} else
+		{
+			dircns[2] -= Map.DRIVE_OSC_INTENSITY;
+		}
+		return dircns;
 	}
 
 	private class DriveThreadClass extends Thread {
@@ -142,7 +145,12 @@ public class Drive extends Loggable {
 				set_front(IO.front_side_check());
 
 				dircns = front_side(dircns); // checks for pressed buttons;
-
+				
+				if (oscCreated)
+				{
+					dircns = getOsc(dircns);
+				}
+				
 				outputCompute(dircns);// calculate for motors
 
 				if (IO.osc_toggle() || oscCreated) {
@@ -156,7 +164,8 @@ public class Drive extends Loggable {
 						time.cancel();
 						oscCreated = false;
 					}
-				} else
+					
+				}
 					motorOutput();// set
 
 			}

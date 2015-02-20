@@ -65,7 +65,7 @@ public class IO extends Loggable {
 	}
 
 	public static boolean osc_toggle() {
-		return leftstick.getRawButton(Map.DRIVE_OSC_BUTTON);
+		return (leftstick.getRawButton(Map.DRIVE_OSC_BUTTON[0]) || secondary.getRawButton(Map.DRIVE_OSC_BUTTON[1]));
 	}
 
 	public static double front_side_check() {

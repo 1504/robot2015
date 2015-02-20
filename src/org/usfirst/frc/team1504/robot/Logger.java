@@ -156,6 +156,7 @@ public class Logger {
 			public void run() {
 				//write();
 				System.out.println("tick");
+				
 			}
 			
 		}

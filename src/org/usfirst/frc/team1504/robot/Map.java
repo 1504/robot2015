@@ -64,7 +64,7 @@ public class Map {
 	public static final int FRONT_SIDE_RIGHT = 5;
 	public static final int[] FRONT_SIDE_ELEV = {3,11};
 	public static final int FRONT_SIDE_LEFT = 4;
-	public static final int DRIVE_OSC_BUTTON = 9;
+	public static final int[] DRIVE_OSC_BUTTON = {9, 4};
 
 	// Secondary Buttons
 	public static final int BIN_CAPTURE_CLAW_TOGGLE_BUTTON = 5;
@@ -81,5 +81,5 @@ public class Map {
 	public static final int[] ALIGNER_STAGE = {12, 10, 8}; // aligner -- open, almost, closed
 	
 	public static final long DRIVE_OSC_TIME = 200;
-	public static final double DRIVE_OSC_INTENSITY = .4;
+	public static final double DRIVE_OSC_INTENSITY = .2;
 }
