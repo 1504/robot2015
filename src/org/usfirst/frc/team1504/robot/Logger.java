@@ -142,9 +142,10 @@ public class Logger {
 	private class LoggerThreadClass extends Thread {
 		protected boolean isRunning = true;
 		Timer time = new Timer();
-		Task task = new Task();
+		Task task;// = new Task();
 		
 		public void run() {
+			Task task = new Task();
 			time.scheduleAtFixedRate(task, 0, 1000);
 		}
 

@@ -132,38 +132,43 @@ public class Elevator extends Loggable { // thread
 						setPoint = 10;
 					}
 					// useSetPoint();
-					if (IO.elevator_mode() == 0 && elevatorSolenoid.get() != DoubleSolenoid.Value.kReverse) { // Forks
-																												// retracted
-						// solenoid retracted, servos up
-						if (servo_1.getAngle() != Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE || servo_2.getAngle() != Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE) {
-							servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE);
-							servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE);
-							try {
-								Thread.sleep(700);
-							} catch (InterruptedException e) {
-							}
-						}
-						elevatorSolenoid.set(DoubleSolenoid.Value.kReverse);
-					}
 
-					else if (IO.elevator_mode() == 1) { // Tote pickup
-						// solenoid exteded, servos down
-						servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_DOWN_ANGLE);
-						servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_DOWN_ANGLE);
-
-						elevatorSolenoid.set(DoubleSolenoid.Value.kForward);
-
-					}
-
-					else if (IO.elevator_mode() == 2) { // Bin pickup
-						// soleoid extended, servos up
-						servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE);
-						servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE);
-						elevatorSolenoid.set(DoubleSolenoid.Value.kForward);
-					}
 					// PID();
 					manual(0);
 				}
+				
+				
+				if (IO.elevator_mode() == 0 && elevatorSolenoid.get() != DoubleSolenoid.Value.kReverse) { // Forks
+																											// retracted
+					// solenoid retracted, servos up
+					if (servo_1.getAngle() != Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE || servo_2.getAngle() != Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE) {
+						servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE);
+						servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE);
+						try {
+							Thread.sleep(700);
+						} catch (InterruptedException e) {
+						}
+					}
+					elevatorSolenoid.set(DoubleSolenoid.Value.kReverse);
+				}
+
+				else if (IO.elevator_mode() == 1) { // Tote pickup
+					// solenoid exteded, servos down
+					servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_DOWN_ANGLE);
+					servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_DOWN_ANGLE);
+
+					elevatorSolenoid.set(DoubleSolenoid.Value.kForward);
+
+				}
+
+				else if (IO.elevator_mode() == 2) { // Bin pickup
+					// soleoid extended, servos up
+					servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE);
+					servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE);
+					elevatorSolenoid.set(DoubleSolenoid.Value.kForward);
+				}
+				
+				
 			}
 		}
 

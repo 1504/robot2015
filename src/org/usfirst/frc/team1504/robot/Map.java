@@ -80,6 +80,11 @@ public class Map {
 	
 	public static final int[] ALIGNER_STAGE = {12, 10, 8}; // aligner -- open, almost, closed
 	
-	public static final long DRIVE_OSC_TIME = 200;
-	public static final double DRIVE_OSC_INTENSITY = .2;
+	// Tote wiggle values
+	public static final long DRIVE_OSC_TIME = 100;
+	public static final double[] DRIVE_OSC_INTENSITY = {0.0, .25, .3};
+	
+	// Drive class magic numbers
+	public static final double[] DRIVE_OUTPUT_MAGIC_NUMBERS = {-1.0, -1.0, 1.0, 1.0};
+	public static final double[] DRIVE_GROUNDSPEED_MULTIPLIERS = {1.0, 1.0, 1.0};
 }

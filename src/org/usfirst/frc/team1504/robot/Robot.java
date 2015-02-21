@@ -19,7 +19,7 @@ public class Robot extends SampleRobot {
 	BinCapture capture;
 	Elevator elevator;
 	IO io;
-	Serial serial;
+	//Serial serial;
 	DriverStation driverstation = DriverStation.getInstance();
 
 	// PowerDistributionPanel pdp;
@@ -46,7 +46,7 @@ public class Robot extends SampleRobot {
 		classes[2] = new Drive();
 		classes[3] = new Elevator();
 		classes[4] = new IO();
-		classes[5] = new Serial();
+		//classes[5] = new Serial();
 		
 		log = new Logger(classes);
 

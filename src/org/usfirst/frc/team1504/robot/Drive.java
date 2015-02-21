@@ -29,6 +29,8 @@ public class Drive extends Loggable {
 	long starttime;
 
 	double[] dircns;
+	
+	Timer time;
 
 	public Drive() {
 		DriveThread = new DriveThreadClass();
@@ -59,6 +61,20 @@ public class Drive extends Loggable {
 		dircns[1] = x;
 		dircns[2] = w;
 	}
+	
+	public double[] groundspeed_offset(double[] input, double[] sensor) {
+		double[] values = input;
+		double input_max = Math.max(Math.max(Math.abs(input[0]), Math.abs(input[1])), Math.abs(input[2]));
+		double sensor_max = Math.max(Math.max(Math.abs(sensor[0]), Math.abs(sensor[1])), Math.abs(sensor[0]));
+		
+		if(input_max == 0 || sensor_max == 0)
+			return input;
+		
+		for(int i = 2; i >= 0; --i)
+			values[i] = input[i] + ((input[i] / input_max) - (sensor[i] / sensor_max)) * Map.DRIVE_GROUNDSPEED_MULTIPLIERS[i];
+		
+		return values;
+	}
 
 	public void outputCompute(double[] input) {
 		double max = Math.max(1.0, Math.abs(input[0]) + Math.abs(input[1]) + Math.abs(input[2]));
@@ -70,10 +86,10 @@ public class Drive extends Loggable {
 	}
 
 	public void motorOutput() {
-		frontleft.set(frontleft_val * -1);
-		frontright.set(frontright_val);
-		backleft.set(backleft_val * -1);
-		backright.set(backright_val);
+		frontleft.set(frontleft_val * Map.DRIVE_OUTPUT_MAGIC_NUMBERS[0]);
+		backleft.set(backleft_val * Map.DRIVE_OUTPUT_MAGIC_NUMBERS[1]);
+		backright.set(backright_val * Map.DRIVE_OUTPUT_MAGIC_NUMBERS[2]);
+		frontright.set(frontright_val * Map.DRIVE_OUTPUT_MAGIC_NUMBERS[3]);
 	}
 
 	public double[] dump() {
@@ -114,10 +130,14 @@ public class Drive extends Loggable {
 	{
 		if (osc_cw)
 		{
-			dircns[2] += Map.DRIVE_OSC_INTENSITY;
+			dircns[0] += Map.DRIVE_OSC_INTENSITY[0];
+			dircns[1] += Map.DRIVE_OSC_INTENSITY[1];
+			dircns[2] += Map.DRIVE_OSC_INTENSITY[2];
 		} else
 		{
-			dircns[2] -= Map.DRIVE_OSC_INTENSITY;
+			dircns[0] -= Map.DRIVE_OSC_INTENSITY[0];
+			dircns[1] -= Map.DRIVE_OSC_INTENSITY[1];
+			dircns[2] -= Map.DRIVE_OSC_INTENSITY[2];
 		}
 		return dircns;
 	}
@@ -129,7 +149,7 @@ public class Drive extends Loggable {
 		protected Task task;
 
 		public DriveThreadClass() {
-			task = new Task();
+			//task = new Task();
 			isRunning = true;
 			oscCreated = false;
 		}
@@ -145,13 +165,15 @@ public class Drive extends Loggable {
 				
 				if (IO.osc_toggle() || oscCreated) {
 					if (!oscCreated) {
-						Timer time = new Timer();
+						time = new Timer();
+						task = new Task();
 
 						oscCreated = true;
 						time.scheduleAtFixedRate(task, 0, Map.DRIVE_OSC_TIME);
 					}
 					if (!IO.osc_toggle()) {
 						time.cancel();
+						time.purge();
 						oscCreated = false;
 					}
 					
@@ -171,6 +193,9 @@ public class Drive extends Loggable {
 						dircns = getOsc(dircns);
 					}
 				}
+				
+				dircns = groundspeed_offset(dircns, IO.mouse_values());
+				
 				outputCompute(dircns);// calculate for motors
 
 				motorOutput();// set

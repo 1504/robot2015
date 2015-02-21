@@ -160,6 +160,12 @@ public class IO extends Loggable {
 		}
 		return stuff;
 	}
+	
+	public static double[] mouse_values()
+	{
+		double[] output = {0.0, 0.0, 0.0};
+		return output;
+	}
 
 	public void startmouse() {
 		IOThread thread = new IOThread();
