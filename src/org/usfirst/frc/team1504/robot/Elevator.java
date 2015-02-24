@@ -191,7 +191,7 @@ public class Elevator extends Loggable { // thread
 		vals[1] = IO.elevatorMode; // 0 is retracted mode, 1 is tote mode, 2 is
 									// bin mode
 		vals[2] = setPoint; // desired lvl
-		vals[3] = hallCounter.get(); // current lvl
+		vals[3] = 0;//hallCounter.get(); // current lvl
 		vals[4] = elevatorMotor.getSpeed();
 		vals[5] = elevatorMotor.getOutputCurrent();
 		vals[6] = elevatorMotor.getOutputVoltage();

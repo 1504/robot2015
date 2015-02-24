@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.SerialPort;
 
 /**
  * This project is the property of FRC team 1504: The Desperate Penguins, and
@@ -32,6 +33,8 @@ public class Robot extends SampleRobot {
 	// boolean pcm_isEnabled;
 
 	// BuiltInAccelerometer accelerometer;
+	
+	SerialPort ser = new SerialPort(9600, SerialPort.Port.kOnboard);
 
 	public Robot() {
 		// myRobot = new RobotDrive(0, 1, 2, 3); //frontleft, backleft,
@@ -40,7 +43,7 @@ public class Robot extends SampleRobot {
 		// leftStick = new Joystick(0);
 		// rightStick = new Joystick(1);
 		MapXML map = new MapXML();
-		classes = new Loggable[6];
+		classes = new Loggable[5];
 		classes[0] = new Aligner();
 		classes[1] = new BinCapture();
 		classes[2] = new Drive();
@@ -78,7 +81,7 @@ public class Robot extends SampleRobot {
 	}
 
 	public void autonomous() {
-//		log.start("A");
+		log.start("A");
 		switch(IO.get_auton_mode())
 		{
 		case 0:
@@ -157,13 +160,13 @@ public class Robot extends SampleRobot {
 			}
 
 		}
-//		log.stop();
+		log.stop();
 	}
 	public void operatorControl() {
 		log.start("O");
-		System.out.println(System.getProperty("user.name"));
 		while (isOperatorControl() && isEnabled()) {
 			try {
+				ser.writeString("test\n");
 				Thread.sleep(100);
 			} catch (InterruptedException e) {}
 		}
@@ -171,6 +174,5 @@ public class Robot extends SampleRobot {
 	}
 
 	public void disabled() {
-		log.start("TD");
 	}
 }

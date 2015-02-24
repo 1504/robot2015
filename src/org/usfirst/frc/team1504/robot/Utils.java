@@ -18,7 +18,7 @@ public class Utils {
 	public static double deadzone(double input) {
 		if(Math.abs(input) < Map.JOYSTICK_DEAD_ZONE)
 			input *= 0;
-		input = input / 0.9 + (-0.1 * Math.signum(input)); // Restore linearity
+		input = input / (1.0 - Map.JOYSTICK_DEAD_ZONE) + (-1.0 * Map.JOYSTICK_DEAD_ZONE * Math.signum(input)); // Restore linearity
 		return input;
 	}
 }
