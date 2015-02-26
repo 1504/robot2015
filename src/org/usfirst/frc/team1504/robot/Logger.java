@@ -117,7 +117,8 @@ public class Logger {
 			fileStream.write(doubleToByte(accelerometer.getZ()));
 
 		} catch (IOException e1) {
-			System.out.println("Unable to write the right thing.");
+			System.out.println(e1.getStackTrace());
+			System.out.println("Unable to write the right thing. - Logger methods");
 		}
 
 		for (Loggable o : classes) {
@@ -126,7 +127,8 @@ public class Logger {
 					// System.out.println(d);
 					fileStream.write(doubleToByte(d));
 				} catch (IOException e) {
-					System.out.println("Unable to write the right thing.");
+					System.out.println(e.getStackTrace());
+					System.out.println("Unable to write the right thing - loggable class methods");
 				}
 			}
 		}
@@ -174,7 +176,7 @@ public class Logger {
 	class Task extends TimerTask {
 		public void run() {
 			write();
-			System.out.println("tick");
+//			System.out.println("tick");
 
 		}
 

@@ -97,7 +97,7 @@ public class Map {
 	// Drive class magic numbers
 	public static final double[] DRIVE_OUTPUT_MAGIC_NUMBERS = { -1.0, -1.0, 1.0, 1.0 };
 	public static final double[] DRIVE_GROUNDSPEED_MULTIPLIERS = { 1.0, 1.0, 1.0 };
-	public static final long TICK_INTERVAL = 1000;
+	public static final long TICK_INTERVAL = 20;
 	
 
 }

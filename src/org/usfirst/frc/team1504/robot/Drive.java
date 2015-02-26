@@ -93,7 +93,7 @@ public class Drive extends Loggable {
 	}
 
 	public double[] dump() {
-		double[] stuff = new double[14];
+		double[] stuff = new double[15];
 
 		stuff[0] = frontleft_val;
 		stuff[1] = frontleft.getOutputCurrent();
@@ -113,7 +113,8 @@ public class Drive extends Loggable {
 
 		stuff[12] = loopcount;
 		stuff[13] = System.currentTimeMillis() - starttime;
-
+		
+		stuff[14] = rotation_offset;
 		loopcount = 0;
 
 		return stuff;

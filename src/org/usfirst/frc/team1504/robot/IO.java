@@ -398,7 +398,7 @@ public class IO extends Loggable {
 	}
 
 	public double[] dump() {
-		double[] io_inputs = new double[31];
+		double[] io_inputs = new double[32];
 
 		io_inputs[0] = leftstick.getRawAxis(Map.JOYSTICK_Y_AXIS);
 		io_inputs[1] = leftstick.getRawAxis(Map.JOYSTICK_X_AXIS);
@@ -420,6 +420,7 @@ public class IO extends Loggable {
 		io_inputs[13] = Utils.boolconverter(secondary.getRawButton(Map.ELEVATOR_RETRACTED_MODE_BUTTON));
 		io_inputs[14] = Utils.boolconverter(secondary.getRawButton(Map.ELEVATOR_TOTE_MODE_BUTTON));
 		io_inputs[15] = Utils.boolconverter(secondary.getRawButton(Map.ELEVATOR_BIN_MODE_BUTTON));
+		
 
 		for (int i = 16; i < (Map.ELEVATOR_CONTROL_BUTTONS.length + 16); i++) {
 			io_inputs[i] = Utils.boolconverter(secondary.getRawButton(Map.ELEVATOR_CONTROL_BUTTONS[i - 16]));
@@ -430,8 +431,17 @@ public class IO extends Loggable {
 		}
 		io_inputs[29] = loopcount;
 		io_inputs[30] = System.currentTimeMillis() - starttime;
+		
+		io_inputs[31] = Utils.boolconverter(osc_toggle());
+		
 		loopcount = 0;
+		
 		return io_inputs;
 	}
-
+	
+	public String dumpFormat()
+	{
+		
+		return null;
+	}
 }

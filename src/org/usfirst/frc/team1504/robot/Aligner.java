@@ -87,7 +87,7 @@ public class Aligner extends Loggable {
 		// motor speed, current, voltage
 		motor[0] = align.getSpeed();
 		motor[1] = align.getOutputCurrent();
-		motor[2] = align.getBusVoltage();
+		motor[2] = align.getOutputVoltage();
 		motor[3] = clawStage;
 		motor[4] = loopcount;
 		motor[5] = System.currentTimeMillis() - starttime;

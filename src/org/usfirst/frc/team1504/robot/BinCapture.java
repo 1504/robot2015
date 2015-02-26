@@ -32,9 +32,11 @@ public class BinCapture extends Loggable // thread
 	long starttime;
 
 	boolean isManual;
+	boolean firstStart;
 
 	public BinCapture() {
 
+		firstStart = true;
 		BinCap = new BinCaptureThread();
 
 		motor = new CANTalon(Map.BIN_CAPTURE_TALON_PORT);
@@ -47,16 +49,16 @@ public class BinCapture extends Loggable // thread
 		photonCannon = new Relay(Map.RELAY_PORT, Relay.Direction.kForward);
 		photonCannon.set(Relay.Value.kOff);
 
-		limitswitchup=new DigitalInput(Map.LIMITSWITCHUP_PORT);
-		limitswitchdown=new DigitalInput(Map.LIMITSWITCHDOWN_PORT);
-		
+		limitswitchup = new DigitalInput(Map.LIMITSWITCHUP_PORT);
+		limitswitchdown = new DigitalInput(Map.LIMITSWITCHDOWN_PORT);
+
 		armtoggle = false;
 		clawtoggle = false;
 
 		loopcount = 0;
 
 		isManual = false;
-		
+
 		armstate = true;
 	}
 
@@ -106,11 +108,21 @@ public class BinCapture extends Loggable // thread
 				}
 				loopcount++;
 
-				isManual = IO.bincap_manual_toggle() || (isManual && !IO.bincapture_input()[0]);
+				if (firstStart) {
+					if (IO.bincap_manual_toggle()) {
+						firstStart = false;
+					} else {
+						isManual = true;
+					}
+				} else {
+					isManual = IO.bincap_manual_toggle() || (isManual && !IO.bincapture_input()[0]);
+				}
 
 				if (isManual) {
 					if (IO.bincap_manual_toggle()) {
 						manual(IO.bincap_manual());
+					} else {
+						manual(0);
 					}
 				} else {
 					if (!armstate && !limitswitchdown.get())
