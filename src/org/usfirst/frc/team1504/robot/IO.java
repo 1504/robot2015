@@ -71,7 +71,7 @@ public class IO extends Loggable {
 		{
 			i = 2;
 		}
-		return i;
+		return 0;
 	}
 	
 	public static double[] mecanum_input() {

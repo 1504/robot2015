@@ -42,7 +42,7 @@ public class BinCapture extends Loggable // thread
 		motor = new CANTalon(Map.BIN_CAPTURE_TALON_PORT);
 
 		arm = new DoubleSolenoid(Map.EXTEND_SOLENOID_FORWARD_PORT, Map.EXTEND_SOLENOID_REVERSE_PORT);
-		arm.set(DoubleSolenoid.Value.kForward);
+		//arm.set(DoubleSolenoid.Value.kReverse);
 
 		claw = new Solenoid(Map.CLAW_SOLENOID_PORT);
 
@@ -67,13 +67,13 @@ public class BinCapture extends Loggable // thread
 	}
 
 	public void extend() {
-		if (arm.get() == DoubleSolenoid.Value.kForward && !armtoggle) {
+		if (arm.get() != DoubleSolenoid.Value.kReverse && !armtoggle) {
 			armtoggle = true;
 			arm.set(DoubleSolenoid.Value.kReverse);
 			photonCannon.set(Relay.Value.kOn);
 			armstate = false;
 		}
-		if (arm.get() == DoubleSolenoid.Value.kReverse && !armtoggle) {
+		if (arm.get() != DoubleSolenoid.Value.kForward && !armtoggle) {
 			armtoggle = true;
 			arm.set(DoubleSolenoid.Value.kForward);
 			photonCannon.set(Relay.Value.kOff);
@@ -114,9 +114,10 @@ public class BinCapture extends Loggable // thread
 					} else {
 						isManual = true;
 					}
-				} else {
-					isManual = IO.bincap_manual_toggle() || (isManual && !IO.bincapture_input()[0]);
+					firstStart = false;
 				}
+				
+				isManual = IO.bincap_manual_toggle() || (isManual && !IO.bincapture_input()[0]);
 
 				if (isManual) {
 					if (IO.bincap_manual_toggle()) {

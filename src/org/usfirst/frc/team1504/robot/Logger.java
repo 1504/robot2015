@@ -106,15 +106,27 @@ public class Logger {
 		// Elevator(9)
 		// IO Dump(31)
 
+		byte[] chirp = {67, 72, 73, 82, 80};
+		byte[] chirpbreak = {61, 94, 61};
+		
 		try {
+			fileStream.write(chirp);
 			fileStream.write(doubleToByte(driverstation.getMatchTime()));
+			fileStream.write(chirpbreak);
 			fileStream.write(doubleToByte(pdp.getTotalCurrent()));
+			fileStream.write(chirpbreak);
 			fileStream.write(doubleToByte(driverstation.getBatteryVoltage()));
+			fileStream.write(chirpbreak);
 			fileStream.write(boolToByte(compressor.getPressureSwitchValue()));
+			fileStream.write(chirpbreak);
 			fileStream.write(floatToByte(compressor.getCompressorCurrent()));
+			fileStream.write(chirpbreak);
 			fileStream.write(doubleToByte(accelerometer.getX()));
+			fileStream.write(chirpbreak);
 			fileStream.write(doubleToByte(accelerometer.getY()));
+			fileStream.write(chirpbreak);
 			fileStream.write(doubleToByte(accelerometer.getZ()));
+			fileStream.write(chirpbreak);
 
 		} catch (IOException e1) {
 			System.out.println(e1.getStackTrace());
@@ -127,8 +139,9 @@ public class Logger {
 					// System.out.println(d);
 					fileStream.write(doubleToByte(d));
 				} catch (IOException e) {
+				//	System.out.println(e.);
 					System.out.println(e.getStackTrace());
-					System.out.println("Unable to write the right thing - loggable class methods");
+					System.out.println("Unable to write the right thing - loggable class methods in " + o.getClass().toString());
 				}
 			}
 		}

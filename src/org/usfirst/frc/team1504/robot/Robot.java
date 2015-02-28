@@ -85,21 +85,36 @@ public class Robot extends SampleRobot {
 		switch(IO.get_auton_mode())
 		{
 		case 0:
-			while (driverstation.isAutonomous()) {
+		default:
 				// Drive forward for 6 seconds, into the AUTO ZONE
-				drive.autonDrive(-.5, 0, 0);
+				/*drive.autonDrive(-.2, 0.0, 0.0); // Reverse to push bin out of the way (- is forward)
+				//drive.autonDrive(0.0, .75, 0.0);
 					try {
-						Thread.sleep(6000);
+						Thread.sleep(2900);
 					} catch (InterruptedException e) {}
 				
-				drive.autonDrive(0, 0, 0);
-			}
-
-		case 1:	
+				drive.autonDrive(0.0, 0.0, 0.0);
+				
+				drive.autonDrive(.25, 0, 0);
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				drive.autonDrive(0.0, -.5, 0.0);
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}*/
+				drive.autonDrive(0.0, 0.0, 0.0);
+				break;
+/*		case 1:	
 		 //Pickup a YELLOW TOTE, and track to the right for .5 seconds, into
 //		 the AUTO ZONE with the TOTE.
-			while(driverstation.isAutonomous())
-			{
 				 elevator.setPoint = 2;
 //				 elevator.useSetPoint();
 				 try{
@@ -112,14 +127,11 @@ public class Robot extends SampleRobot {
 				 {
 				 drive.autonDrive(0, .5, 0);
 				 }
-				 drive.autonDrive(0, 0, 0);
-			}
-			
+				 drive.autonDrive(0, 0, 0);		
+				 break;
 		case 2: 
 			//Grabs a bin from the STEP, driving forward for 5 seconds into the
 	//		 AUTO ZONE, and then turning 180 degrees in 1 second.
-			 while (driverstation.isAutonomous())
-			 {
 				 capture.claw.set(true);
 				 try
 				 {
@@ -147,21 +159,25 @@ public class Robot extends SampleRobot {
 				 catch (InterruptedException ex) {}
 				 drive.autonDrive(0, 0, 0);
 				 }
-			 }
-		default:
-			while (driverstation.isAutonomous()) {
+				 break;
+			default:
 				// Drive forward for 6 seconds, into the AUTO ZONE
 				drive.autonDrive(-.5, 0, 0);
 					try {
 						Thread.sleep(6000);
 					} catch (InterruptedException e) {}
 				
-				drive.autonDrive(0, 0, 0);
-			}
+				drive.autonDrive(0, 0, 0);*/
+			
+		case 3:
+			
+			break;
 
 		}
 		log.stop();
 	}
+	
+	
 	public void operatorControl() {
 		log.start("O");
 		while (isOperatorControl() && isEnabled()) {
