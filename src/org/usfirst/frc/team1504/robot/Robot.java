@@ -170,7 +170,36 @@ public class Robot extends SampleRobot {
 				drive.autonDrive(0, 0, 0);*/
 			
 		case 3:
-			
+			elevator.setElevatorMode(2);
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			elevator.manual(-.75);
+			try {
+				Thread.sleep(750);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			elevator.manual(0.0);
+			drive.autonDrive(.5, 0.0, 0.0);
+			try {
+				Thread.sleep(1750);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			drive.autonDrive(0.0, 0.0, .35);
+			try {
+				Thread.sleep(1750);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			drive.autonDrive(0.0, 0.0, 0.0);
 			break;
 
 		}

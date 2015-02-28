@@ -71,7 +71,7 @@ public class IO extends Loggable {
 		{
 			i = 2;
 		}
-		return 0;
+		return 3;
 	}
 	
 	public static double[] mecanum_input() {
@@ -119,14 +119,18 @@ public class IO extends Loggable {
 	}
 
 	public static int elevator_mode() {
+		int mode = -1;
 		if (secondary.getRawButton(Map.ELEVATOR_RETRACTED_MODE_BUTTON)) {
-			elevatorMode = 0;
+			mode = 0;
 		} else if (secondary.getRawButton(Map.ELEVATOR_TOTE_MODE_BUTTON)) {
-			elevatorMode = 1;
+			mode = 1;
 		} else if (secondary.getRawButton(Map.ELEVATOR_BIN_MODE_BUTTON)) {
-			elevatorMode = 2;
+			mode = 2;
 		}
-		return elevatorMode;
+		
+		if(mode >= 0)
+			elevatorMode = mode;
+		return mode;
 	}
 
 	public static boolean[] elevatorButtonValues() {

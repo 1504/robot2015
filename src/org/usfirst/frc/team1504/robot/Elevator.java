@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.InterruptHandlerFunction;
 import edu.wpi.first.wpilibj.PIDController;
@@ -11,6 +12,8 @@ import edu.wpi.first.wpilibj.PIDController;
 //import edu.wpi.first.wpilibj.JoystickButton;
 
 public class Elevator extends Loggable { // thread
+	DriverStation ds = DriverStation.getInstance();
+	
 	DigitalInput hallSensor;
 	DigitalInput limit;
 
@@ -22,7 +25,10 @@ public class Elevator extends Loggable { // thread
 	PIDController elevatorPID;
 	Counter hallCounter;
 	// HallHandlerClass handler;
+	
 	int setPoint;
+	int elevatorMode;
+	
 	boolean[] button;
 	boolean servo_1State;
 	boolean servo_2State;
@@ -96,49 +102,54 @@ public class Elevator extends Loggable { // thread
 					starttime = System.currentTimeMillis();
 				}
 				loopcount++;
-				isManual = IO.elevator_manual_toggle() || (isManual && !checkButtons());
-				if (isManual) {
-					if (!limit.get() || IO.elevator_manual() <= 0.0) {
-						if (IO.elevator_manual_toggle()) {
-							manual(IO.elevator_manual());
+				
+				if(ds.isOperatorControl()) {
+					if(IO.elevator_mode() >= 0)
+						elevatorMode = IO.elevator_mode();
+				
+					isManual = IO.elevator_manual_toggle() || (isManual && !checkButtons());
+					if (isManual) {
+						if (!limit.get() || IO.elevator_manual() <= 0.0) {
+							if (IO.elevator_manual_toggle()) {
+								manual(IO.elevator_manual());
+							} else {
+								manual(0.0); //we may remove this if we're not doing setpoints. 
+							}
 						} else {
-							manual(0.0); //we may remove this if we're not doing setpoints. 
+							manual(0.0); 
 						}
+	
 					} else {
-						manual(0.0); 
+						button = IO.elevatorButtonValues();
+						if (button[0]) {
+							setPoint = 1;
+						} else if (button[1]) {
+							setPoint = 2;
+						} else if (button[2]) {
+							setPoint = 3;
+						} else if (button[3]) {
+							setPoint = 4;
+						} else if (button[4]) {
+							setPoint = 5;
+						} else if (button[5]) {
+							setPoint = 6;
+						} else if (button[6]) {
+							setPoint = 7;
+						} else if (button[7]) {
+							setPoint = 8;
+						} else if (button[8]) {
+							setPoint = 9;
+						} else if (button[9]) {
+							setPoint = 10;
+						}
+						// useSetPoint();
+	
+						// PID();
+						manual(0);
 					}
-
-				} else {
-					button = IO.elevatorButtonValues();
-					if (button[0]) {
-						setPoint = 1;
-					} else if (button[1]) {
-						setPoint = 2;
-					} else if (button[2]) {
-						setPoint = 3;
-					} else if (button[3]) {
-						setPoint = 4;
-					} else if (button[4]) {
-						setPoint = 5;
-					} else if (button[5]) {
-						setPoint = 6;
-					} else if (button[6]) {
-						setPoint = 7;
-					} else if (button[7]) {
-						setPoint = 8;
-					} else if (button[8]) {
-						setPoint = 9;
-					} else if (button[9]) {
-						setPoint = 10;
-					}
-					// useSetPoint();
-
-					// PID();
-					manual(0);
 				}
 				
-				
-				if (IO.elevator_mode() == 0 && elevatorSolenoid.get() != DoubleSolenoid.Value.kReverse) { // Forks
+				if (elevatorMode == 0 && elevatorSolenoid.get() != DoubleSolenoid.Value.kReverse) { // Forks
 																											// retracted
 					// solenoid retracted, servos up
 					if (servo_1.getAngle() != Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE || servo_2.getAngle() != Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE) {
@@ -152,7 +163,7 @@ public class Elevator extends Loggable { // thread
 					elevatorSolenoid.set(DoubleSolenoid.Value.kReverse);
 				}
 
-				else if (IO.elevator_mode() == 1) { // Tote pickup
+				else if (elevatorMode == 1) { // Tote pickup
 					// solenoid exteded, servos down
 					servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_DOWN_ANGLE);
 					servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_DOWN_ANGLE);
@@ -161,7 +172,7 @@ public class Elevator extends Loggable { // thread
 
 				}
 
-				else if (IO.elevator_mode() == 2) { // Bin pickup
+				else if (elevatorMode == 2) { // Bin pickup
 					// soleoid extended, servos up
 					servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE);
 					servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE);
@@ -172,13 +183,17 @@ public class Elevator extends Loggable { // thread
 			}
 		}
 
-		private void manual(double y) {
-			elevatorMotor.set(y);
-		}
-
 		public void stopElevator() {
 			isRunning = false;
 		}
+	}
+	
+	public void setElevatorMode(int i) {
+		elevatorMode = i;
+	}
+	
+	public void manual(double y) {
+		elevatorMotor.set(y);
 	}
 
 	public int get_elevator_level() {
