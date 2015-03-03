@@ -128,46 +128,46 @@ public class Robot extends SampleRobot {
 				 drive.autonDrive(0, .5, 0);
 				 }
 				 drive.autonDrive(0, 0, 0);		
-				 break;
+				 break; */
 		case 2: 
 			//Grabs a bin from the STEP, driving forward for 5 seconds into the
 	//		 AUTO ZONE, and then turning 180 degrees in 1 second.
-				 capture.claw.set(true);
-				 try
-				 {
-				 Thread.sleep(500);
-				 }
-				 catch (InterruptedException ex) {}
-				 capture.arm.set(DoubleSolenoid.Value.kReverse);
-				
-				 long binautontime = System.currentTimeMillis();
-				 while(Math.abs(System.currentTimeMillis() - binautontime) <= 6000)
-				 {
-				 drive.autonDrive(.5, .5, .5);
-				 try
-				 {
-				 Thread.sleep(5000);
-				 }
-				 catch (InterruptedException ex) {}
-				
-		
-				 drive.autonDrive(0, 0, .25);
-				 try
-				 {
-				 Thread.sleep(1000);
-				 }
-				 catch (InterruptedException ex) {}
-				 drive.autonDrive(0, 0, 0);
-				 }
-				 break;
-			default:
-				// Drive forward for 6 seconds, into the AUTO ZONE
-				drive.autonDrive(-.5, 0, 0);
-					try {
-						Thread.sleep(6000);
-					} catch (InterruptedException e) {}
-				
-				drive.autonDrive(0, 0, 0);*/
+			 capture.extend();
+			 try
+			 {
+				 Thread.sleep(1500);
+			 }
+			 catch (InterruptedException ex) {}
+			 
+			 drive.autonDrive(.25, 0.0, 0.0); //.5?
+			 try
+			 {
+				 Thread.sleep(1500); //change this later
+			 }
+			 catch(InterruptedException ex) {}
+			 
+			 capture.grab();
+			 
+			 drive.autonDrive(-.25, 0.0, 0.0);
+			 try
+			 {
+				 Thread.sleep(3500); //change this later, maybe even less?
+			 }
+			 catch(InterruptedException ex) {}
+			 
+			 drive.autonDrive(.25, 0.0, 0.0);
+			try {
+				Thread.sleep(250);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			 
+			 capture.grab();
+			 capture.extend();
+			 
+			 drive.autonDrive(0.0, 0.0, 0.0);
+			 
+			 break;
 			
 		case 3:
 			elevator.setElevatorMode(2); //Bin mode

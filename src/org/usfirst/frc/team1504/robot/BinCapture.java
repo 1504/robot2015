@@ -149,7 +149,7 @@ public class BinCapture extends Loggable // thread
 		}
 	}
 
-	private void manual(double y) {
+	public void manual(double y) {
 		motor.set(y);
 	}
 
