@@ -208,7 +208,7 @@ public class Robot extends SampleRobot {
 				e.printStackTrace();
 			}
 			elevator.setElevatorMode(0);
-			drive.autonDrive(.25, 0.0, 0.0); //drive backawrd
+			drive.autonDrive(.25, 0.0, 0.0); //drive backward
 			try {
 				Thread.sleep(250);
 			} catch (InterruptedException e) {
