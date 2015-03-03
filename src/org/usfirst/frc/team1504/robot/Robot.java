@@ -170,36 +170,51 @@ public class Robot extends SampleRobot {
 				drive.autonDrive(0, 0, 0);*/
 			
 		case 3:
-			elevator.setElevatorMode(2);
+			elevator.setElevatorMode(2); //Bin mode
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			elevator.manual(-.75);
+			elevator.manual(-.75); //Pick up tote
 			try {
 				Thread.sleep(750);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			elevator.manual(0.0);
-			drive.autonDrive(.5, 0.0, 0.0);
+			elevator.manual(0.0); //stop elevator lift from moving
+			drive.autonDrive(.5, 0.0, 0.0); //drive backwards
 			try {
 				Thread.sleep(1750);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			drive.autonDrive(0.0, 0.0, .35);
+			drive.autonDrive(0.0, 0.0, .35); //rotate 90 degrees to ensure robot is completely in auto zone/for convenience when teleop starts
 			try {
 				Thread.sleep(1750);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			drive.autonDrive(0.0, 0.0, 0.0);
+			drive.autonDrive(0.0, 0.0, 0.0); //stop driving	
+			try {
+				Thread.sleep(250);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+			elevator.manual(.75); //elevator down
+			try {
+				Thread.sleep(750);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			elevator.setElevatorMode(0);
+			drive.autonDrive(.25, 0.0, 0.0); //drive backawrd
+			try {
+				Thread.sleep(250);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
 			break;
 
 		}
