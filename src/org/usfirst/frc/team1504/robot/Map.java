@@ -40,7 +40,7 @@ public class Map {
 
 	public static final int LIMITSWITCHUP_PORT = 7;
 	public static final int LIMITSWITCHDOWN_PORT = 8;
-	
+
 	// Servos
 	public static final int ELEVATOR_SERVO_LEFT_PORT = 0;// left
 	public static final int ELEVATOR_SERVO_RIGHT_PORT = 1;// right
@@ -86,8 +86,9 @@ public class Map {
 	public static final int ELEVATOR_TOTE_MODE_BUTTON = 9;
 	public static final int ELEVATOR_BIN_MODE_BUTTON = 7;
 
-	public static final int[] ALIGNER_STAGE = {12, 10}; // aligner -- retracted,
-																//extended
+	public static final int[] ALIGNER_STAGE = { 12, 10 }; // aligner --
+															// retracted,
+															// extended
 	// Tote wiggle values
 	public static final long DRIVE_OSC_TIME = 100;
 	public static final double[] DRIVE_OSC_INTENSITY = { 0.0, .25, .3 };
@@ -96,6 +97,4 @@ public class Map {
 	public static final double[] DRIVE_OUTPUT_MAGIC_NUMBERS = { -1.0, -1.0, 1.0, 1.0 };
 	public static final double[] DRIVE_GROUNDSPEED_MULTIPLIERS = { 1.0, 1.0, 1.0 };
 	public static final long TICK_INTERVAL = 20;
-	
-
 }

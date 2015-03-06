@@ -165,10 +165,7 @@ public class Elevator extends Loggable { // thread
 						}
 					}
 					
-					if(servo_1.getAngle() == Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE && servo_2.getAngle() == Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE)
-					{
-						flapperSolenoid.set(false);
-					}
+					flapperSolenoid.set(false);
 					elevatorSolenoid.set(DoubleSolenoid.Value.kReverse);
 				}
 
@@ -196,11 +193,8 @@ public class Elevator extends Loggable { // thread
 					servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE);
 					servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE);
 					elevatorSolenoid.set(DoubleSolenoid.Value.kForward);
-					
-					if(servo_1.getAngle() == Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE && servo_2.getAngle() == Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE)
-					{
-						flapperSolenoid.set(false);
-					}
+					flapperSolenoid.set(false);
+				
 
 					
 				}

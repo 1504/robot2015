@@ -387,7 +387,7 @@ public class IO extends Loggable {
 					
 					arduino.writeBulk(buffer);
 					
-					arduino.read(2, 6, arduinoOutput); // 0-2: x,y,SQUAL of left
+					arduino.read(0, 6, arduinoOutput); // 0-2: x,y,SQUAL of left
 														// sensor; 3-5:
 														// x,y,SQUAL of right
 														// sensor;

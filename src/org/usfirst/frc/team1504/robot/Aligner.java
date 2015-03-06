@@ -2,6 +2,7 @@ package org.usfirst.frc.team1504.robot;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class Aligner extends Loggable {
@@ -9,6 +10,8 @@ public class Aligner extends Loggable {
 	DoubleSolenoid stage_1;
 	protected int clawStage;
 
+	DriverStation ds = DriverStation.getInstance();
+	
 	// Talon
 	CANTalon align;
 	
@@ -52,12 +55,8 @@ public class Aligner extends Loggable {
 		setPosition(0);
 	}
 
-	public void half() {
-		setPosition(1);
-	}
-
 	public void close() {
-		setPosition(2);
+		setPosition(1);
 	}
 
 	public void setSpeed(boolean speed) {
@@ -92,11 +91,19 @@ public class Aligner extends Loggable {
 				}
 				loopcount++;
 				buttons = IO.alignerButtons();
-				if (buttons[0]) {
-					setPosition(0);
-				} else if (buttons[1]) {
-					setPosition(1);
+				if(ds.isOperatorControl())
+				{
+					if (buttons[0]) {
+						open();
+					} else if (buttons[1]) {
+						close();
+					}
 				}
+			}
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 

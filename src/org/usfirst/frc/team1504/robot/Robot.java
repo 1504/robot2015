@@ -1,6 +1,5 @@
 package org.usfirst.frc.team1504.robot;
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.RobotDrive;
@@ -147,6 +146,12 @@ public class Robot extends SampleRobot {
 			 catch(InterruptedException ex) {}
 			 
 			 capture.grab();
+			 
+			 try {
+				Thread.sleep(100);
+			} catch (InterruptedException e2) {
+				e2.printStackTrace();
+			}
 			 
 			 drive.autonDrive(-.25, 0.0, 0.0);
 			 try
