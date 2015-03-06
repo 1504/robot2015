@@ -1,9 +1,9 @@
 package org.usfirst.frc.team1504.robot;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.SerialPort.Port;
+import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class IO extends Loggable {
@@ -18,7 +18,7 @@ public class IO extends Loggable {
 	
 	boolean is_mouse_enabled;
 
-	//SerialPort arduino;
+	I2C arduino;
 	DriverStation driverstation = DriverStation.getInstance();
 	Port kOnboard;
 	byte[] buffer;
@@ -43,7 +43,7 @@ public class IO extends Loggable {
 
 	public IO() {
 
-		//arduino = new SerialPort(9600, SerialPort.Port.kOnboard);
+		arduino = new I2C(Port.kOnboard, 2);
 		loopcount = 0;
 
 		autoninput_1 = new DigitalInput(2);
@@ -52,8 +52,9 @@ public class IO extends Loggable {
 		
 		is_mouse_enabled = false;
 
+		
 		buffer = new byte[2];
-		arduinoOutput = new byte[9];
+		arduinoOutput = new byte[6];
 	}
 	
 	public static int get_auton_mode()
@@ -71,6 +72,7 @@ public class IO extends Loggable {
 		{
 			i = 2;
 		}
+		//return i
 		return 3;
 	}
 	
@@ -158,7 +160,7 @@ public class IO extends Loggable {
 	}
 
 	public static boolean[] alignerButtons() {
-		boolean[] stuff = new boolean[3];
+		boolean[] stuff = new boolean[2];
 		for (int i = 0; i < stuff.length; i++) {
 			stuff[i] = secondary.getRawButton(Map.ALIGNER_STAGE[i]);
 		}
@@ -382,15 +384,13 @@ public class IO extends Loggable {
 					loopcount++;
 
 					buffer = bitWrite();
-					//arduino.write(buffer, 2);
-					//arduinoOutput = arduino.read(9); // 0-2: x,y,SQUAL of left
+					
+					arduino.writeBulk(buffer);
+					
+					arduino.read(2, 6, arduinoOutput); // 0-2: x,y,SQUAL of left
 														// sensor; 3-5:
 														// x,y,SQUAL of right
-														// sensor; 6-8: x,y,z
-														// from magnetometer
-
-					//System.out.println(arduino.getBytesReceived());
-					
+														// sensor;
 				}
 			}
 		}
@@ -430,13 +430,13 @@ public class IO extends Loggable {
 			io_inputs[i] = Utils.boolconverter(secondary.getRawButton(Map.ELEVATOR_CONTROL_BUTTONS[i - 16]));
 		}
 
-		for (int i = 26; i < 3 + 26; i++) {
+		for (int i = 26; i < 2 + 26; i++) {
 			io_inputs[i] = Utils.boolconverter(secondary.getRawButton(Map.ALIGNER_STAGE[i - 26]));
 		}
-		io_inputs[29] = loopcount;
-		io_inputs[30] = System.currentTimeMillis() - starttime;
+		io_inputs[28] = loopcount;
+		io_inputs[29] = System.currentTimeMillis() - starttime;
 		
-		io_inputs[31] = Utils.boolconverter(osc_toggle());
+		io_inputs[30] = Utils.boolconverter(osc_toggle());
 		
 		loopcount = 0;
 		

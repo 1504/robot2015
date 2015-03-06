@@ -22,19 +22,19 @@ public class Map {
 	public static final int COPTERSTICK_RIGHT_Y_AXIS = 2;
 	public static final int COPTERSTICK_RIGHT_X_AXIS = 3;
 
-	// Tote Aligner Solenoids
-	public static final int STAGE_ONE_SOLENOID_FORWARD_PORT = 6;
-	public static final int STAGE_ONE_SOLENOID_REVERSE_PORT = 7;
-	public static final int STAGE_TWO_SOLENOID_PORT = 5;
-
-	// Elevator Solenoids
-	public static final int ELEVATOR_SOLENOID_FORWARD_PORT = 3;
-	public static final int ELEVATOR_SOLENOID_REVERSE_PORT = 4;
-
 	// Bin Capture Solenoids
 	public static final int EXTEND_SOLENOID_FORWARD_PORT = 0;
 	public static final int EXTEND_SOLENOID_REVERSE_PORT = 1;
 	public static final int CLAW_SOLENOID_PORT = 2;
+
+	// Elevator Solenoids
+	public static final int ELEVATOR_SOLENOID_FORWARD_PORT = 3;
+	public static final int ELEVATOR_SOLENOID_REVERSE_PORT = 4;
+	public static final int ELEVATOR_FLAPPER_SOLENOID_PORT = 5;
+
+	// Tote Aligner Solenoids
+	public static final int STAGE_ONE_SOLENOID_FORWARD_PORT = 6;
+	public static final int STAGE_ONE_SOLENOID_REVERSE_PORT = 7;
 
 	public static final int RELAY_PORT = 0; // Relay
 
@@ -86,10 +86,8 @@ public class Map {
 	public static final int ELEVATOR_TOTE_MODE_BUTTON = 9;
 	public static final int ELEVATOR_BIN_MODE_BUTTON = 7;
 
-	public static final int[] ALIGNER_STAGE = { 12, 10, 8 }; // aligner -- open,
-																// almost,
-																// closed
-
+	public static final int[] ALIGNER_STAGE = {12, 10}; // aligner -- retracted,
+																//extended
 	// Tote wiggle values
 	public static final long DRIVE_OSC_TIME = 100;
 	public static final double[] DRIVE_OSC_INTENSITY = { 0.0, .25, .3 };

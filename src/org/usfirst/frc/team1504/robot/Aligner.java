@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.Solenoid;
 public class Aligner extends Loggable {
 	// Solenoids
 	DoubleSolenoid stage_1;
-	Solenoid stage_2;
 	protected int clawStage;
 
 	// Talon
@@ -24,7 +23,6 @@ public class Aligner extends Loggable {
 		aligner = new AlignerThreadClass();
 		
 		stage_1 = new DoubleSolenoid(Map.STAGE_ONE_SOLENOID_FORWARD_PORT, Map.STAGE_ONE_SOLENOID_REVERSE_PORT);
-		stage_2 = new Solenoid(Map.STAGE_TWO_SOLENOID_PORT);
 
 		align = new CANTalon(Map.ALIGNER_TALON_PORT);
 	}
@@ -36,26 +34,13 @@ public class Aligner extends Loggable {
 	
 	protected void setPosition(int position) {
 		switch (position) {
-		case 0: // open
+		case 0: //retracted
 			stage_1.set(DoubleSolenoid.Value.kReverse);
-			stage_2.set(false);
 			clawStage = 0;
 			break;
-		case 1: // almost closed
-			if (clawStage == 2) {
-				setPosition(0);
-				// Robot_Main.timer.delay(0.005);
-				// or add break, which requires 2 button presses
-			}
-
+		case 1: //extended
 			stage_1.set(DoubleSolenoid.Value.kForward);
-			stage_2.set(false);
 			clawStage = 1;
-			break;
-		case 2: // closed
-			stage_1.set(DoubleSolenoid.Value.kForward);
-			stage_2.set(true);
-			clawStage = 2;
 			break;
 		default:
 
@@ -111,8 +96,6 @@ public class Aligner extends Loggable {
 					setPosition(0);
 				} else if (buttons[1]) {
 					setPosition(1);
-				} else if (buttons[2]) {
-					setPosition(2);
 				}
 			}
 		}

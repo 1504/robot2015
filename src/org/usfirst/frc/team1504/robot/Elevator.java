@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.InterruptHandlerFunction;
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.Solenoid;
 
 //import edu.wpi.first.wpilibj.JoystickButton;
 
@@ -18,6 +19,8 @@ public class Elevator extends Loggable { // thread
 	DigitalInput limit;
 
 	DoubleSolenoid elevatorSolenoid;
+	Solenoid flapperSolenoid;
+	
 	Servo servo_1;
 	Servo servo_2;
 	CANTalon elevatorMotor;
@@ -45,6 +48,7 @@ public class Elevator extends Loggable { // thread
 		// hallSensor = new DigitalInput(Map.ELEVATOR_DIGITAL_INPUT_PORT);
 		//hallCounter = new Counter(hallSensor);
 		elevatorSolenoid = new DoubleSolenoid(Map.ELEVATOR_SOLENOID_FORWARD_PORT, Map.ELEVATOR_SOLENOID_REVERSE_PORT);
+		flapperSolenoid = new Solenoid(Map.ELEVATOR_FLAPPER_SOLENOID_PORT);
 		//hallCounter.setUpDownCounterMode();
 		//hallCounter.setUpSource(hallSensor);// /// may neeed to goooo
 		// befoooore.
@@ -87,8 +91,8 @@ public class Elevator extends Loggable { // thread
 		boolean[] button;
 
 		protected boolean checkButtons() {
-			for (boolean ooo : IO.elevatorButtonValues()) {
-				if (ooo) {
+			for (boolean chkbtns : IO.elevatorButtonValues()) {
+				if (chkbtns) {
 					return true;
 				}
 			}
@@ -160,6 +164,11 @@ public class Elevator extends Loggable { // thread
 						} catch (InterruptedException e) {
 						}
 					}
+					
+					if(servo_1.getAngle() == Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE && servo_2.getAngle() == Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE)
+					{
+						flapperSolenoid.set(false);
+					}
 					elevatorSolenoid.set(DoubleSolenoid.Value.kReverse);
 				}
 
@@ -169,7 +178,17 @@ public class Elevator extends Loggable { // thread
 					servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_DOWN_ANGLE);
 
 					elevatorSolenoid.set(DoubleSolenoid.Value.kForward);
-
+					
+					//elevator move down = positive vals
+					if((servo_1.getAngle() == Map.ELEVATOR_SERVO_LEFT_DOWN_ANGLE && servo_2.getAngle() == Map.ELEVATOR_SERVO_RIGHT_DOWN_ANGLE) && elevatorMotor.get() > 0.0)
+					{
+						flapperSolenoid.set(false);
+					}
+					//elevator move up = neg vals
+					if((servo_1.getAngle() == Map.ELEVATOR_SERVO_LEFT_DOWN_ANGLE && servo_2.getAngle() == Map.ELEVATOR_SERVO_RIGHT_DOWN_ANGLE) && elevatorMotor.get() <= 0.0)
+					{
+						flapperSolenoid.set(true);
+					}
 				}
 
 				else if (elevatorMode == 2) { // Bin pickup
@@ -177,6 +196,13 @@ public class Elevator extends Loggable { // thread
 					servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE);
 					servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE);
 					elevatorSolenoid.set(DoubleSolenoid.Value.kForward);
+					
+					if(servo_1.getAngle() == Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE && servo_2.getAngle() == Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE)
+					{
+						flapperSolenoid.set(false);
+					}
+
+					
 				}
 				
 				
