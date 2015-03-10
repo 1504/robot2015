@@ -60,20 +60,27 @@ public class IO extends Loggable {
 	public static int get_auton_mode()
 	{
 		int i = 0;
-		if (autoninput_1.get())
+		if (!autoninput_1.get() && autoninput_2.get() && autoninput_3.get())
 		{
 			i = 0;
 		}
-		if (autoninput_2.get())
+		if (autoninput_1.get() && !autoninput_2.get() && autoninput_3.get())
 		{
 			i = 1;
 		}
-		if (autoninput_3.get())
+		if (autoninput_1.get() && autoninput_2.get() && !autoninput_3.get())
 		{
 			i = 2;
 		}
-		//return i
-		return 3;
+		if (!autoninput_1.get() && !autoninput_2.get() && autoninput_3.get())
+		{
+			i = 3;
+		}
+		if (!autoninput_1.get() && autoninput_2.get() && !autoninput_3.get())
+		{
+			i = 4;
+		}
+		return i;
 	}
 	
 	public static double[] mecanum_input() {
@@ -81,7 +88,7 @@ public class IO extends Loggable {
 
 		dircns[0] = Math.pow(leftstick.getRawAxis(Map.JOYSTICK_Y_AXIS), 2) * Math.signum(leftstick.getRawAxis(Map.JOYSTICK_Y_AXIS));// y
 		dircns[1] = -1.0 * Math.pow(leftstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2) * Math.signum(leftstick.getRawAxis(Map.JOYSTICK_X_AXIS));// x
-		dircns[2] = .6 * Math.pow(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2) * Math.signum(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS));// w
+		dircns[2] = .7 * Math.pow(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2) * Math.signum(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS));// w
 
 		// dircns[0] = copterstick.getRawAxis(Map.JOYSTICK_Y_VALUE);
 		// dircns[1] = copterstick.getRawAxis(Map.JOYSTICK_X_VALUE);

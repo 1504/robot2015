@@ -35,6 +35,7 @@ public class Logger {
 	Calendar calendar;
 	boolean isEnabled;
 	Loggable[] classes;
+	long starttime;
 
 	public Logger(Loggable[] classes) {
 		compressor = new Compressor();
@@ -79,6 +80,7 @@ public class Logger {
 	public void enable() {
 		// loggerThread.start(); // TODO: check thread state so that enable
 		// doesn't get called twice
+		starttime = System.currentTimeMillis();
 		time = new Timer();
 		task = new Task();
 		time.scheduleAtFixedRate(task, 0, Map.TICK_INTERVAL);
@@ -100,7 +102,7 @@ public class Logger {
 	// }
 
 	public void write() {
-		// AlignerDump(6)
+		// AlignerDump(3)
 		// bincapture(7)
 		// Drive(14)
 		// Elevator(9)
@@ -111,7 +113,7 @@ public class Logger {
 		
 		try {
 			fileStream.write(chirp);
-			fileStream.write(doubleToByte(driverstation.getMatchTime()));
+			fileStream.write(longToByte(System.currentTimeMillis() - starttime));
 			fileStream.write(chirpbreak);
 			fileStream.write(doubleToByte(pdp.getTotalCurrent()));
 			fileStream.write(chirpbreak);
@@ -127,6 +129,7 @@ public class Logger {
 			fileStream.write(chirpbreak);
 			fileStream.write(doubleToByte(accelerometer.getZ()));
 			fileStream.write(chirpbreak);
+			
 
 		} catch (IOException e1) {
 			System.out.println(e1.getStackTrace());
@@ -152,7 +155,11 @@ public class Logger {
 		ByteBuffer.wrap(bytes).putDouble(d);
 		return bytes;
 	}
-
+	private byte[] longToByte(long l){
+		byte[] bytes = new byte[8];
+		ByteBuffer.wrap(bytes).putLong(l);
+		return bytes;
+	}
 	private byte[] floatToByte(float f) {
 		byte[] bytes = new byte[8];
 		ByteBuffer.wrap(bytes).putFloat(f);

@@ -1,5 +1,8 @@
 package org.usfirst.frc.team1504.robot;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -14,13 +17,15 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 public class Elevator extends Loggable { // thread
 	DriverStation ds = DriverStation.getInstance();
-	
+
 	DigitalInput hallSensor;
 	DigitalInput limit;
 
 	DoubleSolenoid elevatorSolenoid;
 	Solenoid flapperSolenoid;
 	
+	public enum ForkMode {retracted, toteMode, binMode, toteModeSecondary}
+
 	Servo servo_1;
 	Servo servo_2;
 	CANTalon elevatorMotor;
@@ -28,10 +33,10 @@ public class Elevator extends Loggable { // thread
 	PIDController elevatorPID;
 	Counter hallCounter;
 	// HallHandlerClass handler;
-	
+
 	int setPoint;
 	int elevatorMode;
-	
+
 	boolean[] button;
 	boolean servo_1State;
 	boolean servo_2State;
@@ -39,18 +44,20 @@ public class Elevator extends Loggable { // thread
 
 	int loopcount;
 	long starttime;
-
+	
+	ForkMode fm;
+	
 	public Elevator() {
 		elevator = new ElevatorThreadClass();
 
 		limit = new DigitalInput(Map.ELEVATOR_DIGITAL_INPUT_PORT);
 		// handler = new HallHandlerClass();
 		// hallSensor = new DigitalInput(Map.ELEVATOR_DIGITAL_INPUT_PORT);
-		//hallCounter = new Counter(hallSensor);
+		// hallCounter = new Counter(hallSensor);
 		elevatorSolenoid = new DoubleSolenoid(Map.ELEVATOR_SOLENOID_FORWARD_PORT, Map.ELEVATOR_SOLENOID_REVERSE_PORT);
 		flapperSolenoid = new Solenoid(Map.ELEVATOR_FLAPPER_SOLENOID_PORT);
-		//hallCounter.setUpDownCounterMode();
-		//hallCounter.setUpSource(hallSensor);// /// may neeed to goooo
+		// hallCounter.setUpDownCounterMode();
+		// hallCounter.setUpSource(hallSensor);// /// may neeed to goooo
 		// befoooore.
 		servo_1 = new Servo(Map.ELEVATOR_SERVO_LEFT_PORT);
 		servo_2 = new Servo(Map.ELEVATOR_SERVO_RIGHT_PORT);
@@ -60,6 +67,7 @@ public class Elevator extends Loggable { // thread
 		setPoint = 0;
 		isManual = true;
 		loopcount = 0;
+		fm = ForkMode.retracted;
 	}
 
 	/*
@@ -106,23 +114,23 @@ public class Elevator extends Loggable { // thread
 					starttime = System.currentTimeMillis();
 				}
 				loopcount++;
-				
-				if(ds.isOperatorControl()) {
-					if(IO.elevator_mode() >= 0)
-						elevatorMode = IO.elevator_mode();
-				
+
+				if (ds.isOperatorControl()) {
+					setElevatorMode(IO.elevator_mode());
+
 					isManual = IO.elevator_manual_toggle() || (isManual && !checkButtons());
 					if (isManual) {
 						if (!limit.get() || IO.elevator_manual() <= 0.0) {
 							if (IO.elevator_manual_toggle()) {
 								manual(IO.elevator_manual());
 							} else {
-								manual(0.0); //we may remove this if we're not doing setpoints. 
+								manual(0.0); // we may remove this if we're not
+												// doing setpoints.
 							}
 						} else {
-							manual(0.0); 
+							manual(0.0);
 						}
-	
+
 					} else {
 						button = IO.elevatorButtonValues();
 						if (button[0]) {
@@ -147,59 +155,65 @@ public class Elevator extends Loggable { // thread
 							setPoint = 10;
 						}
 						// useSetPoint();
-	
+
 						// PID();
 						manual(0);
 					}
 				}
 				
-				if (elevatorMode == 0 && elevatorSolenoid.get() != DoubleSolenoid.Value.kReverse) { // Forks
-																											// retracted
+				if ((fm == ForkMode.retracted) && elevatorSolenoid.get() != DoubleSolenoid.Value.kReverse) { // Forks
+																									// retracted
+					flapperSolenoid.set(false);
+					
+					long timeout = 0;
+					
 					// solenoid retracted, servos up
 					if (servo_1.getAngle() != Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE || servo_2.getAngle() != Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE) {
 						servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE);
 						servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE);
-						try {
-							Thread.sleep(700);
-						} catch (InterruptedException e) {
-						}
+						timeout = 1000;
 					}
 					
-					flapperSolenoid.set(false);
-					elevatorSolenoid.set(DoubleSolenoid.Value.kReverse);
-				}
-
-				else if (elevatorMode == 1) { // Tote pickup
+					new Timer().schedule(new TimerTask() {
+						public void run() {
+							elevatorSolenoid.set(DoubleSolenoid.Value.kReverse);
+						}
+					}, timeout);
+					
+				} else if (fm == ForkMode.toteMode && servo_1.getAngle() != Map.ELEVATOR_SERVO_LEFT_DOWN_ANGLE &&  servo_2.getAngle() != Map.ELEVATOR_SERVO_RIGHT_DOWN_ANGLE) { // Tote pickup
 					// solenoid exteded, servos down
 					servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_DOWN_ANGLE);
 					servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_DOWN_ANGLE);
 
 					elevatorSolenoid.set(DoubleSolenoid.Value.kForward);
+					new Timer().schedule(new TimerTask() {
+						public void run() {
+							fm = ForkMode.toteModeSecondary;
+						}
+					}, 700);
 					
-					//elevator move down = positive vals
-					if((servo_1.getAngle() == Map.ELEVATOR_SERVO_LEFT_DOWN_ANGLE && servo_2.getAngle() == Map.ELEVATOR_SERVO_RIGHT_DOWN_ANGLE) && elevatorMotor.get() > 0.0)
-					{
+					
+				}else if (fm == ForkMode.toteModeSecondary)
+				{
+					// elevator move down = positive vals
+					if (elevatorMotor.get() > 0.0) {
 						flapperSolenoid.set(false);
 					}
-					//elevator move up = neg vals
-					if((servo_1.getAngle() == Map.ELEVATOR_SERVO_LEFT_DOWN_ANGLE && servo_2.getAngle() == Map.ELEVATOR_SERVO_RIGHT_DOWN_ANGLE) && elevatorMotor.get() <= 0.0)
-					{
+					// elevator move up = neg vals
+					if (elevatorMotor.get() <= 0.0) {
 						flapperSolenoid.set(true);
 					}
 				}
 
-				else if (elevatorMode == 2) { // Bin pickup
+				else if (fm == ForkMode.binMode) { // Bin pickup
 					// soleoid extended, servos up
 					servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE);
 					servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE);
 					elevatorSolenoid.set(DoubleSolenoid.Value.kForward);
 					flapperSolenoid.set(false);
-				
 
-					
 				}
-				
-				
+
 			}
 		}
 
@@ -210,8 +224,22 @@ public class Elevator extends Loggable { // thread
 	
 	public void setElevatorMode(int i) {
 		elevatorMode = i;
+		switch (elevatorMode)
+		{
+		case 0:
+			fm = ForkMode.retracted;
+			break;
+		case 1:
+			fm = ForkMode.toteMode;
+			break;
+		case 2:
+			fm = ForkMode.binMode;
+			break;
+			default:
+				break;
+		}
 	}
-	
+
 	public void manual(double y) {
 		elevatorMotor.set(y);
 	}
@@ -226,7 +254,7 @@ public class Elevator extends Loggable { // thread
 		vals[1] = IO.elevatorMode; // 0 is retracted mode, 1 is tote mode, 2 is
 									// bin mode
 		vals[2] = setPoint; // desired lvl
-		vals[3] = 0;//hallCounter.get(); // current lvl
+		vals[3] = 0;// hallCounter.get(); // current lvl
 		vals[4] = elevatorMotor.getSpeed();
 		vals[5] = elevatorMotor.getOutputCurrent();
 		vals[6] = elevatorMotor.getOutputVoltage();

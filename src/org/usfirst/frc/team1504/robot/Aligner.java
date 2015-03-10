@@ -12,8 +12,6 @@ public class Aligner extends Loggable {
 
 	DriverStation ds = DriverStation.getInstance();
 	
-	// Talon
-	CANTalon align;
 	
 	int loopcount;
 	long starttime;
@@ -26,8 +24,6 @@ public class Aligner extends Loggable {
 		aligner = new AlignerThreadClass();
 		
 		stage_1 = new DoubleSolenoid(Map.STAGE_ONE_SOLENOID_FORWARD_PORT, Map.STAGE_ONE_SOLENOID_REVERSE_PORT);
-
-		align = new CANTalon(Map.ALIGNER_TALON_PORT);
 	}
 
 	public void start()
@@ -59,22 +55,12 @@ public class Aligner extends Loggable {
 		setPosition(1);
 	}
 
-	public void setSpeed(boolean speed) {
-		if (speed)
-			align.set(1.0);
-		else
-			align.set(0.0);
-	}
-
 	public double[] dump() {
-		double[] motor = new double[6];
+		double[] motor = new double[3];
 		// motor speed, current, voltage
-		motor[0] = align.getSpeed();
-		motor[1] = align.getOutputCurrent();
-		motor[2] = align.getOutputVoltage();
-		motor[3] = clawStage;
-		motor[4] = loopcount;
-		motor[5] = System.currentTimeMillis() - starttime;
+		motor[0] = clawStage;
+		motor[1] = loopcount;
+		motor[2] = System.currentTimeMillis() - starttime;
 		loopcount = 0;
 		return motor;
 	}
@@ -99,11 +85,12 @@ public class Aligner extends Loggable {
 						close();
 					}
 				}
-			}
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+				
+				try {
+					Thread.sleep(1);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 

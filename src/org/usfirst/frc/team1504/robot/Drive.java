@@ -23,6 +23,7 @@ public class Drive extends Loggable {
 
 	boolean osc_cw;
 
+	double rotation_offset_frontside;
 	double rotation_offset;
 
 	int loopcount;
@@ -189,6 +190,8 @@ public class Drive extends Loggable {
 	
 					dircns = front_side(dircns); // checks for pressed buttons;
 					
+//					dircns = orbit_point(dircns, op_y);
+					
 					if (oscCreated)
 					{
 						dircns = getOsc(dircns);
@@ -238,6 +241,13 @@ public class Drive extends Loggable {
 		dir_offset[2] = dircn[2];
 		return dir_offset;
 	}
+	
+	public void set_front_side()
+	{
+		
+	}
+	
+//	public 
 
 	public double[] orbit_point(double[] dircn) {
 		double x = 0.0;
