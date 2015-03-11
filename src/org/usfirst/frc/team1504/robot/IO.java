@@ -174,6 +174,10 @@ public class IO extends Loggable {
 		return stuff;
 	}
 	
+	public static boolean fork_flapper_override() {
+		return secondary.getRawButton(Map.ELEVATOR_FLAPPER_OVERRIDE_BUTTON);
+	}
+	
 	public static double[] mouse_values()
 	{
 		double[] output = {0.0, 0.0, 0.0};

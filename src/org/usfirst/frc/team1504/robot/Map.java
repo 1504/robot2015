@@ -89,6 +89,8 @@ public class Map {
 	public static final int[] ALIGNER_STAGE = { 12, 10 }; // aligner --
 															// retracted,
 															// extended
+	public static final int ELEVATOR_FLAPPER_OVERRIDE_BUTTON = 8;
+	
 	// Tote wiggle values
 	public static final long DRIVE_OSC_TIME = 100;
 	public static final double[] DRIVE_OSC_INTENSITY = { 0.0, .25, .3 };

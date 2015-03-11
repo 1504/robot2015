@@ -89,7 +89,7 @@ public class Robot extends SampleRobot {
 		case 1:
 			// Pickup a YELLOW TOTE, and turn to the right and drive into
 			// the AUTO ZONE with the TOTE.
-			elevator.setElevatorMode(1); // tote mode
+			elevator.setElevatorMode(Elevator.ForkMode.toteMode); // tote mode
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e1) {
@@ -134,7 +134,7 @@ public class Robot extends SampleRobot {
 				// TODO Auto-generated catch block
 				e3.printStackTrace();
 			}
-			elevator.setElevatorMode(0); //retract forks.
+			elevator.setElevatorMode(Elevator.ForkMode.retracted); //retract forks.
 			drive.autonDrive(0, 0, 0);
 			break;
 		case 2:
@@ -182,7 +182,7 @@ public class Robot extends SampleRobot {
 
 		case 3:
 			// pick up bin from staging zone
-			elevator.setElevatorMode(2); // Bin mode
+			elevator.setElevatorMode(Elevator.ForkMode.binMode); // Bin mode
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e1) {
@@ -223,7 +223,7 @@ public class Robot extends SampleRobot {
 				e.printStackTrace();
 			}
 			elevator.manual(0);
-			elevator.setElevatorMode(0);
+			elevator.setElevatorMode(Elevator.ForkMode.retracted);
 			drive.autonDrive(.25, 0.0, 0.0); // drive backward
 			try {
 				Thread.sleep(250);

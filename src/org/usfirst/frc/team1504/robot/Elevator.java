@@ -24,7 +24,8 @@ public class Elevator extends Loggable { // thread
 	DoubleSolenoid elevatorSolenoid;
 	Solenoid flapperSolenoid;
 	
-	public enum ForkMode {retracted, toteMode, binMode, toteModeSecondary}
+	// TODO: fix .ordinal() hack, through IO class
+	public enum ForkMode {retracted, toteMode, binMode, retractedFinal, toteModeFinal}
 
 	Servo servo_1;
 	Servo servo_2;
@@ -180,6 +181,8 @@ public class Elevator extends Loggable { // thread
 						}
 					}, timeout);
 					
+					fm = ForkMode.retractedFinal;
+					
 				} else if (fm == ForkMode.toteMode && servo_1.getAngle() != Map.ELEVATOR_SERVO_LEFT_DOWN_ANGLE &&  servo_2.getAngle() != Map.ELEVATOR_SERVO_RIGHT_DOWN_ANGLE) { // Tote pickup
 					// solenoid exteded, servos down
 					servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_DOWN_ANGLE);
@@ -188,19 +191,20 @@ public class Elevator extends Loggable { // thread
 					elevatorSolenoid.set(DoubleSolenoid.Value.kForward);
 					new Timer().schedule(new TimerTask() {
 						public void run() {
-							fm = ForkMode.toteModeSecondary;
+							if(fm == ForkMode.toteMode) // Check to see if things were canceled
+								fm = ForkMode.toteModeFinal;
 						}
 					}, 700);
 					
 					
-				}else if (fm == ForkMode.toteModeSecondary)
+				}else if (fm == ForkMode.toteModeFinal)
 				{
 					// elevator move down = positive vals
-					if (elevatorMotor.get() > 0.0) {
+					if (IO.fork_flapper_override() || elevatorMotor.get() > 0.0) {
 						flapperSolenoid.set(false);
 					}
 					// elevator move up = neg vals
-					if (elevatorMotor.get() <= 0.0) {
+					else if (elevatorMotor.get() <= 0.0) {
 						flapperSolenoid.set(true);
 					}
 				}
@@ -222,21 +226,27 @@ public class Elevator extends Loggable { // thread
 		}
 	}
 	
+	public void setElevatorMode(ForkMode mode) {
+		setElevatorMode(mode.ordinal());
+	}
+	
 	public void setElevatorMode(int i) {
 		elevatorMode = i;
 		switch (elevatorMode)
 		{
 		case 0:
-			fm = ForkMode.retracted;
+			if(fm != ForkMode.retractedFinal)
+				fm = ForkMode.retracted;
 			break;
 		case 1:
-			fm = ForkMode.toteMode;
+			if(fm != ForkMode.toteModeFinal)
+				fm = ForkMode.toteMode;
 			break;
 		case 2:
 			fm = ForkMode.binMode;
 			break;
-			default:
-				break;
+		default:
+			break;
 		}
 	}
 
