@@ -197,7 +197,7 @@ public class Robot extends SampleRobot {
 			elevator.manual(0.0); // stop elevator lift from moving
 			drive.autonDrive(.5, 0.0, 0.0); // drive backwards
 			try {
-				Thread.sleep(1750);
+				Thread.sleep(1850);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -230,6 +230,8 @@ public class Robot extends SampleRobot {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			
+			drive.autonDrive(0.0, 0.0, 0.0);
 
 			break;
 

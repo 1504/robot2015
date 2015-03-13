@@ -90,6 +90,7 @@ public class Map {
 															// retracted,
 															// extended
 	public static final int ELEVATOR_FLAPPER_OVERRIDE_BUTTON = 8;
+	public static final double ELEVATOR_OVERCURRENT_LIMIT = 75.0;
 	
 	// Tote wiggle values
 	public static final long DRIVE_OSC_TIME = 100;

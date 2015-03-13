@@ -25,7 +25,7 @@ public class Elevator extends Loggable { // thread
 	Solenoid flapperSolenoid;
 	
 	// TODO: fix .ordinal() hack, through IO class
-	public enum ForkMode {retracted, toteMode, binMode, retractedFinal, toteModeFinal}
+	public enum ForkMode {retracted, toteMode, binMode, retractedFinal, toteModeFinal, binModeFinal, NULL}
 
 	Servo servo_1;
 	Servo servo_2;
@@ -42,6 +42,7 @@ public class Elevator extends Loggable { // thread
 	boolean servo_1State;
 	boolean servo_2State;
 	protected boolean isManual;
+	private boolean overcurrent_limit, overcurrent_limit_triggered;
 
 	int loopcount;
 	long starttime;
@@ -68,7 +69,10 @@ public class Elevator extends Loggable { // thread
 		setPoint = 0;
 		isManual = true;
 		loopcount = 0;
-		fm = ForkMode.retracted;
+		//fm = ForkMode.retracted;
+		fm = ForkMode.NULL;
+		
+		overcurrent_limit = overcurrent_limit_triggered = false;
 	}
 
 	/*
@@ -121,9 +125,29 @@ public class Elevator extends Loggable { // thread
 
 					isManual = IO.elevator_manual_toggle() || (isManual && !checkButtons());
 					if (isManual) {
-						if (!limit.get() || IO.elevator_manual() <= 0.0) {
+						
+						// Motor overcurrent protection
+						if(!overcurrent_limit && !overcurrent_limit_triggered && elevatorMotor.getOutputCurrent() > Map.ELEVATOR_OVERCURRENT_LIMIT) {
+							overcurrent_limit_triggered = true;
+							new Timer().schedule(new TimerTask() {
+								public void run() {
+									overcurrent_limit_triggered = false;
+									if(elevatorMotor.getOutputCurrent() > Map.ELEVATOR_OVERCURRENT_LIMIT) {
+										overcurrent_limit = true;
+										new Timer().schedule(new TimerTask() {
+											public void run() {
+												overcurrent_limit = false;
+											}
+										}, 600);
+									}
+								}
+							}, 100);
+						}
+						
+						if (!limit.get() || IO.elevator_manual() <= 0.0) {  // Negative is up
 							if (IO.elevator_manual_toggle()) {
-								manual(IO.elevator_manual());
+								// Full power, unless overcurrent. If overcurrent, only full power down
+								manual(IO.elevator_manual() * ((IO.elevator_manual() > 0.0 || !overcurrent_limit) ? 1.0 : 0.3 ));
 							} else {
 								manual(0.0); // we may remove this if we're not
 												// doing setpoints.
@@ -164,6 +188,8 @@ public class Elevator extends Loggable { // thread
 				
 				if ((fm == ForkMode.retracted) && elevatorSolenoid.get() != DoubleSolenoid.Value.kReverse) { // Forks
 																									// retracted
+					fm = ForkMode.retractedFinal;
+					
 					flapperSolenoid.set(false);
 					
 					long timeout = 0;
@@ -177,11 +203,11 @@ public class Elevator extends Loggable { // thread
 					
 					new Timer().schedule(new TimerTask() {
 						public void run() {
-							elevatorSolenoid.set(DoubleSolenoid.Value.kReverse);
+							if(fm == ForkMode.retractedFinal)
+								elevatorSolenoid.set(DoubleSolenoid.Value.kReverse);
 						}
 					}, timeout);
 					
-					fm = ForkMode.retractedFinal;
 					
 				} else if (fm == ForkMode.toteMode && servo_1.getAngle() != Map.ELEVATOR_SERVO_LEFT_DOWN_ANGLE &&  servo_2.getAngle() != Map.ELEVATOR_SERVO_RIGHT_DOWN_ANGLE) { // Tote pickup
 					// solenoid exteded, servos down
@@ -215,6 +241,8 @@ public class Elevator extends Loggable { // thread
 					servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE);
 					elevatorSolenoid.set(DoubleSolenoid.Value.kForward);
 					flapperSolenoid.set(false);
+					
+					fm = ForkMode.binModeFinal;
 
 				}
 

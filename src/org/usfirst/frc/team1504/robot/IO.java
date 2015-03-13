@@ -80,7 +80,8 @@ public class IO extends Loggable {
 		{
 			i = 4;
 		}
-		return i;
+		return 0;
+		//return i;
 	}
 	
 	public static double[] mecanum_input() {
