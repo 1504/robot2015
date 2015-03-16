@@ -201,6 +201,9 @@ public class Robot extends SampleRobot {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+	drive.autonDrive(0.0, 0.0, 0.0);
+	break;
+	/*
 			drive.autonDrive(0.0, 0.0, .35); // rotate 90 degrees to ensure
 												// robot is completely in auto
 												// zone/for convenience when
@@ -233,7 +236,7 @@ public class Robot extends SampleRobot {
 			
 			drive.autonDrive(0.0, 0.0, 0.0);
 
-			break;
+			break;*/
 
 		case 4:
 			// Drive forward for 6 seconds, into the AUTO ZONE

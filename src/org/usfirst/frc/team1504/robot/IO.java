@@ -80,7 +80,7 @@ public class IO extends Loggable {
 		{
 			i = 4;
 		}
-		return 0;
+		return 3;	
 		//return i;
 	}
 	

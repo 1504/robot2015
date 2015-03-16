@@ -188,7 +188,7 @@ public class Drive extends Loggable {
 	
 					set_front(IO.front_side_check());
 	
-					dircns = front_side(dircns); // checks for pressed buttons;
+					//dircns = front_side(dircns); // checks for pressed buttons;
 					
 //					dircns = orbit_point(dircns, op_y);
 					

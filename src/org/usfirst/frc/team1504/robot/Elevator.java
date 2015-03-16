@@ -43,6 +43,7 @@ public class Elevator extends Loggable { // thread
 	boolean servo_2State;
 	protected boolean isManual;
 	private boolean overcurrent_limit, overcurrent_limit_triggered;
+	private boolean fork_hung, fork_hung_triggered;
 
 	int loopcount;
 	long starttime;
@@ -73,6 +74,7 @@ public class Elevator extends Loggable { // thread
 		fm = ForkMode.NULL;
 		
 		overcurrent_limit = overcurrent_limit_triggered = false;
+		fork_hung = false;
 	}
 
 	/*
@@ -126,6 +128,7 @@ public class Elevator extends Loggable { // thread
 					isManual = IO.elevator_manual_toggle() || (isManual && !checkButtons());
 					if (isManual) {
 						
+						//System.out.println(elevatorMotor.getOutputCurrent() + "\t" + IO.elevator_manual() * 1.0);
 						// Motor overcurrent protection
 						if(!overcurrent_limit && !overcurrent_limit_triggered && elevatorMotor.getOutputCurrent() > Map.ELEVATOR_OVERCURRENT_LIMIT) {
 							overcurrent_limit_triggered = true;
@@ -144,8 +147,8 @@ public class Elevator extends Loggable { // thread
 							}, 100);
 						}
 						
-						if (!limit.get() || IO.elevator_manual() <= 0.0) {  // Negative is up
-							if (IO.elevator_manual_toggle()) {
+						if (!limit.get() || IO.elevator_manual() <= 0.0) {
+							if (IO.elevator_manual_toggle()/* && (Math.signum(IO.elevator_manual()) == 1 && elevatorMotor.getOutputCurrent() > 1.0)*/) {
 								// Full power, unless overcurrent. If overcurrent, only full power down
 								manual(IO.elevator_manual() * ((IO.elevator_manual() > 0.0 || !overcurrent_limit) ? 1.0 : 0.3 ));
 							} else {
