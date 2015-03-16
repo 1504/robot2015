@@ -44,6 +44,8 @@ public class Elevator extends Loggable { // thread
 	protected boolean isManual;
 	private boolean overcurrent_limit, overcurrent_limit_triggered;
 	private boolean fork_hung, fork_hung_triggered;
+	
+	private long flap_timeout = 0;
 
 	int loopcount;
 	long starttime;
@@ -75,6 +77,18 @@ public class Elevator extends Loggable { // thread
 		
 		overcurrent_limit = overcurrent_limit_triggered = false;
 		fork_hung = false;
+		
+		new Timer().schedule(new TimerTask() {
+			public void run() {
+				if(flap_timeout > 0)
+					flap_timeout -= 50;
+				
+				if(flap_timeout < 0)
+					flap_timeout = 0;
+
+			}
+		}, 0, 50);
+		
 	}
 
 	/*
@@ -141,10 +155,10 @@ public class Elevator extends Loggable { // thread
 											public void run() {
 												overcurrent_limit = false;
 											}
-										}, 600);
+										}, Map.ELEVATOR_OVERCURRENT_TIMEOUT);
 									}
 								}
-							}, 100);
+							}, Map.ELEVATOR_OVERCURRENT_DETECTION_TIME);
 						}
 						
 						if (!limit.get() || IO.elevator_manual() <= 0.0) {
@@ -195,13 +209,13 @@ public class Elevator extends Loggable { // thread
 					
 					flapperSolenoid.set(false);
 					
-					long timeout = 0;
-					
+					//flap_timeout = 0;
+										
 					// solenoid retracted, servos up
 					if (servo_1.getAngle() != Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE || servo_2.getAngle() != Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE) {
 						servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE);
 						servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE);
-						timeout = 1000;
+						flap_timeout = Map.ELEVATOR_RETRACTION_TIMEOUT;
 					}
 					
 					new Timer().schedule(new TimerTask() {
@@ -209,7 +223,7 @@ public class Elevator extends Loggable { // thread
 							if(fm == ForkMode.retractedFinal)
 								elevatorSolenoid.set(DoubleSolenoid.Value.kReverse);
 						}
-					}, timeout);
+					}, flap_timeout);
 					
 					
 				} else if (fm == ForkMode.toteMode && servo_1.getAngle() != Map.ELEVATOR_SERVO_LEFT_DOWN_ANGLE &&  servo_2.getAngle() != Map.ELEVATOR_SERVO_RIGHT_DOWN_ANGLE) { // Tote pickup
@@ -237,16 +251,17 @@ public class Elevator extends Loggable { // thread
 						flapperSolenoid.set(true);
 					}
 				}
-
-				else if (fm == ForkMode.binMode) { // Bin pickup
-					// soleoid extended, servos up
+				
+				else if(fm == ForkMode.binMode) {// Bin pickup
+												 // soleoid extended, servos up
+					flap_timeout = Map.ELEVATOR_RETRACTION_TIMEOUT;
+						
 					servo_1.setAngle(Map.ELEVATOR_SERVO_LEFT_OPEN_ANGLE);
 					servo_2.setAngle(Map.ELEVATOR_SERVO_RIGHT_OPEN_ANGLE);
 					elevatorSolenoid.set(DoubleSolenoid.Value.kForward);
 					flapperSolenoid.set(false);
 					
 					fm = ForkMode.binModeFinal;
-
 				}
 
 			}
@@ -274,7 +289,8 @@ public class Elevator extends Loggable { // thread
 				fm = ForkMode.toteMode;
 			break;
 		case 2:
-			fm = ForkMode.binMode;
+			if(fm != ForkMode.binModeFinal)
+				fm = ForkMode.binMode;
 			break;
 		default:
 			break;
