@@ -45,7 +45,8 @@ public class Elevator extends Loggable { // thread
 	private boolean overcurrent_limit, overcurrent_limit_triggered;
 	private boolean fork_hung, fork_hung_triggered;
 	
-	private long flap_timeout = 0;
+	private volatile long flap_timeout = 0;
+	private static int timeout_looptime = 50;
 
 	int loopcount;
 	long starttime;
@@ -80,14 +81,12 @@ public class Elevator extends Loggable { // thread
 		
 		new Timer().schedule(new TimerTask() {
 			public void run() {
-				if(flap_timeout > 0)
-					flap_timeout -= 50;
-				
-				if(flap_timeout < 0)
+				if(flap_timeout > timeout_looptime)
+					flap_timeout -= timeout_looptime;
+				else
 					flap_timeout = 0;
-
 			}
-		}, 0, 50);
+		}, 0, timeout_looptime);
 		
 	}
 
@@ -161,18 +160,11 @@ public class Elevator extends Loggable { // thread
 							}, Map.ELEVATOR_OVERCURRENT_DETECTION_TIME);
 						}
 						
-						if (!limit.get() || IO.elevator_manual() <= 0.0) {
-							if (IO.elevator_manual_toggle()/* && (Math.signum(IO.elevator_manual()) == 1 && elevatorMotor.getOutputCurrent() > 1.0)*/) {
-								// Full power, unless overcurrent. If overcurrent, only full power down
-								manual(IO.elevator_manual() * ((IO.elevator_manual() > 0.0 || !overcurrent_limit) ? 1.0 : 0.3 ));
-							} else {
-								manual(0.0); // we may remove this if we're not
-												// doing setpoints.
-							}
+						if (IO.elevator_manual_toggle()) {
+							manual(IO.elevator_manual() * ((IO.elevator_manual() > 0.0 || !overcurrent_limit) ? 1.0 : 0.3 ));
 						} else {
 							manual(0.0);
 						}
-
 					} else {
 						button = IO.elevatorButtonValues();
 						if (button[0]) {
@@ -271,24 +263,19 @@ public class Elevator extends Loggable { // thread
 			isRunning = false;
 		}
 	}
-	
-	public void setElevatorMode(ForkMode mode) {
-		setElevatorMode(mode.ordinal());
-	}
-	
-	public void setElevatorMode(int i) {
-		elevatorMode = i;
+		
+	public void setElevatorMode(ForkMode elevatorMode) {
 		switch (elevatorMode)
 		{
-		case 0:
+		case retracted:
 			if(fm != ForkMode.retractedFinal)
 				fm = ForkMode.retracted;
 			break;
-		case 1:
+		case toteMode:
 			if(fm != ForkMode.toteModeFinal)
 				fm = ForkMode.toteMode;
 			break;
-		case 2:
+		case binMode:
 			if(fm != ForkMode.binModeFinal)
 				fm = ForkMode.binMode;
 			break;
@@ -298,8 +285,14 @@ public class Elevator extends Loggable { // thread
 	}
 
 	public void manual(double y) {
-		elevatorMotor.set(y);
+		if (!limit.get() || y <= 0.0) {
+			manual_raw(y);
+		} else {
+			manual_raw(0.0);
+		}
 	}
+	
+	public void manual_raw(double y){elevatorMotor.set(y);}
 
 	public int get_elevator_level() {
 		return hallCounter.get();

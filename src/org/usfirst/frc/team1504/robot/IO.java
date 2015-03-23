@@ -128,18 +128,16 @@ public class IO extends Loggable {
 		return secondary.getRawButton(Map.ELEVATOR_MANUAL_TOGGLE_BUTTON);
 	}
 
-	public static int elevator_mode() {
-		int mode = -1;
+	public static Elevator.ForkMode elevator_mode() { //change to enums
+		Elevator.ForkMode mode = Elevator.ForkMode.NULL;
 		if (secondary.getRawButton(Map.ELEVATOR_RETRACTED_MODE_BUTTON)) {
-			mode = 0;
+			mode = Elevator.ForkMode.retracted;
 		} else if (secondary.getRawButton(Map.ELEVATOR_TOTE_MODE_BUTTON)) {
-			mode = 1;
+			mode = Elevator.ForkMode.toteMode;
 		} else if (secondary.getRawButton(Map.ELEVATOR_BIN_MODE_BUTTON)) {
-			mode = 2;
+			mode = Elevator.ForkMode.binMode;
 		}
 		
-		if(mode >= 0)
-			elevatorMode = mode;
 		return mode;
 	}
 
@@ -204,7 +202,7 @@ public class IO extends Loggable {
 			infos[0] = 0;
 			infos[1] = 0;
 			double[] dircns = mecanum_input();
-			int elevmode = elevator_mode();
+			int elevmode = 0;//elevator_mode();
 			int elevlvl = 0;
 			double timeelapsed = 135;// - driverstation.getMatchTime();
 			// Byte 1 Bit 7 - Alliance
