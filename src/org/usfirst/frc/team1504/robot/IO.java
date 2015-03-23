@@ -100,6 +100,7 @@ public class IO extends Loggable {
 		}
 		return dircns;
 	}
+	
 
 	public static boolean osc_toggle() {
 		return (leftstick.getRawButton(Map.DRIVE_OSC_BUTTON[0]) || secondary.getRawButton(Map.DRIVE_OSC_BUTTON[1]));

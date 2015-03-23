@@ -188,7 +188,7 @@ public class Drive extends Loggable {
 	
 					set_front(IO.front_side_check());
 	
-					//dircns = front_side(dircns); // checks for pressed buttons;
+					dircns = front_side(dircns); // checks for pressed buttons;
 					
 //					dircns = orbit_point(dircns, op_y);
 					
@@ -242,12 +242,13 @@ public class Drive extends Loggable {
 		return dir_offset;
 	}
 	
-	public void set_front_side()
+	public double[] gain_adjust(double[] dircn)
 	{
-		
+		dircn[0] = dircn[0];
+		dircn[1] = dircn[1];
+		dircn[2] = dircn[2];
+		return dircn;
 	}
-	
-//	public 
 
 	public double[] orbit_point(double[] dircn) {
 		double x = 0.0;
