@@ -71,7 +71,9 @@ public class Map {
 	public static final int[] FRONT_SIDE_ELEV = { 3, 11 };
 	public static final int FRONT_SIDE_LEFT = 4;
 	public static final int[] DRIVE_OSC_BUTTON = { 9, 4 };
-
+	public static final int GAIN_LIMIT_TOGGLE = 7;
+	public static final int ORBIT_POINT_TOGGLE = 8;
+	
 	// Secondary Buttons
 	public static final int BIN_CAPTURE_CLAW_TOGGLE_BUTTON = 5;
 	public static final int BIN_CAPTURE_ARM_TOGGLE_BUTTON = 3;
@@ -95,7 +97,7 @@ public class Map {
 	public static final int ELEVATOR_OVERCURRENT_DETECTION_TIME = 100;
 	public static final int ELEVATOR_OVERCURRENT_TIMEOUT = 600;
 	
-	public static final double[][] DRIVE_GAIN = {{1.0, 1.0, 1.0}, {1.0, 1.0, 1.0}};
+	public static final double[][] DRIVE_GAIN = {{0.01, 0.01, 0.01}, {0.04, 0.04, 0.04}}; //first array acceleration, second de-acceleration
 	
 	// Tote wiggle values
 	public static final long DRIVE_OSC_TIME = 100;

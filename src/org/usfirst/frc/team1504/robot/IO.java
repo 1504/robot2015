@@ -128,6 +128,14 @@ public class IO extends Loggable {
 	public static boolean elevator_manual_toggle() {
 		return secondary.getRawButton(Map.ELEVATOR_MANUAL_TOGGLE_BUTTON);
 	}
+	
+	public static boolean orbit_point_toggle(){
+		return rightstick.getRawButton(Map.ORBIT_POINT_TOGGLE);
+	}
+	
+	public static boolean gain_toggle(){
+		return rightstick.getRawButton(Map.GAIN_LIMIT_TOGGLE);
+	}
 
 	public static Elevator.ForkMode elevator_mode() { //change to enums
 		Elevator.ForkMode mode = Elevator.ForkMode.NULL;

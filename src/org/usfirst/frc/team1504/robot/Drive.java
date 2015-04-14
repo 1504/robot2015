@@ -25,6 +25,8 @@ public class Drive extends Loggable {
 
 	double rotation_offset_frontside;
 	double rotation_offset;
+	
+	double[] inputs;
 
 	int loopcount;
 	long starttime;
@@ -45,6 +47,8 @@ public class Drive extends Loggable {
 
 		osc_cw = true;
 
+		inputs = new double[4];
+		
 		dircns = new double[3];
 	}
 
@@ -190,6 +194,7 @@ public class Drive extends Loggable {
 	
 					dircns = front_side(dircns); // checks for pressed buttons;
 					
+//					if (IO.orbit_point_toggle())
 //					dircns = orbit_point(dircns, op_y);
 					
 					if (oscCreated)
@@ -199,6 +204,9 @@ public class Drive extends Loggable {
 				}
 				
 				dircns = groundspeed_offset(dircns, IO.mouse_values());
+				
+				if(IO.gain_toggle())
+					gain_adjust(dircns);
 				
 				outputCompute(dircns);// calculate for motors
 
@@ -233,7 +241,7 @@ public class Drive extends Loggable {
 
 		return detented;
 	}
-
+	
 	public double[] front_side(double[] dircn) {
 		double[] dir_offset = new double[3];
 		dir_offset[0] = dircn[0] * Math.cos(rotation_offset) + dircn[1] * Math.sin(rotation_offset);
@@ -242,12 +250,34 @@ public class Drive extends Loggable {
 		return dir_offset;
 	}
 	
-	public double[] gain_adjust(double[] dircn)
+	public double[] gain_adjust(double[] dircns)
 	{
-		dircn[0] = dircn[0];
-		dircn[1] = dircn[1];
-		dircn[2] = dircn[2];
-		return dircn;
+		inputs = IO.mecanum_input();
+		for(int i = 0; i < inputs.length; i++)
+		{
+			if ((inputs[i] > dircns[i] && inputs[i] > 0 && dircns[i] > 0) || (inputs[i] < dircns[i] && inputs[i] < 0 && dircns[i] < 0))//going away from 0
+			{
+				if (Math.abs(inputs[i] - dircns[i]) > Map.DRIVE_GAIN[0][i])
+				{
+					dircns[i] += Math.signum(inputs[i])*Map.DRIVE_GAIN[0][i];
+				}
+				
+			}
+		}
+		
+		for(int i = 0; i < inputs.length; i++)
+		{
+			if ((inputs[i] < dircns[i] && inputs[i] > 0 && dircns[i] > 0) || (inputs[i] > dircns[i] && inputs[i] < 0 && dircns[i] < 0))//approaching 0
+			{
+				if (Math.abs(inputs[i] - dircns[i]) > Map.DRIVE_GAIN[1][i])
+				{
+					dircns[i] += Math.signum(inputs[i])*Map.DRIVE_GAIN[1][i];
+				}
+				
+			}
+		}
+		
+		return dircns;
 	}
 
 	public double[] orbit_point(double[] dircn) {
