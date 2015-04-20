@@ -71,7 +71,7 @@ public class Map {
 	public static final int[] FRONT_SIDE_ELEV = { 3, 11 };
 	public static final int FRONT_SIDE_LEFT = 4;
 	public static final int[] DRIVE_OSC_BUTTON = { 9, 4 };
-	public static final int GAIN_LIMIT_TOGGLE = 7;
+	public static final int GAIN_LIMIT_TOGGLE = 1;
 	public static final int ORBIT_POINT_TOGGLE = 8;
 	
 	// Secondary Buttons

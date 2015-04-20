@@ -20,6 +20,7 @@ public class Drive extends Loggable {
 	double backleft_val;
 	double backright_val;
 	double frontright_val;
+	long gaintime;
 
 	boolean osc_cw;
 
@@ -27,6 +28,7 @@ public class Drive extends Loggable {
 	double rotation_offset;
 	
 	double[] inputs;
+	boolean gain_toggle;
 
 	int loopcount;
 	long starttime;
@@ -46,8 +48,15 @@ public class Drive extends Loggable {
 		loopcount = 0;
 
 		osc_cw = true;
+		gain_toggle = false;
 
-		inputs = new double[4];
+		gaintime = System.currentTimeMillis();
+		
+		inputs = new double[3];//[4];
+		for(int i = 0; i < inputs.length; i++)
+		{
+			inputs[i] = 0.0;
+		}
 		
 		dircns = new double[3];
 	}
@@ -195,19 +204,23 @@ public class Drive extends Loggable {
 					dircns = front_side(dircns); // checks for pressed buttons;
 					
 //					if (IO.orbit_point_toggle())
-//					dircns = orbit_point(dircns, op_y);
+//						dircns = orbit_point(dircns, op_y);
 					
 					if (oscCreated)
 					{
 						dircns = getOsc(dircns);
 					}
+					
+					gain_toggle = !IO.gain_toggle();
 				}
 				
 				dircns = groundspeed_offset(dircns, IO.mouse_values());
 				
-				if(IO.gain_toggle())
-					gain_adjust(dircns);
-				
+				if(gain_toggle)
+				{
+					gain_adjust(dircns);	
+				}
+					
 				outputCompute(dircns);// calculate for motors
 
 				motorOutput();// set
@@ -252,14 +265,14 @@ public class Drive extends Loggable {
 	
 	public double[] gain_adjust(double[] dircns)
 	{
-		inputs = IO.mecanum_input();
+		long looptime = System.currentTimeMillis()-gaintime;
 		for(int i = 0; i < inputs.length; i++)
 		{
 			if ((inputs[i] > dircns[i] && inputs[i] > 0 && dircns[i] > 0) || (inputs[i] < dircns[i] && inputs[i] < 0 && dircns[i] < 0))//going away from 0
 			{
 				if (Math.abs(inputs[i] - dircns[i]) > Map.DRIVE_GAIN[0][i])
 				{
-					dircns[i] += Math.signum(inputs[i])*Map.DRIVE_GAIN[0][i];
+					dircns[i] += Math.signum(inputs[i])*Map.DRIVE_GAIN[0][i]*looptime;
 				}
 				
 			}
@@ -271,11 +284,18 @@ public class Drive extends Loggable {
 			{
 				if (Math.abs(inputs[i] - dircns[i]) > Map.DRIVE_GAIN[1][i])
 				{
-					dircns[i] += Math.signum(inputs[i])*Map.DRIVE_GAIN[1][i];
+					dircns[i] += Math.signum(inputs[i])*Map.DRIVE_GAIN[1][i]*looptime;
 				}
 				
 			}
 		}
+		
+		for(int i = 0; i < inputs.length; i++)
+		{
+			inputs[i] = dircns[i]; //this way, when the loop next runs, it will be comparing the previous values!
+		}
+		
+		gaintime = System.currentTimeMillis();
 		
 		return dircns;
 	}
