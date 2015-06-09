@@ -39,7 +39,7 @@ public class IO extends Loggable {
 	static Joystick secondary = new Joystick(2);
 
 	// Quadcopter
-	static Joystick copterstick = new Joystick(0);
+	static Joystick copterstick = new Joystick(4);
 
 	public IO() {
 
@@ -87,9 +87,17 @@ public class IO extends Loggable {
 	public static double[] mecanum_input() {
 		double[] dircns = new double[3];
 
-		dircns[0] = Math.pow(leftstick.getRawAxis(Map.JOYSTICK_Y_AXIS), 2) * Math.signum(leftstick.getRawAxis(Map.JOYSTICK_Y_AXIS));// y
-		dircns[1] = -1.0 * Math.pow(leftstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2) * Math.signum(leftstick.getRawAxis(Map.JOYSTICK_X_AXIS));// x
-		dircns[2] = .7 * Math.pow(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2) * Math.signum(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS));// w
+		double sticks_y = Math.pow(leftstick.getRawAxis(Map.JOYSTICK_Y_AXIS), 2) * Math.signum(leftstick.getRawAxis(Map.JOYSTICK_Y_AXIS));// y
+		double sticks_x = -1.0 * Math.pow(leftstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2) * Math.signum(leftstick.getRawAxis(Map.JOYSTICK_X_AXIS));// x
+		double sticks_w = .7 * Math.pow(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2) * Math.signum(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS));// w
+		
+		double copterstick_y = Math.pow(leftstick.getRawAxis(Map.COPTERSTICK_LEFT_Y_AXIS), 2) * Math.signum(leftstick.getRawAxis(Map.COPTERSTICK_LEFT_Y_AXIS));// y
+		double copterstick_x = -1.0 * Math.pow(leftstick.getRawAxis(Map.COPTERSTICK_LEFT_X_AXIS), 2) * Math.signum(leftstick.getRawAxis(Map.COPTERSTICK_LEFT_X_AXIS));// x
+		double copterstick_w = .7 * Math.pow(rightstick.getRawAxis(Map.COPTERSTICK_RIGHT_X_AXIS), 2) * Math.signum(rightstick.getRawAxis(Map.COPTERSTICK_RIGHT_X_AXIS));// w
+		
+		dircns[0] = Math.max(sticks_y, copterstick_y);
+		dircns[1] = Math.max(sticks_x, copterstick_x);
+		dircns[2] = Math.max(sticks_w, copterstick_w);
 
 		// dircns[0] = copterstick.getRawAxis(Map.JOYSTICK_Y_VALUE);
 		// dircns[1] = copterstick.getRawAxis(Map.JOYSTICK_X_VALUE);
