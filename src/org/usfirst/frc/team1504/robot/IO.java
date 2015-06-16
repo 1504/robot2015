@@ -39,7 +39,7 @@ public class IO extends Loggable {
 	static Joystick secondary = new Joystick(2);
 
 	// Quadcopter
-	static Joystick copterstick = new Joystick(4);
+	static Joystick copterstick = new Joystick(3);
 
 	public IO() {
 
@@ -91,17 +91,18 @@ public class IO extends Loggable {
 		double sticks_x = -1.0 * Math.pow(leftstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2) * Math.signum(leftstick.getRawAxis(Map.JOYSTICK_X_AXIS));// x
 		double sticks_w = .7 * Math.pow(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS), 2) * Math.signum(rightstick.getRawAxis(Map.JOYSTICK_X_AXIS));// w
 		
-		double copterstick_y = Math.pow(leftstick.getRawAxis(Map.COPTERSTICK_LEFT_Y_AXIS), 2) * Math.signum(leftstick.getRawAxis(Map.COPTERSTICK_LEFT_Y_AXIS));// y
-		double copterstick_x = -1.0 * Math.pow(leftstick.getRawAxis(Map.COPTERSTICK_LEFT_X_AXIS), 2) * Math.signum(leftstick.getRawAxis(Map.COPTERSTICK_LEFT_X_AXIS));// x
-		double copterstick_w = .7 * Math.pow(rightstick.getRawAxis(Map.COPTERSTICK_RIGHT_X_AXIS), 2) * Math.signum(rightstick.getRawAxis(Map.COPTERSTICK_RIGHT_X_AXIS));// w
+		double copterstick_y = -1.0 * Math.pow(copterstick.getRawAxis(Map.COPTERSTICK_LEFT_Y_AXIS), 2) * Math.signum(copterstick.getRawAxis(Map.COPTERSTICK_LEFT_Y_AXIS));// y
+		double copterstick_x = -1.0 * Math.pow(copterstick.getRawAxis(Map.COPTERSTICK_LEFT_X_AXIS), 2) * Math.signum(copterstick.getRawAxis(Map.COPTERSTICK_LEFT_X_AXIS));// x
+		double copterstick_w = .7 * Math.pow(copterstick.getRawAxis(Map.COPTERSTICK_RIGHT_X_AXIS), 2) * Math.signum(copterstick.getRawAxis(Map.COPTERSTICK_RIGHT_X_AXIS));// w
 		
-		dircns[0] = Math.max(sticks_y, copterstick_y);
-		dircns[1] = Math.max(sticks_x, copterstick_x);
-		dircns[2] = Math.max(sticks_w, copterstick_w);
-
-		// dircns[0] = copterstick.getRawAxis(Map.JOYSTICK_Y_VALUE);
-		// dircns[1] = copterstick.getRawAxis(Map.JOYSTICK_X_VALUE);
-		// dircns[2] = copterstick.getRawAxis(Map.JOYSTICK_X_VALUE);
+		boolean final_y = Math.abs(sticks_y) == Math.max(Math.abs(sticks_y), Math.abs(copterstick_y));
+		boolean final_x = Math.abs(sticks_x) == Math.max(Math.abs(sticks_x), Math.abs(copterstick_x));
+		boolean final_w = Math.abs(sticks_w) == Math.max(Math.abs(sticks_w), Math.abs(copterstick_w));
+		
+		
+		dircns[0] = final_y ? sticks_y : copterstick_y;
+		dircns[1] = final_x ? sticks_x : copterstick_x;
+		dircns[2] = final_w ? sticks_w : copterstick_w;
 
 		for (int i = 0; i < dircns.length - 1; i++) {
 			dircns[i] = Utils.deadzone(dircns[i]);

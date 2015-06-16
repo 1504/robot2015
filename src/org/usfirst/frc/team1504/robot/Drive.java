@@ -218,7 +218,7 @@ public class Drive extends Loggable {
 				
 				if(gain_toggle)
 				{
-					gain_adjust(dircns);	
+				//	dircns = gain_adjust(dircns);	
 				}
 					
 				outputCompute(dircns);// calculate for motors
@@ -266,7 +266,16 @@ public class Drive extends Loggable {
 	public double[] gain_adjust(double[] dircns)
 	{
 		long looptime = System.currentTimeMillis()-gaintime;
+		
 		for(int i = 0; i < inputs.length; i++)
+		{
+			if(Math.abs(inputs[i]) < Math.abs(dircns[i])) // Towaord 0
+			{
+				
+			}
+		}
+		
+		/*for(int i = 0; i < inputs.length; i++)
 		{
 			if ((inputs[i] > dircns[i] && inputs[i] > 0 && dircns[i] > 0) || (inputs[i] < dircns[i] && inputs[i] < 0 && dircns[i] < 0))//going away from 0
 			{
@@ -288,7 +297,7 @@ public class Drive extends Loggable {
 				}
 				
 			}
-		}
+		}*/
 		
 		for(int i = 0; i < inputs.length; i++)
 		{

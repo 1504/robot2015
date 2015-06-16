@@ -97,7 +97,7 @@ public class Map {
 	public static final int ELEVATOR_OVERCURRENT_DETECTION_TIME = 100;
 	public static final int ELEVATOR_OVERCURRENT_TIMEOUT = 600;
 	
-	public static final double[][] DRIVE_GAIN = {{0.01, 0.01, 0.01}, {0.04, 0.04, 0.04}}; //first array acceleration, second de-acceleration
+	public static final double[][] DRIVE_GAIN = {{0.1, 0.1, 0.1}, {0.4, 0.4, 0.4}}; //first array acceleration, second de-acceleration
 	
 	// Tote wiggle values
 	public static final long DRIVE_OSC_TIME = 100;
