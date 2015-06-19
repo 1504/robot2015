@@ -266,45 +266,20 @@ public class Drive extends Loggable {
 	public double[] gain_adjust(double[] dircns)
 	{
 		long looptime = System.currentTimeMillis()-gaintime;
+		gaintime = System.currentTimeMillis();
 		
 		for(int i = 0; i < inputs.length; i++)
 		{
-			if(Math.abs(inputs[i]) < Math.abs(dircns[i])) // Towaord 0
-			{
-				
-			}
-		}
-		
-		/*for(int i = 0; i < inputs.length; i++)
-		{
-			if ((inputs[i] > dircns[i] && inputs[i] > 0 && dircns[i] > 0) || (inputs[i] < dircns[i] && inputs[i] < 0 && dircns[i] < 0))//going away from 0
-			{
-				if (Math.abs(inputs[i] - dircns[i]) > Map.DRIVE_GAIN[0][i])
-				{
-					dircns[i] += Math.signum(inputs[i])*Map.DRIVE_GAIN[0][i]*looptime;
-				}
-				
-			}
-		}
-		
-		for(int i = 0; i < inputs.length; i++)
-		{
-			if ((inputs[i] < dircns[i] && inputs[i] > 0 && dircns[i] > 0) || (inputs[i] > dircns[i] && inputs[i] < 0 && dircns[i] < 0))//approaching 0
-			{
-				if (Math.abs(inputs[i] - dircns[i]) > Map.DRIVE_GAIN[1][i])
-				{
-					dircns[i] += Math.signum(inputs[i])*Map.DRIVE_GAIN[1][i]*looptime;
-				}
-				
-			}
-		}*/
-		
-		for(int i = 0; i < inputs.length; i++)
-		{
+			bool toward_zero = Math.abs(inputs[i]) > Math.abs(dircns[i]); // Are we moving toward zero or away? (We have different gains for speeding up and slowing)
+			double distance = dircns[i] - inputs[i]; // The amount we want to move
+			double magnitude = Math.signum(distance); // The direction we're moving (+ or -)
+			double maximum_distance = looptime * magnitude * Map.DRIVE_GAIN[toward_zero ? 1 : 0][i]; // Maximum distance the input should move (input values per millisecond)
+			
+			if(Math.abs(maximum_distance) < Math.abs(distance)) // Take the smallest step of the two computed
+				dircns[i] = imputs[i] + maximum_distance;
+			
 			inputs[i] = dircns[i]; //this way, when the loop next runs, it will be comparing the previous values!
 		}
-		
-		gaintime = System.currentTimeMillis();
 		
 		return dircns;
 	}
