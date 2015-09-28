@@ -218,7 +218,7 @@ public class Drive extends Loggable {
 				
 				if(gain_toggle)
 				{
-				//	dircns = gain_adjust(dircns);	
+					dircns = gain_adjust(dircns);	
 				}
 					
 				outputCompute(dircns);// calculate for motors
@@ -270,13 +270,13 @@ public class Drive extends Loggable {
 		
 		for(int i = 0; i < inputs.length; i++)
 		{
-			bool toward_zero = Math.abs(inputs[i]) > Math.abs(dircns[i]); // Are we moving toward zero or away? (We have different gains for speeding up and slowing)
+			boolean toward_zero = Math.abs(inputs[i]) > Math.abs(dircns[i]); // Are we moving toward zero or away? (We have different gains for speeding up and slowing)
 			double distance = dircns[i] - inputs[i]; // The amount we want to move
 			double magnitude = Math.signum(distance); // The direction we're moving (+ or -)
 			double maximum_distance = looptime * magnitude * Map.DRIVE_GAIN[toward_zero ? 1 : 0][i]; // Maximum distance the input should move (input values per millisecond)
 			
 			if(Math.abs(maximum_distance) < Math.abs(distance)) // Take the smallest step of the two computed
-				dircns[i] = imputs[i] + maximum_distance;
+				dircns[i] = inputs[i] + maximum_distance;
 			
 			inputs[i] = dircns[i]; //this way, when the loop next runs, it will be comparing the previous values!
 		}

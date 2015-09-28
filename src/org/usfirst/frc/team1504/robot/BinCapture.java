@@ -2,12 +2,15 @@ package org.usfirst.frc.team1504.robot;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class BinCapture extends Loggable // thread
 {
+	DriverStation ds = DriverStation.getInstance();
+	
 	private static BinCaptureThread BinCap;
 
 	CANTalon motor;
@@ -118,7 +121,7 @@ public class BinCapture extends Loggable // thread
 				
 				isManual = IO.bincap_manual_toggle() || (isManual && !IO.bincapture_input()[0]);
 
-				if (isManual) {
+				if (isManual && ds.isOperatorControl()) {
 					if (IO.bincap_manual_toggle()) {
 						manual(IO.bincap_manual());
 					} else {
