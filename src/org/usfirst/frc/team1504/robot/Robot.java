@@ -142,11 +142,11 @@ public class Robot extends SampleRobot {
 			// AUTO ZONE, and then turning 180 degrees in 1 second.
 			capture.extend();
 			try {
-				Thread.sleep(1500);
+				Thread.sleep(3500);
 			} catch (InterruptedException ex) {
 			}
 
-			drive.autonDrive(-.25, 0.0, 0.0); // .5?
+			drive.autonDrive(.3, 0.0, 0.0); // .5?
 			try {
 				Thread.sleep(1500); // change this later
 			} catch (InterruptedException ex) {
@@ -160,13 +160,14 @@ public class Robot extends SampleRobot {
 				e2.printStackTrace();
 			}
 
-			drive.autonDrive(-.25, 0.0, 0.0);
+			drive.autonDrive(-.35, 0.0, 0.0);
 			try {
-				Thread.sleep(3500);
+				Thread.sleep(3000);
 			} catch (InterruptedException ex) {
 			}
 
-			drive.autonDrive(.25, 0.0, 0.0);
+			/*
+			drive.autonDrive(.2, 0.0, 0.0);
 			try {
 				Thread.sleep(250);
 			} catch (InterruptedException e) {
@@ -175,6 +176,7 @@ public class Robot extends SampleRobot {
 
 			capture.grab();
 			capture.extend();
+			*/
 
 			drive.autonDrive(0.0, 0.0, 0.0);
 

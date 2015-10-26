@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Solenoid;
+import java.nio.ByteBuffer;
 
 public class Aligner extends Loggable {
 	// Solenoids
@@ -61,6 +62,17 @@ public class Aligner extends Loggable {
 		motor[0] = clawStage;
 		motor[1] = loopcount;
 		motor[2] = System.currentTimeMillis() - starttime;
+		loopcount = 0;
+		return motor;
+	}
+	
+	public byte[] dump() {
+		byte[] motor = new byte[3];
+		// motor speed, current, voltage
+		motor[0] = Bytebuffer.putchar(clawStage);
+		motor[1] = loopcount;
+		motor[2] = System.currentTimeMillis() - starttime;
+		Bytebuffer.putC
 		loopcount = 0;
 		return motor;
 	}
